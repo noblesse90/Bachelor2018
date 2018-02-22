@@ -3222,7 +3222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b1b5d48ed3c364880ea70cbf22659f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 1856679746266060, guid: 62cff433fa4188945a6a49d58b98991d,
+  _enemyPrefab: {fileID: 1994353020664202, guid: 62cff433fa4188945a6a49d58b98991d,
     type: 2}
 --- !u!1 &539644741
 GameObject:
@@ -64512,7 +64512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b1b5d48ed3c364880ea70cbf22659f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 1856679746266060, guid: 62cff433fa4188945a6a49d58b98991d,
+  _enemyPrefab: {fileID: 1994353020664202, guid: 62cff433fa4188945a6a49d58b98991d,
     type: 2}
 --- !u!1 &1004579719
 GameObject:
@@ -73995,8 +73995,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 1573524186}
-  _towerprefab: {fileID: 1117020026803288, guid: aae2c262393f3854f8c1c3d145456022,
+  _towerprefab: {fileID: 1478005934483964, guid: aae2c262393f3854f8c1c3d145456022,
     type: 2}
+  _sprite: {fileID: 1832017763829808, guid: d0f322f363344b34c87fc2f5d6748559, type: 2}
 --- !u!114 &1443321162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78415,7 +78416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b1b5d48ed3c364880ea70cbf22659f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 1856679746266060, guid: 62cff433fa4188945a6a49d58b98991d,
+  _enemyPrefab: {fileID: 1994353020664202, guid: 62cff433fa4188945a6a49d58b98991d,
     type: 2}
 --- !u!1 &1990541777
 GameObject:

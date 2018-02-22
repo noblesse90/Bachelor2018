@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour {
 
-    private int hp;
+    private float startHP = 400;
+    private float hp;
 
-    public int Hp
+    [SerializeField] private Image healthBar;
+
+
+    public float Hp
     {
         get
         {
@@ -18,17 +23,27 @@ public class EnemyController : MonoBehaviour {
             hp = value;
         }
     }
+    
 
     // Use this for initialization
     void Start () {
-        hp = 40;
+        hp = startHP;
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+
+    // Update is called once per frame
+    void Update () {
 		if(hp <= 0)
         {
             Destroy(gameObject);
         }
+        
 	}
+
+
+    public void takeDamage(float dmg)
+    {
+        Hp -= dmg;
+        healthBar.fillAmount = hp / startHP;
+    }
 }

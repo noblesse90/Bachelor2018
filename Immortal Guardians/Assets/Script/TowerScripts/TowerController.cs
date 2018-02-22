@@ -90,7 +90,8 @@ public class TowerController : MonoBehaviour {
 
     private void shoot()
     {
-        Instantiate(projectile, transform.position, Quaternion.identity, this.transform);
-        currentTarget.GetComponent<EnemyController>().Hp -= 10;
+        Vector3 currentPos = transform.position;
+        currentPos.y += 1;
+        Instantiate(projectile, currentPos, Quaternion.identity, this.transform);
     }
 }

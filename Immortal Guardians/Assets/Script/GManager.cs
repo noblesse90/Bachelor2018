@@ -15,6 +15,7 @@ public class GManager : Singleton<GManager> {
     
     // holds gameobjects
     [SerializeField] private GameObject _towerprefab;
+    [SerializeField] private GameObject _sprite;
 
     // A boolean to change from combat and build mode (used by child aswell)
     private bool _BuildMode = false;
@@ -39,6 +40,7 @@ public class GManager : Singleton<GManager> {
     // Update is called once per frame
     void Update()
     {
+        // goes into buildmode
         if (Input.GetKeyUp(KeyCode.B))
         {
             
@@ -60,6 +62,7 @@ public class GManager : Singleton<GManager> {
             
         }
 
+        // resets the game
         if (Input.GetKeyUp(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -75,6 +78,15 @@ public class GManager : Singleton<GManager> {
                 placeTower();
             }
         }
+        // Select tower
+        else if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            GameObject tower = getTower();
+            if(tower != null)
+            {
+                Debug.Log("GOT TOWER");
+            }
+        }
 
         if (Input.GetKeyUp(KeyCode.Escape))
         {
@@ -86,31 +98,13 @@ public class GManager : Singleton<GManager> {
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
             //_BuildMode = false;
-            // raycasts
-            Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D[] ray = Physics2D.RaycastAll(mousePosition, new Vector2(0,0), 0F);
-            foreach(RaycastHit2D r in ray)
-            {
-                if(r.collider.CompareTag("Tower"))
-                {
-                    // Destroys the tower
-                    Destroy(r.transform.gameObject);
-                    // get the bounds of the currect object that was hit by the raycast (tower)
-                    Bounds b = r.transform.GetComponent<BoxCollider2D>().bounds;
-                    // expands the bounds since the nodes are further out
-                    b.Expand(2);
-                    // makes a graph update object
-                    GraphUpdateObject guo = new GraphUpdateObject(b);
-                    // updates the graph inside the given area of the bounds
-                    AstarPath.active.UpdateGraphs(guo);
-                }
-            }
+            destroyTower();
         }
         
         
     }
 
-    public void placeTower()
+    private void placeTower()
     {
         Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
         
@@ -126,6 +120,17 @@ public class GManager : Singleton<GManager> {
         // gets the spriterenderer of the tower prefab and changes the sortingOrder according to its y position
         // this will make the tower infront always visible compared to the tower behind
         tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y)*-1;
+
+        // gets the current position and adds the y value to place the sprite in the center
+        Vector3 v = mousePosition;
+        v.y += 1.5f;
+        v.x += 0.04f;
+        // Instantiates the sprite prefab (image of the tower) and makes it a child of the tower that was made
+        // Instantiate (GameObject, Vector3, Quaternion(rotation), Parent)
+        GameObject sprite = Instantiate(_sprite, v, Quaternion.identity, tower.transform);
+
+        // gets the spriterenderer of the sprite prefab and changes the sorting order according to its y position
+        sprite.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y) * -1;
 
         // checks if the tower is valid and subtracts money
         if (checkValidTower(tower) != null)
@@ -224,4 +229,42 @@ public class GManager : Singleton<GManager> {
         return tower;
     }
 
+
+    private void destroyTower()
+    {
+        Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D[] ray = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+        foreach (RaycastHit2D r in ray)
+        {
+            if (r.collider.CompareTag("Tower"))
+            {
+                // Destroys the tower
+                Destroy(r.transform.gameObject);
+                // get the bounds of the currect object that was hit by the raycast (tower)
+                Bounds b = r.transform.GetComponent<BoxCollider2D>().bounds;
+                // expands the bounds since the nodes are further out
+                b.Expand(2);
+                // makes a graph update object
+                GraphUpdateObject guo = new GraphUpdateObject(b);
+                // updates the graph inside the given area of the bounds
+                AstarPath.active.UpdateGraphs(guo);
+            }
+        }
+    }
+
+    private GameObject getTower()
+    {
+        GameObject tower = null;
+        Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D[] ray = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+        foreach (RaycastHit2D r in ray)
+        {
+            if (r.collider.CompareTag("Tower"))
+            {
+                tower = r.transform.gameObject;
+            }
+        }
+
+        return tower;
+    }
 }

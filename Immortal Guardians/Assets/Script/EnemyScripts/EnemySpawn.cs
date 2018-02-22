@@ -11,7 +11,7 @@ public class EnemySpawn : MonoBehaviour {
 	// Update is called once per frame
 	void Start () {
         float start = 1;
-        float interval = 10;
+        float interval = 1;
 
         InvokeRepeating("spawn", start, interval);
 	}
