@@ -11,8 +11,10 @@ public class TowerManager : Singleton<TowerManager> {
     private GameObject currentTower;
 
     // holds gameobjects
-    [SerializeField] private GameObject _towerprefab;
-    [SerializeField] private GameObject _sprite;
+    private GameObject _towerprefab;
+    [SerializeField] private GameObject _basicTowerPrefab;
+    [SerializeField] private GameObject _canonTowerPrefab;
+    
 
     public GameObject CurrentTower
     {
@@ -24,6 +26,35 @@ public class TowerManager : Singleton<TowerManager> {
         set
         {
             currentTower = value;
+        }
+    }
+
+    public GameObject Towerprefab
+    {
+        get
+        {
+            return _towerprefab;
+        }
+
+        set
+        {
+            _towerprefab = value;
+        }
+    }
+
+    public GameObject BasicTowerPrefab
+    {
+        get
+        {
+            return _basicTowerPrefab;
+        }
+    }
+
+    public GameObject CanonTowerPrefab
+    {
+        get
+        {
+            return _canonTowerPrefab;
         }
     }
 
@@ -59,7 +90,7 @@ public class TowerManager : Singleton<TowerManager> {
         mousePosition = new Vector2(Mathf.Round(mousePosition.x + .5f), Mathf.Round(mousePosition.y + .5f));
         // Instantiates (spawns) the tower prefab on the current position without altering its rotation
         // Instansiate(Gameobject, Vector3, Quaternion(rotation))
-        GameObject tower = Instantiate(_towerprefab, mousePosition, Quaternion.identity);
+        GameObject tower = Instantiate(Towerprefab, mousePosition, Quaternion.identity);
         // gets the spriterenderer of the tower prefab and changes the sortingOrder according to its y position
         // this will make the tower infront always visible compared to the tower behind
         int sortLayer = (int)Mathf.Round(mousePosition.y) * -1;

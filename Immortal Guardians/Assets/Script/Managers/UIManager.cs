@@ -26,7 +26,8 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private GameObject ui;
 
     // TESTS
-    [SerializeField] private Button test;
+    [SerializeField] private Button basicTowerTest;
+    [SerializeField] private Button canonTowerTest;
 
 
     // Use this for initialization
@@ -44,12 +45,15 @@ public class UIManager : Singleton<UIManager> {
         Upgrade = Upgrade.GetComponent<Button>();
         Upgrade.onClick.AddListener(TowerManager.Instance.UpgradeTower);
 
-        test = test.GetComponent<Button>();
-        test.onClick.AddListener(testMetode);
+        basicTowerTest = basicTowerTest.GetComponent<Button>();
+        basicTowerTest.onClick.AddListener(basicTowerTestMetode);
+
+        canonTowerTest = canonTowerTest.GetComponent<Button>();
+        canonTowerTest.onClick.AddListener(canonTowerTestMetode);
 
     }
 
-    private void testMetode()
+    private void basicTowerTestMetode()
     {
         if(!(Currency - 10 < 0))
         {
@@ -57,7 +61,18 @@ public class UIManager : Singleton<UIManager> {
             TowerManager.Instance.CurrentTower = null;
             ui.SetActive(false);
         }
-        
+        BuildingMode.Instance.TowerType = "BasicTower";
+    }
+
+    private void canonTowerTestMetode()
+    {
+        if (!(Currency - 20 < 0))
+        {
+            GManager.Instance.BuildMode = true;
+            TowerManager.Instance.CurrentTower = null;
+            ui.SetActive(false);
+        }
+        BuildingMode.Instance.TowerType = "CanonTower";
     }
 
     private void Update()
@@ -147,8 +162,8 @@ public class UIManager : Singleton<UIManager> {
     public void setTowerStats(TowerController tc)
     {
         this.towerTypeText.text =  tc.TowerType + " (level " + tc.Level.ToString() + ")";
-        this.damageText.text = "Damage: " + tc.Damage.ToString();
-        this.firerateText.text = "Fire Rate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
+        this.damageText.text = "Dmg: " + tc.Damage.ToString();
+        this.firerateText.text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
         this.sellPriceText.text = "$" + (tc.TotalPrice / 2).ToString();
         this.upgradePriceText.text = "$" + tc.UpgradePrice.ToString();
     }

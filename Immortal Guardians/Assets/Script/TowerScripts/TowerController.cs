@@ -23,7 +23,7 @@ public class TowerController : MonoBehaviour
     private GameObject rangeSprite;
 
 
-    // Tower stats
+    // Tower stats (default tower)
     private string _towerType;
     private float _range;
     private float _damage;
@@ -31,6 +31,9 @@ public class TowerController : MonoBehaviour
     private int _upgradePrice;
     private int _level;
     private int _totalPrice;
+
+    // Canon tower
+    private float _splashDamage = 0;
 
     // Tower stats text (UI)
     [SerializeField] 
@@ -93,6 +96,13 @@ public class TowerController : MonoBehaviour
     {
         get { return _upgradePrice; }
         set { _upgradePrice = value; }
+    }
+
+    public float SplashDamage
+    {
+        get { return _splashDamage; }
+
+        set { _splashDamage = value; }
     }
 
     private void Awake()
@@ -182,7 +192,7 @@ public class TowerController : MonoBehaviour
                 break;
 
             case "CanonTower(Clone)":
-                Debug.Log("CANON TOWER");
+                GetComponent<CanonTower>().Upgrade(Level);
                 break;
 
             case "LightningTower(Clone)":

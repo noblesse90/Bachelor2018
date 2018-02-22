@@ -6,10 +6,10 @@ public class CanonTower : MonoBehaviour {
     // Price, range, attackCooldown, damange, level, Projectilespeed
     float[,] _stats = new float[4, 6]
     {
-        { 10,10,1,10,1,10},
-        { 20,12,0.75f,20,2,20},
-        { 30,14,0.5f,30,3,30},
-        { 40,16,0.4f,50, 4,40}
+        { 20,10,2,10,1,10},
+        { 50,12,1.5f,20,2,12.5f},
+        { 50,14,1.25f,25,3,15},
+        { 75,16,1f,50, 4,20}
     };
 
 
@@ -22,7 +22,7 @@ public class CanonTower : MonoBehaviour {
     public void InitialiserStats()
     {
         TowerController tc = GetComponent<TowerController>();
-        tc.TowerType = "Basic Tower";
+        tc.TowerType = "Canon Tower";
         tc.Price = (int)_stats[0, 0];
         tc.Range = _stats[0, 1];
         tc.AttackCooldown = _stats[0, 2];
@@ -58,4 +58,5 @@ public class CanonTower : MonoBehaviour {
 
         UIManager.Instance.setTowerStats(tc);
     }
+
 }

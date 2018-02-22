@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 212870530588887868}
   - component: {fileID: 61336664841384216}
   - component: {fileID: 114470694145803148}
+  - component: {fileID: 114779905695304348}
   m_Layer: 8
   m_Name: CanonTower
   m_TagString: Tower
@@ -290,6 +291,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 1442167707585686, guid: d7288c57100dc0c4988d17bdd8b3497c, type: 2}
   projectileSpeed: 10
+--- !u!114 &114779905695304348
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1594683921321222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19097011e106f7e42909e17cee450cb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212185496231736490
 SpriteRenderer:
   m_ObjectHideFlags: 1
