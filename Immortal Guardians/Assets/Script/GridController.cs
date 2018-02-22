@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
+/*
 public class GridController : MonoBehaviour {
 
     RaycastHit2D[] hits;
@@ -51,7 +51,9 @@ public class GridController : MonoBehaviour {
 
         Vector3Int cellPosition = gl.WorldToCell(pos);
         
+        
         Debug.Log(tm.GetCellCenterLocal(cellPosition));
         //Debug.Log(tm.HasTile(cellPosition));
     }
 }
+*/
