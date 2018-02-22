@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : Singleton<PlayerController> {
 
     // Int variable to controll speed and can be changeable through the inspector (SerializeField)
     [SerializeField] private int speed = 10;

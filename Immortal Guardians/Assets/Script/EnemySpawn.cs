@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemySpawn : MonoBehaviour {
 
     [SerializeField]private GameObject _enemyPrefab;
-    private int counter = 10;
+    private int counter = 1000;
 
 	
 	// Update is called once per frame

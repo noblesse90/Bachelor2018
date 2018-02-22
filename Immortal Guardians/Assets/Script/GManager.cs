@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Pathfinding;
+using UnityEngine.SceneManagement;
 
 // GManager is a part of the Singleton hierarchy and can be used by other scripts through the Singleton script
 public class GManager : Singleton<GManager> {
@@ -48,9 +49,22 @@ public class GManager : Singleton<GManager> {
             }
             else
             {
-                _BuildMode = true;
+                if (UIManager.Instance.Currency - 2 < 0)
+                {
+                    Debug.Log("Not enough money");
+                }
+                else
+                {
+                    _BuildMode = true;
+                }
             }
             
+        }
+
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Time.timeScale = 1;
         }
 
         // checking if buildmode is false or true
@@ -68,9 +82,30 @@ public class GManager : Singleton<GManager> {
             Application.Quit();
         }
 
+
+        // destroys a tower in the given mouse position
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
-            _BuildMode = false;
+            //_BuildMode = false;
+            // raycasts
+            Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D[] ray = Physics2D.RaycastAll(mousePosition, new Vector2(0,0), 0F);
+            foreach(RaycastHit2D r in ray)
+            {
+                if(r.collider.tag == "Tower")
+                {
+                    // Destroys the tower
+                    Destroy(r.transform.gameObject);
+                    // get the bounds of the currect object that was hit by the raycast (tower)
+                    Bounds b = r.transform.GetComponent<BoxCollider2D>().bounds;
+                    // expands the bounds since the nodes are further out
+                    b.Expand(2);
+                    // makes a graph update object
+                    GraphUpdateObject guo = new GraphUpdateObject(b);
+                    // updates the graph inside the given area of the bounds
+                    AstarPath.active.UpdateGraphs(guo);
+                }
+            }
         }
         
         
@@ -103,18 +138,20 @@ public class GManager : Singleton<GManager> {
         // gets the spriterenderer of the sprite prefab and changes the sorting order according to its y position
         sprite.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y)*-1;
 
+        // checks if the tower is valid and subtracts money
         if (checkValidTower(tower) != null)
         {
-            // TODO subtract players currency
-            Debug.Log("rip money");
+            UIManager.Instance.Currency -= 2;
+            Physics2D.IgnoreCollision(tower.GetComponent<BoxCollider2D>(), PlayerController.Instance.GetComponent<Collider2D>());
         }
-        //_BuildMode = false;
+
+        _BuildMode = false;
         
     }
 
     private bool isEmpty(Vector2 mousePos)
     {
-        bool b = true;
+        bool empty = true;
         RaycastHit2D[] rayCenter, rayUp, rayRight, rayCorner;
         rayCenter = Physics2D.RaycastAll(mousePos, new Vector2(0,0) , 0F);
         mousePos.y += 1;
@@ -129,7 +166,7 @@ public class GManager : Singleton<GManager> {
             if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 0.0");
-                b = false;
+                empty = false;
             }
         }
         
@@ -138,7 +175,7 @@ public class GManager : Singleton<GManager> {
             if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 1.0");
-                b = false;
+                empty = false;
             }
         }
 
@@ -147,7 +184,7 @@ public class GManager : Singleton<GManager> {
             if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 1.1");
-                b = false;
+                empty = false;
             }
         }
 
@@ -156,11 +193,11 @@ public class GManager : Singleton<GManager> {
             if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 0.1");
-                b = false;
+                empty = false;
             }
         }
 
-        return b;
+        return empty;
     }
 
     private GameObject checkValidTower(GameObject tower)
@@ -180,14 +217,6 @@ public class GManager : Singleton<GManager> {
             {
                 var spawnPointNode = AstarPath.active.GetNearest(s.transform.position).node;
                 g.Add(spawnPointNode);
-
-                /*if (!GraphUpdateUtilities.UpdateGraphsNoBlock(towerBox, spawnPointNode, goalNode, false))
-                {
-                    Debug.Log("DESTROYED");
-                    Destroy(tower);
-                   // AstarPath.active.UpdateGraphs(towerBox);
-                    return null;
-                }*/
             }
 
             if (!GraphUpdateUtilities.UpdateGraphsNoBlock(towerBox, g, false))
@@ -196,12 +225,12 @@ public class GManager : Singleton<GManager> {
                 return null;
             }
             
+            
         }
         else
         {
             Debug.Log("NO SPAWNS");
         }
-        
 
         return tower;
     }
