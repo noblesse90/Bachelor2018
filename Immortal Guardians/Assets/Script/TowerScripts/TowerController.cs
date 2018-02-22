@@ -67,7 +67,7 @@ public class TowerController : MonoBehaviour
         //Attack();
         UpdateTarget();
 
-        if (GManager.Instance.CurrentTower == gameObject)
+        if (TowerManager.Instance.CurrentTower == gameObject)
         {
             Selected();
         }
@@ -114,8 +114,8 @@ public class TowerController : MonoBehaviour
         GameObject projectile = ObjectPool.Instance.GetObject("ProjectileTest");
         projectile.transform.position = currentPos;
         projectile.transform.rotation = Quaternion.identity;
-        projectile.transform.parent = this.transform;
-        projectile.GetComponent<ProjectileController>().target = currentTarget;
+        projectile.GetComponent<ProjectileController>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
+        
         //Instantiate(projectile, currentPos, Quaternion.identity, this.transform);
     }
 

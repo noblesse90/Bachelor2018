@@ -4,16 +4,10 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour {
 
-    public GameObject target;
+    private GameObject target;
 
-    TowerController tc;
+    private float speed = 0;
 
-
-    private void Start()
-    {
-        tc = transform.GetComponentInParent<TowerController>();
-        target = tc.CurrentTarget;
-    }
 
     // Update is called once per frame
     void Update () {
@@ -24,7 +18,7 @@ public class ProjectileController : MonoBehaviour {
     {
         if(target != null && target.activeInHierarchy)
         {
-            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, Time.deltaTime * tc.ProjectileSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, Time.deltaTime * speed);
         }
         else
         {
@@ -48,6 +42,11 @@ public class ProjectileController : MonoBehaviour {
     private void Release()
     {
         gameObject.SetActive(false);
-        transform.parent.GetComponent<TowerController>().CurrentTarget = null;
+    }
+
+    public void SetTargetAndSpeed(GameObject target, float speed)
+    {
+        this.target = target;
+        this.speed = speed;
     }
 }

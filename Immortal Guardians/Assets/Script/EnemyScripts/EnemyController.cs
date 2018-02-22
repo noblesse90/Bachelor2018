@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Pathfinding;
 
 public class EnemyController : MonoBehaviour {
 
@@ -10,20 +11,19 @@ public class EnemyController : MonoBehaviour {
 
     [SerializeField] private Image healthBar;
 
-
-    public float Hp
+    public float StartHP
     {
         get
         {
-            return hp;
+            return startHP;
         }
 
         set
         {
-            hp = value;
+            startHP = value;
         }
     }
-    
+
 
     // Use this for initialization
     void Start () {
@@ -42,13 +42,14 @@ public class EnemyController : MonoBehaviour {
 
     public void takeDamage(float dmg)
     {
-        Hp -= dmg;
+        hp -= dmg;
         healthBar.fillAmount = hp / startHP;
     }
 
     public void Release()
     {
         gameObject.SetActive(false);
+        WaveManager.Instance.EnemyCount++;
         hp = startHP;
         healthBar.fillAmount = hp / startHP;
     }
