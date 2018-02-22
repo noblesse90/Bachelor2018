@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class GridController : MonoBehaviour {
 
+    RaycastHit2D[] hits;
     private GridLayout gl;
     private Tilemap tm;
 
@@ -19,33 +20,38 @@ public class GridController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         Vector3 pos = camera.ScreenToWorldPoint(Input.mousePosition);
-        pos.x += 1;
-        pos.y += 3;
-        Vector3Int cellPosition = gl.WorldToCell(pos);
+        pos.z = 0;
+        Vector3Int cellPosition = gl.LocalToCell(pos);
         TileBase tile = null;
 
         if (Input.GetKey(KeyCode.E))
         {
-            tile = tm.GetTile(cellPosition);
-            Debug.Log(tm.GetCellCenterLocal(cellPosition));
+            
+            //Debug.Log(pos);
+            //Debug.Log(tm.GetCellCenterLocal(cellPosition));
         }
 
         if (Input.GetKey(KeyCode.R))
         {
-            //if(tile != null)
-            tm.SetTile(cellPosition, tile);
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (hits[i].collider.tag == "Tower")
+                {
+                    Debug.Log(hits[i].collider.gameObject.transform.position);
+                }
+            }
         }
     }
 
     private void OnMouseUp()
     {
+        Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        hits = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0.01F);
         Vector3 pos = camera.ScreenToWorldPoint(Input.mousePosition);
-        pos.x += 1;
-        pos.y += 3;
+
         Vector3Int cellPosition = gl.WorldToCell(pos);
         
         Debug.Log(tm.GetCellCenterLocal(cellPosition));
-        tm.GetTile(cellPosition);
-        Debug.Log(tm.HasTile(cellPosition));
+        //Debug.Log(tm.HasTile(cellPosition));
     }
 }
