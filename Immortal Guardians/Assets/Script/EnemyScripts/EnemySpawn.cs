@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Pathfinding;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,11 +37,12 @@ public class EnemySpawn : MonoBehaviour {
         {
             GameObject enemy = ObjectPool.Instance.GetObject("Enemy");
             enemy.transform.position = transform.position;
+            
 
             canSpawn = false;
         }
 
-        
 
     }
+
 }

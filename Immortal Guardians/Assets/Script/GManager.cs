@@ -60,7 +60,7 @@ public class GManager : Singleton<GManager> {
     void Update()
     {
         // goes into buildmode
-        if (Input.GetKeyUp(KeyCode.O))
+        if (Input.GetKeyUp(KeyCode.B))
         {
             
             if(BuildMode)

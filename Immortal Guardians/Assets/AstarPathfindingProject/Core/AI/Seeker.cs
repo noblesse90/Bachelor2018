@@ -146,6 +146,8 @@ namespace Pathfinding {
 					// it just has to be *some* object.
 					path.Claim(path);
 					path.Release(path);
+                    gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.green;
+
 				}
 			}
 		}
