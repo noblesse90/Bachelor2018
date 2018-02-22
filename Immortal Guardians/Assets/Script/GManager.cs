@@ -133,7 +133,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayCenter)
         {
-            if (r.collider.tag == "Tower")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
             {
                 Debug.Log("TOWER: 0.0");
                 b = false;
@@ -142,7 +142,7 @@ public class GManager : Singleton<GManager> {
         
         foreach (RaycastHit2D r in rayUp)
         {
-            if (r.collider.tag == "Tower")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
             {
                 Debug.Log("TOWER: 1.0");
                 b = false;
@@ -151,7 +151,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayCorner)
         {
-            if (r.collider.tag == "Tower")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
             {
                 Debug.Log("TOWER: 1.1");
                 b = false;
@@ -160,7 +160,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayRight)
         {
-            if (r.collider.tag == "Tower")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
             {
                 Debug.Log("TOWER: 0.1");
                 b = false;
