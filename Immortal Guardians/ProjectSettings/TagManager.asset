@@ -9,7 +9,7 @@ TagManager:
   - Sprites
   - EnemyDestination
   - EnemySpawn
-  - Walls
+  - Obstacle
   layers:
   - Default
   - TransparentFX

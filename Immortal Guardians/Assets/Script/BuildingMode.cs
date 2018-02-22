@@ -6,50 +6,44 @@ public class BuildingMode : MonoBehaviour {
 
     // variable to hold on the camera
     [SerializeField] private Camera camera;
+    [SerializeField] private GameObject _towerPrefab;
 
-    // variable for the gameobjects spriterenderer
-    SpriteRenderer sprite;
+    private GameObject tower;
+
 
     // bool variable to check buildmode from GManager
     private bool _BuildMode;
 
 
-    private void Start()
-    {
-        // initiate sprite
-        sprite = GetComponent<SpriteRenderer>();
-        // makes the sprite invisible at the start of the game
-        sprite.enabled = false;
-    }
 
     // Update is called once per frame
     void Update () {
-
 
         _BuildMode = GManager.Instance.BuildMode;
         
         if (_BuildMode)
         {
-            sprite.enabled = true;
+            followMouseHover();
         }
         else
         {
-            sprite.enabled = false;
-        }
-       
-
-        // checking if buildmode is true or false
-        if (sprite.enabled)
-        {
-            FollowMouseHover();
+            Destroy(tower);
         }
         
 	}
 
     // The tower icon is following the mouse
-    private void FollowMouseHover()
+    private void followMouseHover()
     {
-        transform.position = camera.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector2(Mathf.Round(transform.position.x + .5f), Mathf.Round(transform.position.y + .5f)) ;
+        Vector2 pos = camera.ScreenToWorldPoint(Input.mousePosition);
+        pos = new Vector2(Mathf.Round(pos.x + .5f), Mathf.Round(pos.y + .5f));
+
+        if(tower == null)
+        {
+            tower = Instantiate(_towerPrefab, pos, Quaternion.identity);
+        }
+
+        tower.transform.position = pos;
+        
     }
 }

@@ -17,7 +17,12 @@ namespace Pathfinding {
 		public Transform target;
 		IAstarAI ai;
 
-		void OnEnable () {
+        private void Start()
+        {
+            target = GameObject.FindGameObjectWithTag("EnemyDestination").transform;
+        }
+
+        void OnEnable () {
 			ai = GetComponent<IAstarAI>();
 			// Update the destination right before searching for a path as well.
 			// This is enough in theory, but this script will also update the destination every
@@ -33,6 +38,12 @@ namespace Pathfinding {
 		/** Updates the AI's destination every frame */
 		void Update () {
 			if (target != null && ai != null) ai.destination = target.position;
+            if (ai.reachedEndOfPath)
+            {
+                Destroy(gameObject);
+                
+            }
+            
 		}
 	}
 }

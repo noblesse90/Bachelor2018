@@ -61,7 +61,7 @@ public class GManager : Singleton<GManager> {
             // check if the user clicks the left mousebutton
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
-                placeTower(getPosition());
+                placeTower();
             }
         }
 
@@ -69,37 +69,34 @@ public class GManager : Singleton<GManager> {
         {
             Application.Quit();
         }
+
+        if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            _BuildMode = false;
+        }
         
         
     }
 
-    public Vector2 getPosition()
+    public void placeTower()
     {
-        // converts the mouse position from 3d to 2d
         Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
-        // transforms the position of the gameobject to the mouseposition that's rounded up after adding .5f
-        transform.position = new Vector2(Mathf.Round(mousePosition.x + .5f), Mathf.Round(mousePosition.y + .5f));
-        // saves the gameobjects position in a vector2 variable
-        Vector2 currentPosition = transform.position;
-        return currentPosition;
-    }
-
-    public void placeTower(Vector2 pos)
-    {
-        if (!isEmpty())
+        if (!isEmpty(mousePosition))
         {
             _BuildMode = false;
             return;
         }
+        
+        mousePosition = new Vector2(Mathf.Round(mousePosition.x + .5f), Mathf.Round(mousePosition.y + .5f));
         // Instantiates (spawns) the tower prefab on the current position without altering its rotation
         // Instansiate(Gameobject, Vector3, Quaternion(rotation))
-        GameObject tower = Instantiate(_towerprefab, transform.position, Quaternion.identity);
+        GameObject tower = Instantiate(_towerprefab, mousePosition, Quaternion.identity);
         // gets the spriterenderer of the tower prefab and changes the sortingOrder according to its y position
         // this will make the tower infront always visible compared to the tower behind
         tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(pos.y)*-1;
 
         // gets the current position and adds the y value to place the sprite in the center
-        Vector3 v = transform.position;
+        Vector3 v = mousePosition;
         v.y += 2;
         // Instantiates the sprite prefab (image of the tower) and makes it a child of the tower that was made
         // Instantiate (GameObject, Vector3, Quaternion(rotation), Parent)
@@ -113,15 +110,13 @@ public class GManager : Singleton<GManager> {
             // TODO subtract players currency
             Debug.Log("rip money");
         }
-        _BuildMode = false;
+        //_BuildMode = false;
         
     }
 
-    private bool isEmpty()
+    private bool isEmpty(Vector2 mousePos)
     {
         bool b = true;
-        
-        Vector2 mousePos = camera.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D[] rayCenter, rayUp, rayRight, rayCorner;
         rayCenter = Physics2D.RaycastAll(mousePos, new Vector2(0,0) , 0F);
         mousePos.y += 1;
@@ -133,7 +128,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayCenter)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 0.0");
                 b = false;
@@ -142,7 +137,7 @@ public class GManager : Singleton<GManager> {
         
         foreach (RaycastHit2D r in rayUp)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 1.0");
                 b = false;
@@ -151,7 +146,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayCorner)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 1.1");
                 b = false;
@@ -160,7 +155,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayRight)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Walls")
+            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
             {
                 Debug.Log("TOWER: 0.1");
                 b = false;
