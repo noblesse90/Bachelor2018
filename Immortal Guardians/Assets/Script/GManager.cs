@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using Pathfinding;
 
 // GManager is a part of the Singleton hierarchy and can be used by other scripts through the Singleton script
@@ -14,9 +15,6 @@ public class GManager : Singleton<GManager> {
     // holds gameobjects
     [SerializeField] private GameObject _towerprefab;
     [SerializeField] private GameObject _sprite;
-
-    // hold a vector3 position (x,y,z)
-    private Vector3 pos;
 
     // A boolean to change from combat and build mode (used by child aswell)
     private bool _BuildMode = false;
@@ -81,19 +79,19 @@ public class GManager : Singleton<GManager> {
     public void placeTower()
     {
         Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        
         if (!isEmpty(mousePosition))
         {
             _BuildMode = false;
             return;
         }
-        
         mousePosition = new Vector2(Mathf.Round(mousePosition.x + .5f), Mathf.Round(mousePosition.y + .5f));
         // Instantiates (spawns) the tower prefab on the current position without altering its rotation
         // Instansiate(Gameobject, Vector3, Quaternion(rotation))
         GameObject tower = Instantiate(_towerprefab, mousePosition, Quaternion.identity);
         // gets the spriterenderer of the tower prefab and changes the sortingOrder according to its y position
         // this will make the tower infront always visible compared to the tower behind
-        tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(pos.y)*-1;
+        tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y)*-1;
 
         // gets the current position and adds the y value to place the sprite in the center
         Vector3 v = mousePosition;
@@ -103,7 +101,7 @@ public class GManager : Singleton<GManager> {
         GameObject sprite = Instantiate(_sprite, v, Quaternion.identity, tower.transform);
 
         // gets the spriterenderer of the sprite prefab and changes the sorting order according to its y position
-        sprite.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(pos.y)*-1;
+        sprite.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y)*-1;
 
         if (checkValidTower(tower) != null)
         {
@@ -170,29 +168,40 @@ public class GManager : Singleton<GManager> {
         // check if the list is empty (no spawnpoint nodes)
         if (_Spawn != null && _Destination != null)
         {
-
+            List<GraphNode> g = new List<GraphNode>();
             // gets the bounding volume of the towers renderer to make rough approximations about the tower's location
             var towerBox = new GraphUpdateObject(tower.GetComponent<BoxCollider2D>().bounds);
 
             // making the destination node
             var goalNode = AstarPath.active.GetNearest(_Destination.transform.position).node;
-
+            g.Add(goalNode);
             // Making spawnpoints nodes and check them to see if there's a path available
             foreach (GameObject s in _Spawn)
             {
                 var spawnPointNode = AstarPath.active.GetNearest(s.transform.position).node;
+                g.Add(spawnPointNode);
 
-                if (!GraphUpdateUtilities.UpdateGraphsNoBlock(towerBox, spawnPointNode, goalNode, false))
+                /*if (!GraphUpdateUtilities.UpdateGraphsNoBlock(towerBox, spawnPointNode, goalNode, false))
                 {
+                    Debug.Log("DESTROYED");
                     Destroy(tower);
+                   // AstarPath.active.UpdateGraphs(towerBox);
                     return null;
-                }
+                }*/
             }
+
+            if (!GraphUpdateUtilities.UpdateGraphsNoBlock(towerBox, g, false))
+            {
+                Destroy(tower);
+                return null;
+            }
+            
         }
         else
         {
             Debug.Log("NO SPAWNS");
         }
+        
 
         return tower;
     }
