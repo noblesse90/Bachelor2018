@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
-        
+        rb.freezeRotation = true;
 	}
 	
 	// Update is called once per frame
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour {
         var x = Input.GetAxis("Horizontal") * speed;
         var y = Input.GetAxis("Vertical") * speed;
 
-        Vector3 movement = new Vector3(x, y, 0);
+        Vector2 movement = new Vector2(x, y);
 
         
         if (rb.velocity.magnitude > speed)
