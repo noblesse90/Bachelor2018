@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+
+
+
+// OBSOLETE CODE
+
+
 public class pathfinding : MonoBehaviour {
     GameObject _Destination;
     Seeker _seeker;
     Vector2 _end;
     Vector2 _start;
+
+    private bool search;
 
 
     // Use this for initialization
@@ -15,19 +23,17 @@ public class pathfinding : MonoBehaviour {
 
         _Destination = GameObject.FindGameObjectWithTag("EnemyDestination");
 
-        _end = _Destination.transform.position;
         _start = transform.position;
+        _end = _Destination.transform.position;
+       
 
         Debug.Log(_start);
         Debug.Log(_end);
         
+        
         _seeker = GetComponent<Seeker>();
         _seeker.StartPath(_start, _end, OnPathComplete);
 
-    }
-
-    void Update()
-    {
         
     }
 

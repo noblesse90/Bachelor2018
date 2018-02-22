@@ -20,28 +20,23 @@ public class BuildingMode : MonoBehaviour {
         sprite = GetComponent<SpriteRenderer>();
         // makes the sprite invisible at the start of the game
         sprite.enabled = false;
-        // gets the current state of buildmode from GManager
-        _BuildMode = GManager.Instance.BuildMode;
     }
 
     // Update is called once per frame
     void Update () {
 
-        // buildmode if test
-        if (Input.GetKeyUp(KeyCode.B))
+
+        _BuildMode = GManager.Instance.BuildMode;
+        
+        if (_BuildMode)
         {
-            // checks the current buildmode state
-            _BuildMode = GManager.Instance.BuildMode;
-            if (_BuildMode == false)
-            {
-                sprite.enabled = true;
-            }
-            else
-            {
-                sprite.enabled = false;
-            }
-                
+            sprite.enabled = true;
         }
+        else
+        {
+            sprite.enabled = false;
+        }
+       
 
         // checking if buildmode is true or false
         if (sprite.enabled)
