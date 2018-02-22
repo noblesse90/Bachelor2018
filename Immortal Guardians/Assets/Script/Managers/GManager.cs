@@ -39,12 +39,6 @@ public class GManager : Singleton<GManager> {
 
     }
 
-    void Start()
-    {
-        
-    }
-
-
     // Update is called once per frame
     void Update()
     {
@@ -85,6 +79,7 @@ public class GManager : Singleton<GManager> {
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
                 TowerManager.Instance.placeTower();
+               
             }
         }
         // Select tower

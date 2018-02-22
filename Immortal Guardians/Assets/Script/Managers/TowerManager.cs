@@ -10,6 +10,8 @@ public class TowerManager : Singleton<TowerManager> {
     private GameObject[] _Spawn;
     private GameObject currentTower;
 
+    private int price;
+
 
     // holds gameobjects
     [SerializeField] private GameObject _towerprefab;
@@ -28,6 +30,19 @@ public class TowerManager : Singleton<TowerManager> {
         }
     }
 
+    public int Price
+    {
+        get
+        {
+            return price;
+        }
+
+        set
+        {
+            price = value;
+        }
+    }
+
     // Use this for initialization
     void Start () {
         _Destination = GameObject.FindGameObjectWithTag("EnemyDestination");
@@ -36,7 +51,17 @@ public class TowerManager : Singleton<TowerManager> {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if(currentTower != null)
+        {
+            switch (currentTower.name)
+            {
+                case "BasicTower(Clone)":
+                    Debug.Log("BASIC TOWER");
+                    break;
+                default: break;
+
+            }
+        }
 	}
 
     public void placeTower()
@@ -70,7 +95,8 @@ public class TowerManager : Singleton<TowerManager> {
         // checks if the tower is valid and subtracts money
         if (checkValidTower(tower) != null)
         {
-            UIManager.Instance.Currency -= 2;
+            tower.GetComponent<TowerController>().checkTowerType();
+            UIManager.Instance.Currency -= tower.GetComponent<TowerController>().Price;
             Physics2D.IgnoreCollision(tower.GetComponent<BoxCollider2D>(), PlayerController.Instance.GetComponent<Collider2D>());
         }
 
@@ -204,5 +230,25 @@ public class TowerManager : Singleton<TowerManager> {
         }
 
         return tower;
+    }
+
+    public void SellTower()
+    {
+        if (currentTower != null)
+        {
+            currentTower.GetComponent<TowerController>().checkTowerType();
+            price = currentTower.GetComponent<TowerController>().Price;
+            UIManager.Instance.Currency += price;
+            Debug.Log(price);
+            Destroy(currentTower);
+        }
+    }
+
+    public void UpgradeTower()
+    {
+        if(currentTower != null)
+        {
+
+        }
     }
 }

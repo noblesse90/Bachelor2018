@@ -5,11 +5,14 @@ using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager> {
 
-    [SerializeField] private Button btn;
+    [SerializeField] private Button nextWave;
+    [SerializeField] private Button sellTower;
+    [SerializeField] private Button Upgrade;
 
     [SerializeField] private Text currencytxt;
     [SerializeField] private Text lifetxt;
     [SerializeField] private Text wavetxt;
+    
 
     private int currency;
     private int life;
@@ -21,8 +24,14 @@ public class UIManager : Singleton<UIManager> {
         Currency = 1000;
         Life = 500;
 
-        btn = btn.GetComponent<Button>();
-        btn.onClick.AddListener(WaveManager.Instance.NextWave);
+        nextWave = nextWave.GetComponent<Button>();
+        nextWave.onClick.AddListener(WaveManager.Instance.NextWave);
+
+        sellTower = sellTower.GetComponent<Button>();
+        sellTower.onClick.AddListener(TowerManager.Instance.SellTower);
+
+        Upgrade = Upgrade.GetComponent<Button>();
+
     }
 
     public int Currency
@@ -67,11 +76,11 @@ public class UIManager : Singleton<UIManager> {
         }
     }
 
-    public Button Btn
+    public Button NextWave
     {
         get
         {
-            return btn;
+            return nextWave;
         }
     }
 }

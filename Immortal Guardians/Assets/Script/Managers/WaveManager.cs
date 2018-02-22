@@ -63,7 +63,7 @@ public class WaveManager : Singleton<WaveManager> {
     {
         Debug.Log("NEXT WAVE");
         UIManager.Instance.Wave = waveIndex++;
-        UIManager.Instance.Btn.transform.gameObject.SetActive(false);
+        UIManager.Instance.NextWave.transform.gameObject.SetActive(false);
         GManager.Instance.BuildMode = false;
         GManager.Instance._SpawnMode = true;
         enemyCount = 0;

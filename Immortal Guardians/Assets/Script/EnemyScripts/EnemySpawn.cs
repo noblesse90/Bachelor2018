@@ -18,7 +18,7 @@ public class EnemySpawn : MonoBehaviour {
         }
         if(WaveManager.Instance.EnemySpawned == WaveManager.Instance.EnemyCount)
         {
-            UIManager.Instance.Btn.transform.gameObject.SetActive(true);
+            UIManager.Instance.NextWave.transform.gameObject.SetActive(true);
             GManager.Instance._SpawnMode = false;
         }
     }

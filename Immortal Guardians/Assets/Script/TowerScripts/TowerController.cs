@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class TowerController : MonoBehaviour
 {
-
-    private Queue<GameObject> targets;
-
     private GameObject currentTarget;
 
     [SerializeField] private GameObject projectile;
@@ -15,20 +12,14 @@ public class TowerController : MonoBehaviour
 
     private float attackTimer;
 
-    [SerializeField] private float attackCooldown;
+    private float attackCooldown;
 
     [SerializeField] private float projectileSpeed;
 
     private GameObject rangeSprite;
 
-
-    public Queue<GameObject> Targets
-    {
-        get
-        {
-            return targets;
-        }
-    }
+    private int price;
+    private float range;
 
     public GameObject CurrentTarget
     {
@@ -51,11 +42,32 @@ public class TowerController : MonoBehaviour
         }
     }
 
+    public float AttackCooldown
+    {
+        set
+        {
+            attackCooldown = value;
+        }
+    }
+
+    public int Price
+    {
+        get
+        {
+            return price;
+        }
+
+        set
+        {
+            price = value;
+        }
+    }
+
+
 
     // Use this for initialization
     void Start()
     {
-        targets = new Queue<GameObject>();
         rangeSprite = transform.Find("RangeSprite").gameObject;
 
         InvokeRepeating("UpdateTarget", 0f, 0.2f);
@@ -64,7 +76,6 @@ public class TowerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Attack();
         UpdateTarget();
 
         if (TowerManager.Instance.CurrentTower == gameObject)
@@ -77,41 +88,12 @@ public class TowerController : MonoBehaviour
         }
     }
 
-    private void Attack()
-    {
-        if (!canAttack)
-        {
-            attackTimer += Time.deltaTime;
-
-            if (attackTimer >= attackCooldown)
-            {
-                canAttack = true;
-                attackTimer = 0;
-            }
-        }
-
-        if (currentTarget == null && targets.Count > 0)
-        {
-            currentTarget = targets.Dequeue();
-        }
-
-        if (currentTarget != null && currentTarget.activeInHierarchy)
-        {
-            if (canAttack)
-            {
-                shoot();
-                canAttack = false;
-            }
-        }
-
-
-    }
-
     private void shoot()
     {
         Vector3 currentPos = transform.position;
         currentPos.y += 1;
         GameObject projectile = ObjectPool.Instance.GetObject("ProjectileTest");
+        projectile.GetComponent<ProjectileController>().Damage = GetComponent<BasicTower>().Damage;
         projectile.transform.position = currentPos;
         projectile.transform.rotation = Quaternion.identity;
         projectile.GetComponent<ProjectileController>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
@@ -119,14 +101,40 @@ public class TowerController : MonoBehaviour
         //Instantiate(projectile, currentPos, Quaternion.identity, this.transform);
     }
 
-    private void Selected()
+    private void Selected() 
     {
         rangeSprite.SetActive(true);
+        rangeSprite.transform.localScale = new Vector2(range / 2.5f, range / 2.5f);
     }
 
     private void Deselected()
     {
         rangeSprite.SetActive(false);
+    }
+
+    public void checkTowerType()
+    {
+        switch (gameObject.name)
+        {
+            case "BasicTower(Clone)":
+                Price = gameObject.GetComponent<BasicTower>().Price;
+                range = gameObject.GetComponent<BasicTower>().Range;
+                break;
+
+            case "CanonTower(Clone)":
+                Debug.Log("CANON TOWER");
+                break;
+
+            case "LightningTower(Clone)":
+                Debug.Log("LIGHTNING TOWER");
+                break;
+
+            case "IceTower(Clone)":
+                Debug.Log("ICE TOWER");
+                break;
+
+            default: break;
+        }
     }
 
 
@@ -157,7 +165,7 @@ public class TowerController : MonoBehaviour
             }
         }
 
-        if (nearestEnemy != null && shortestDistance <= 5.0f)
+        if (nearestEnemy != null && shortestDistance <= GetComponent<BasicTower>().Range)
         {
             if (canAttack)
             {

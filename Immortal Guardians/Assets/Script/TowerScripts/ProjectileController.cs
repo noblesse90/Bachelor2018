@@ -8,6 +8,16 @@ public class ProjectileController : MonoBehaviour {
 
     private float speed = 0;
 
+    private int damage = 0;
+
+    public int Damage
+    {
+        set
+        {
+            damage = value;
+        }
+    }
+
 
     // Update is called once per frame
     void Update () {
@@ -32,7 +42,7 @@ public class ProjectileController : MonoBehaviour {
         {
             if (collision.GetComponent<Collider2D>().Equals(target.GetComponent<Collider2D>()))
             {
-                target.GetComponent<EnemyController>().takeDamage(10);
+                target.GetComponent<EnemyController>().takeDamage(damage);
                 Release();
             }
         }
