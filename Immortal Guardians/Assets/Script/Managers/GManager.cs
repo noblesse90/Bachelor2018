@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 // GManager is a part of the Singleton hierarchy and can be used by other scripts through the Singleton script
 public class GManager : Singleton<GManager> {
 
-    
-    [SerializeField] private int totalSpawned;
-
-    // A boolean to change from combat and build mode (used by child aswell)
+        // A boolean to change from combat and build mode (used by child aswell)
     private bool _BuildMode = false;
-    public bool _SpawnMode = false;
-
 
     // getter for bool buildmode
     public bool BuildMode
@@ -29,41 +25,9 @@ public class GManager : Singleton<GManager> {
         }
     }
 
-
-    public int TotalSpawned
-    {
-        get
-        {
-            return totalSpawned;
-        }
-
-    }
-
     // Update is called once per frame
     void Update()
     {
-        // goes into buildmode
-        if (Input.GetKeyUp(KeyCode.B))
-        {
-            
-            if(BuildMode)
-            {
-                _BuildMode = false;
-            }
-            else
-            {
-                if (UIManager.Instance.Currency - 2 < 0)
-                {
-                    Debug.Log("Not enough money");
-                }
-                else
-                {
-                    _BuildMode = true;
-                }
-            }
-            
-        }
-
         // resets the game
         if (Input.GetKeyUp(KeyCode.R))
         {
@@ -76,25 +40,30 @@ public class GManager : Singleton<GManager> {
         {
             TowerManager.Instance.CurrentTower = null;
             // check if the user clicks the left mousebutton
-            if (Input.GetKeyUp(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 TowerManager.Instance.placeTower();
-               
             }
         }
         // Select tower
-        else if (Input.GetKeyUp(KeyCode.Mouse0))
+        else if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             GameObject tower = TowerManager.Instance.getTower();
             if(tower != null)
             {
-                Debug.Log("HIT");
                 TowerManager.Instance.CurrentTower = tower;
+                UIManager.Instance.setTowerStats(tower.GetComponent<TowerController>());
+                UIManager.Instance.Ui.SetActive(true);
             }
             else
             {
-                TowerManager.Instance.CurrentTower = null;
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    TowerManager.Instance.CurrentTower = null;
+                    UIManager.Instance.Ui.SetActive(false);
+                }
             }
+            
         }
 
         if (Input.GetKeyUp(KeyCode.Escape))
@@ -110,6 +79,20 @@ public class GManager : Singleton<GManager> {
         }
         
         
+    }
+
+    public RaycastHit2D[] getMouseCast()
+    {
+        RaycastHit2D[] ray = Physics2D.RaycastAll(getMousePos(), new Vector2(0, 0), 0F);
+
+        return ray;
+    }
+
+    public Vector2 getMousePos()
+    {
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        return mousePosition;
     }
 
     

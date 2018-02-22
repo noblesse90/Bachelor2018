@@ -33,17 +33,6 @@ public class PlayerController : Singleton<PlayerController> {
     public void move()
     {
         transform.Translate(direction * Time.deltaTime * speed);
-        /*// check the maximum velocity magnitude
-        if (rb.velocity.magnitude > speed)
-        {
-            // normalizes the speed of the magnitude is too big
-            rb.velocity = rb.velocity.normalized * Time.deltaTime * speed;
-        }
-        else
-        {
-            // applies movement to the object
-            
-        }*/
     }
 
     public void getInput()

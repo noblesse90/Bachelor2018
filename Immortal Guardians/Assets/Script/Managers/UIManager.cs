@@ -12,16 +12,27 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Text currencytxt;
     [SerializeField] private Text lifetxt;
     [SerializeField] private Text wavetxt;
-    
 
     private int currency;
     private int life;
     private int wave;
 
+    // Tower Stats
+    [SerializeField] private Text towerTypeText;
+    [SerializeField] private Text damageText;
+    [SerializeField] private Text firerateText;
+    [SerializeField] private Text sellPriceText;
+    [SerializeField] private Text upgradePriceText;
+    [SerializeField] private GameObject ui;
+
+    // TESTS
+    [SerializeField] private Button test;
+
+
     // Use this for initialization
     void Start()
     {
-        Currency = 1000;
+        Currency = 200;
         Life = 500;
 
         nextWave = nextWave.GetComponent<Button>();
@@ -31,7 +42,43 @@ public class UIManager : Singleton<UIManager> {
         sellTower.onClick.AddListener(TowerManager.Instance.SellTower);
 
         Upgrade = Upgrade.GetComponent<Button>();
+        Upgrade.onClick.AddListener(TowerManager.Instance.UpgradeTower);
 
+        test = test.GetComponent<Button>();
+        test.onClick.AddListener(testMetode);
+
+    }
+
+    private void testMetode()
+    {
+        if(!(Currency - 10 < 0))
+        {
+            GManager.Instance.BuildMode = true;
+            TowerManager.Instance.CurrentTower = null;
+            ui.SetActive(false);
+        }
+        
+    }
+
+    private void Update()
+    {
+        if(TowerManager.Instance.CurrentTower == null)
+        {
+            sellTower.transform.gameObject.SetActive(false);
+            Upgrade.transform.gameObject.SetActive(false);
+        }
+        else
+        {
+            if(!(TowerManager.Instance.CurrentTower.GetComponent<TowerController>().Level > 3))
+            {
+                Upgrade.transform.gameObject.SetActive(true);
+            }
+            else
+            {
+                Upgrade.transform.gameObject.SetActive(false);
+            }
+            sellTower.transform.gameObject.SetActive(true);
+        }
     }
 
     public int Currency
@@ -82,5 +129,27 @@ public class UIManager : Singleton<UIManager> {
         {
             return nextWave;
         }
+    }
+
+    public GameObject Ui
+    {
+        get
+        {
+            return ui;
+        }
+
+        set
+        {
+            ui = value;
+        }
+    }
+
+    public void setTowerStats(TowerController tc)
+    {
+        this.towerTypeText.text =  tc.TowerType + " (level " + tc.Level.ToString() + ")";
+        this.damageText.text = "Damage: " + tc.Damage.ToString();
+        this.firerateText.text = "Fire Rate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
+        this.sellPriceText.text = "$" + (tc.TotalPrice / 2).ToString();
+        this.upgradePriceText.text = "$" + tc.UpgradePrice.ToString();
     }
 }

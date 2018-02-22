@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class WaveManager : Singleton<WaveManager> {
 
+    private bool spawnMode = false;
+
+    private int enemiesPerWave = 10;
     private int enemyCount = 0;
     private int enemySpawned = 0;
 
@@ -49,6 +52,32 @@ public class WaveManager : Singleton<WaveManager> {
         }
     }
 
+    public int EnemiesPerWave
+    {
+        get
+        {
+            return enemiesPerWave;
+        }
+
+        set
+        {
+            enemiesPerWave = value;
+        }
+    }
+
+    public bool SpawnMode
+    {
+        get
+        {
+            return spawnMode;
+        }
+
+        set
+        {
+            spawnMode = value;
+        }
+    }
+
     // Use this for initialization
     void Start () {
 		
@@ -65,7 +94,7 @@ public class WaveManager : Singleton<WaveManager> {
         UIManager.Instance.Wave = waveIndex++;
         UIManager.Instance.NextWave.transform.gameObject.SetActive(false);
         GManager.Instance.BuildMode = false;
-        GManager.Instance._SpawnMode = true;
+        SpawnMode = true;
         enemyCount = 0;
         enemySpawned = 0;
 

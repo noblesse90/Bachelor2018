@@ -13,6 +13,7 @@ TagManager:
   - Enemy
   - Projectile
   - TowerSprite
+  - TowerUI
   layers:
   - Default
   - TransparentFX
@@ -61,6 +62,9 @@ TagManager:
     locked: 0
   - name: Sprites
     uniqueID: 3025775529
+    locked: 0
+  - name: Star
+    uniqueID: 1766657307
     locked: 0
   - name: TowerHover
     uniqueID: 2673098319

@@ -6,7 +6,7 @@ using Pathfinding;
 
 public class EnemyController : MonoBehaviour {
 
-    private float startHP = 50;
+    private float startHP = 100;
     private float hp;
 
     [SerializeField] private Image healthBar;

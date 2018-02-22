@@ -10,9 +10,6 @@ public class TowerManager : Singleton<TowerManager> {
     private GameObject[] _Spawn;
     private GameObject currentTower;
 
-    private int price;
-
-
     // holds gameobjects
     [SerializeField] private GameObject _towerprefab;
     [SerializeField] private GameObject _sprite;
@@ -30,19 +27,6 @@ public class TowerManager : Singleton<TowerManager> {
         }
     }
 
-    public int Price
-    {
-        get
-        {
-            return price;
-        }
-
-        set
-        {
-            price = value;
-        }
-    }
-
     // Use this for initialization
     void Start () {
         _Destination = GameObject.FindGameObjectWithTag("EnemyDestination");
@@ -56,7 +40,6 @@ public class TowerManager : Singleton<TowerManager> {
             switch (currentTower.name)
             {
                 case "BasicTower(Clone)":
-                    Debug.Log("BASIC TOWER");
                     break;
                 default: break;
 
@@ -66,7 +49,7 @@ public class TowerManager : Singleton<TowerManager> {
 
     public void placeTower()
     {
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePosition = GManager.Instance.getMousePos();
 
         if (!isEmpty(mousePosition))
         {
@@ -79,23 +62,16 @@ public class TowerManager : Singleton<TowerManager> {
         GameObject tower = Instantiate(_towerprefab, mousePosition, Quaternion.identity);
         // gets the spriterenderer of the tower prefab and changes the sortingOrder according to its y position
         // this will make the tower infront always visible compared to the tower behind
-        tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y) * -1;
-
-        // gets the current position and adds the y value to place the sprite in the center
-        Vector3 v = mousePosition;
-        v.y += 1.5f;
-        v.x += 0.04f;
-        // Instantiates the sprite prefab (image of the tower) and makes it a child of the tower that was made
-        // Instantiate (GameObject, Vector3, Quaternion(rotation), Parent)
-        GameObject sprite = Instantiate(_sprite, v, Quaternion.identity, tower.transform);
-
+        int sortLayer = (int)Mathf.Round(mousePosition.y) * -1;
+        tower.GetComponent<SpriteRenderer>().sortingOrder = sortLayer;
+        // TowerSprite sort layer
+        tower.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = sortLayer;
         // gets the spriterenderer of the sprite prefab and changes the sorting order according to its y position
-        sprite.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y) * -1;
+        //tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y) * -1;
 
         // checks if the tower is valid and subtracts money
         if (checkValidTower(tower) != null)
         {
-            tower.GetComponent<TowerController>().checkTowerType();
             UIManager.Instance.Currency -= tower.GetComponent<TowerController>().Price;
             Physics2D.IgnoreCollision(tower.GetComponent<BoxCollider2D>(), PlayerController.Instance.GetComponent<Collider2D>());
         }
@@ -192,8 +168,7 @@ public class TowerManager : Singleton<TowerManager> {
 
     public void destroyTower()
     {
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D[] ray = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+        RaycastHit2D[] ray = GManager.Instance.getMouseCast();
         foreach (RaycastHit2D r in ray)
         {
             if (r.collider.CompareTag("Tower"))
@@ -215,8 +190,7 @@ public class TowerManager : Singleton<TowerManager> {
     public GameObject getTower()
     {
         GameObject tower = null;
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D[] ray = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+        RaycastHit2D[] ray = GManager.Instance.getMouseCast();
         foreach (RaycastHit2D r in ray)
         {
             if (r.collider.CompareTag("Tower"))
@@ -236,19 +210,31 @@ public class TowerManager : Singleton<TowerManager> {
     {
         if (currentTower != null)
         {
-            currentTower.GetComponent<TowerController>().checkTowerType();
-            price = currentTower.GetComponent<TowerController>().Price;
-            UIManager.Instance.Currency += price;
-            Debug.Log(price);
+            UIManager.Instance.Currency += currentTower.GetComponent<TowerController>().TotalPrice/2;
             Destroy(currentTower);
+            UIManager.Instance.Ui.SetActive(false);
         }
     }
 
     public void UpgradeTower()
     {
-        if(currentTower != null)
+        if (currentTower != null)
         {
+            TowerController tc = currentTower.GetComponent <TowerController>();
+            if (UIManager.Instance.Currency - tc.UpgradePrice < 0)
+            {
+                Debug.Log("Not enough money");
+                return;
+            }
 
+            if (tc.Level > 3)
+            {
+                Debug.Log("MAX LEVEL");
+                return;
+            }
+            UIManager.Instance.Currency -= tc.UpgradePrice;
+            tc.Upgrade();
+            currentTower.transform.GetChild(tc.Level).GetComponent<SpriteRenderer>().enabled = true;
         }
     }
 }

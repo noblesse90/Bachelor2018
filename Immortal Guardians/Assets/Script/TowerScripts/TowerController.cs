@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class TowerController : MonoBehaviour
 {
+    
     private GameObject currentTarget;
 
     [SerializeField] private GameObject projectile;
@@ -14,56 +17,88 @@ public class TowerController : MonoBehaviour
 
     private float attackCooldown;
 
-    [SerializeField] private float projectileSpeed;
+    [SerializeField] private float projectileSpeed;    
+
 
     private GameObject rangeSprite;
 
-    private int price;
-    private float range;
 
-    public GameObject CurrentTarget
+    // Tower stats
+    private string _towerType;
+    private float _range;
+    private float _damage;
+    private int _price;
+    private int _upgradePrice;
+    private int _level;
+    private int _totalPrice;
+
+    // Tower stats text (UI)
+    [SerializeField] 
+
+    public float Range
     {
-        get
-        {
-            return currentTarget;
-        }
-
-        set
-        {
-            currentTarget = value;
-        }
+        get { return _range; }
+        set { _range = value; }
     }
 
-    public float ProjectileSpeed
+    public float Damage
     {
-        get
-        {
-            return projectileSpeed;
-        }
-    }
-
-    public float AttackCooldown
-    {
-        set
-        {
-            attackCooldown = value;
-        }
+        get { return _damage; }
+        set { _damage = value; }
     }
 
     public int Price
     {
-        get
-        {
-            return price;
-        }
-
-        set
-        {
-            price = value;
-        }
+        get { return _price; }
+        set { _price = value; }
     }
 
+    public int Level
+    {
+        get { return _level; }
+        set { _level = value; }
+    }
 
+    public GameObject CurrentTarget
+    {
+        get { return currentTarget; }
+        set { currentTarget = value; }
+    }
+
+    public float ProjectileSpeed
+    {
+        get { return projectileSpeed; }
+        set { projectileSpeed = value; }
+    }
+
+    public float AttackCooldown
+    {
+        get { return attackCooldown; }
+        set { attackCooldown = value; }
+    }
+
+    public int TotalPrice
+    {
+        get { return _totalPrice; }
+        set { _totalPrice = value; }
+    }
+
+    public string TowerType
+    {
+        get { return _towerType; }
+        set { _towerType = value; }
+    }
+
+    public int UpgradePrice
+    {
+        get { return _upgradePrice; }
+        set { _upgradePrice = value; }
+    }
+
+    private void Awake()
+    {
+        TowerTypeAndInitialiser();
+    }
 
     // Use this for initialization
     void Start()
@@ -93,7 +128,7 @@ public class TowerController : MonoBehaviour
         Vector3 currentPos = transform.position;
         currentPos.y += 1;
         GameObject projectile = ObjectPool.Instance.GetObject("ProjectileTest");
-        projectile.GetComponent<ProjectileController>().Damage = GetComponent<BasicTower>().Damage;
+        projectile.GetComponent<ProjectileController>().Damage = (int)Damage;
         projectile.transform.position = currentPos;
         projectile.transform.rotation = Quaternion.identity;
         projectile.GetComponent<ProjectileController>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
@@ -104,21 +139,46 @@ public class TowerController : MonoBehaviour
     private void Selected() 
     {
         rangeSprite.SetActive(true);
-        rangeSprite.transform.localScale = new Vector2(range / 2.5f, range / 2.5f);
+        rangeSprite.transform.localScale = new Vector2(_range / 2.05f, _range / 2.05f);
     }
 
-    private void Deselected()
+    public void Deselected()
     {
         rangeSprite.SetActive(false);
     }
 
-    public void checkTowerType()
+    public void TowerTypeAndInitialiser()
     {
         switch (gameObject.name)
         {
             case "BasicTower(Clone)":
-                Price = gameObject.GetComponent<BasicTower>().Price;
-                range = gameObject.GetComponent<BasicTower>().Range;
+                GetComponent<BasicTower>().InitialiserStats();
+                
+                break;
+
+            case "CanonTower(Clone)":
+                Debug.Log("CANON TOWER");
+                break;
+
+            case "LightningTower(Clone)":
+                Debug.Log("LIGHTNING TOWER");
+                break;
+
+            case "IceTower(Clone)":
+                Debug.Log("ICE TOWER");
+                break;
+
+            default: break;
+        }
+    }
+
+    public void Upgrade()
+    {
+        switch (gameObject.name)
+        {
+            case "BasicTower(Clone)":
+                GetComponent<BasicTower>().Upgrade(Level);
+
                 break;
 
             case "CanonTower(Clone)":
@@ -165,7 +225,7 @@ public class TowerController : MonoBehaviour
             }
         }
 
-        if (nearestEnemy != null && shortestDistance <= GetComponent<BasicTower>().Range)
+        if (nearestEnemy != null && shortestDistance <= Range)
         {
             if (canAttack)
             {

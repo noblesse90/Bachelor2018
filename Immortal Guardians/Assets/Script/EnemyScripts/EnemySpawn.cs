@@ -8,19 +8,24 @@ public class EnemySpawn : MonoBehaviour {
     private bool canSpawn = true;
     private float spawnTimer;
     [SerializeField] private float cooldownTimer;
-
-
+    
     private void LateUpdate()
     {
-        if (GManager.Instance._SpawnMode)
+        if (WaveManager.Instance.SpawnMode)
         {
             spawn();
         }
-        if(WaveManager.Instance.EnemySpawned == WaveManager.Instance.EnemyCount)
+
+
+        if(WaveManager.Instance.EnemySpawned == WaveManager.Instance.EnemiesPerWave)
         {
-            UIManager.Instance.NextWave.transform.gameObject.SetActive(true);
-            GManager.Instance._SpawnMode = false;
+            if (WaveManager.Instance.EnemySpawned == WaveManager.Instance.EnemyCount)
+            {
+                UIManager.Instance.NextWave.transform.gameObject.SetActive(true);
+                WaveManager.Instance.SpawnMode = false;
+            }
         }
+        
     }
 
 
@@ -37,7 +42,7 @@ public class EnemySpawn : MonoBehaviour {
             }
         }
 
-        if (canSpawn && WaveManager.Instance.EnemySpawned < GManager.Instance.TotalSpawned)
+        if (canSpawn && WaveManager.Instance.EnemySpawned < WaveManager.Instance.EnemiesPerWave)
         {
             GameObject enemy = ObjectPool.Instance.GetObject("Enemy");
             enemy.transform.position = transform.position;
