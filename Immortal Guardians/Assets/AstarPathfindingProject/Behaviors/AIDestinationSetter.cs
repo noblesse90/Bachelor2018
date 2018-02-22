@@ -45,13 +45,12 @@ namespace Pathfinding {
             // Checks if the AI(enemy) reached its destination
             if (ai.reachedEndOfPath)
             {
+                
                 Destroy(gameObject);
                 // change the life count and freezes the game
-                int life = UIManager.Instance.Life;
                 UIManager.Instance.Life -= 1;
-                if (life == 0)
+                if (UIManager.Instance.Life == 0)
                 {
-                    UIManager.Instance.Life = 0;
                     Debug.Log("YOU LOST!");
                     Time.timeScale = 0;
                 }

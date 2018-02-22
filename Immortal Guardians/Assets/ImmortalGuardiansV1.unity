@@ -3222,7 +3222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b1b5d48ed3c364880ea70cbf22659f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 1396722540418172, guid: 62cff433fa4188945a6a49d58b98991d,
+  _enemyPrefab: {fileID: 1856679746266060, guid: 62cff433fa4188945a6a49d58b98991d,
     type: 2}
 --- !u!1 &539644741
 GameObject:
@@ -3265,7 +3265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 1573524186}
-  _towerPrefab: {fileID: 1427065459222142, guid: 49f2fb919ddc13947b8c07b12b5e833b,
+  _towerPrefab: {fileID: 1387584284877406, guid: 49f2fb919ddc13947b8c07b12b5e833b,
     type: 2}
 --- !u!1 &543083026
 GameObject:
@@ -64443,7 +64443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &930606306
 Transform:
   m_ObjectHideFlags: 0
@@ -64512,7 +64512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b1b5d48ed3c364880ea70cbf22659f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 1396722540418172, guid: 62cff433fa4188945a6a49d58b98991d,
+  _enemyPrefab: {fileID: 1856679746266060, guid: 62cff433fa4188945a6a49d58b98991d,
     type: 2}
 --- !u!1 &1004579719
 GameObject:
@@ -73995,9 +73995,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 1573524186}
-  _towerprefab: {fileID: 1440745391444084, guid: aae2c262393f3854f8c1c3d145456022,
+  _towerprefab: {fileID: 1117020026803288, guid: aae2c262393f3854f8c1c3d145456022,
     type: 2}
-  _sprite: {fileID: 1784560340207150, guid: 606487af5ef0ac84fb65e3b089c10d40, type: 2}
 --- !u!114 &1443321162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78347,7 +78346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1692853179
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -78416,7 +78415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b1b5d48ed3c364880ea70cbf22659f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 1396722540418172, guid: 62cff433fa4188945a6a49d58b98991d,
+  _enemyPrefab: {fileID: 1856679746266060, guid: 62cff433fa4188945a6a49d58b98991d,
     type: 2}
 --- !u!1 &1990541777
 GameObject:

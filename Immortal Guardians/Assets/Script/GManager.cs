@@ -15,7 +15,6 @@ public class GManager : Singleton<GManager> {
     
     // holds gameobjects
     [SerializeField] private GameObject _towerprefab;
-    [SerializeField] private GameObject _sprite;
 
     // A boolean to change from combat and build mode (used by child aswell)
     private bool _BuildMode = false;
@@ -92,7 +91,7 @@ public class GManager : Singleton<GManager> {
             RaycastHit2D[] ray = Physics2D.RaycastAll(mousePosition, new Vector2(0,0), 0F);
             foreach(RaycastHit2D r in ray)
             {
-                if(r.collider.tag == "Tower")
+                if(r.collider.CompareTag("Tower"))
                 {
                     // Destroys the tower
                     Destroy(r.transform.gameObject);
@@ -128,16 +127,6 @@ public class GManager : Singleton<GManager> {
         // this will make the tower infront always visible compared to the tower behind
         tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y)*-1;
 
-        // gets the current position and adds the y value to place the sprite in the center
-        Vector3 v = mousePosition;
-        v.y += 2;
-        // Instantiates the sprite prefab (image of the tower) and makes it a child of the tower that was made
-        // Instantiate (GameObject, Vector3, Quaternion(rotation), Parent)
-        GameObject sprite = Instantiate(_sprite, v, Quaternion.identity, tower.transform);
-
-        // gets the spriterenderer of the sprite prefab and changes the sorting order according to its y position
-        sprite.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y)*-1;
-
         // checks if the tower is valid and subtracts money
         if (checkValidTower(tower) != null)
         {
@@ -163,7 +152,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayCenter)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
+            if (r.collider.CompareTag("Tower") || r.collider.CompareTag("Obstacle"))
             {
                 Debug.Log("TOWER: 0.0");
                 empty = false;
@@ -172,7 +161,7 @@ public class GManager : Singleton<GManager> {
         
         foreach (RaycastHit2D r in rayUp)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
+            if (r.collider.CompareTag("Tower") || r.collider.CompareTag("Obstacle"))
             {
                 Debug.Log("TOWER: 1.0");
                 empty = false;
@@ -181,7 +170,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayCorner)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
+            if (r.collider.CompareTag("Tower") || r.collider.CompareTag("Obstacle"))
             {
                 Debug.Log("TOWER: 1.1");
                 empty = false;
@@ -190,7 +179,7 @@ public class GManager : Singleton<GManager> {
 
         foreach (RaycastHit2D r in rayRight)
         {
-            if (r.collider.tag == "Tower" || r.collider.tag == "Obstacle")
+            if (r.collider.CompareTag("Tower") || r.collider.CompareTag("Obstacle"))
             {
                 Debug.Log("TOWER: 0.1");
                 empty = false;
