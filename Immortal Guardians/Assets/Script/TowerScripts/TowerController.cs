@@ -14,9 +14,11 @@ public class TowerController : MonoBehaviour {
 
     private float attackTimer;
 
-    [SerializeField]private float attackCooldown;
+    [SerializeField] private float attackCooldown;
 
     [SerializeField] private float projectileSpeed;
+
+    private GameObject rangeSprite;
 
 
     public Queue<GameObject> Targets
@@ -52,11 +54,21 @@ public class TowerController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         targets = new Queue<GameObject>();
+        rangeSprite = transform.Find("RangeSprite").gameObject;
 	}
 	
 	// Update is called once per frame
 	void Update () {
         Attack();
+
+        if(GManager.Instance.CurrentTower == gameObject)
+        {
+            Selected();
+        }
+        else
+        {
+            Deselected();
+        }
 	}
 
     private void Attack()
@@ -74,17 +86,18 @@ public class TowerController : MonoBehaviour {
 
         if(currentTarget == null && targets.Count > 0)
         {
-            currentTarget = targets.Dequeue();
+           currentTarget = targets.Dequeue();
         }
-        if(currentTarget != null)
+
+        if(currentTarget != null && currentTarget.activeInHierarchy)
         {
             if (canAttack)
             {
                 shoot();
                 canAttack = false;
             }
-            
         }
+        
 
     }
 
@@ -92,6 +105,21 @@ public class TowerController : MonoBehaviour {
     {
         Vector3 currentPos = transform.position;
         currentPos.y += 1;
-        Instantiate(projectile, currentPos, Quaternion.identity, this.transform);
+        GameObject projectile = ObjectPool.Instance.GetObject("ProjectileTest");
+        projectile.transform.position = currentPos;
+        projectile.transform.rotation = Quaternion.identity;
+        projectile.transform.parent = this.transform;
+        projectile.GetComponent<ProjectileController>().target = currentTarget;
+        //Instantiate(projectile, currentPos, Quaternion.identity, this.transform);
+    }
+
+    private void Selected()
+    {
+        rangeSprite.SetActive(true);
+    }
+
+    private void Deselected()
+    {
+        rangeSprite.SetActive(false);
     }
 }

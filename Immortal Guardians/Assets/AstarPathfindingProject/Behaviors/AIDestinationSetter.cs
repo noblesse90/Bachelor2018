@@ -22,7 +22,7 @@ namespace Pathfinding {
             target = GameObject.FindGameObjectWithTag("EnemyDestination").transform;
 
             // ignores the collision between enemy gameobject and player object
-            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), PlayerController.Instance.GetComponent<Collider2D>());
+            //Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), PlayerController.Instance.GetComponent<Collider2D>());
         }
 
         void OnEnable () {
@@ -41,20 +41,6 @@ namespace Pathfinding {
 		/** Updates the AI's destination every frame */
 		void Update () {
 			if (target != null && ai != null) ai.destination = target.position;
-
-            // Checks if the AI(enemy) reached its destination
-            if (ai.reachedEndOfPath)
-            {
-                
-                Destroy(gameObject);
-                // change the life count and freezes the game
-                UIManager.Instance.Life -= 1;
-                if (UIManager.Instance.Life == 0)
-                {
-                    Debug.Log("YOU LOST!");
-                    Time.timeScale = 0;
-                }
-            }
             
 		}
 	}

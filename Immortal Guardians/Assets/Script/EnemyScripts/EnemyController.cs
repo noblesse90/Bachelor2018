@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour {
 
-    private float startHP = 400;
+    private float startHP = 200;
     private float hp;
 
     [SerializeField] private Image healthBar;
@@ -35,15 +35,21 @@ public class EnemyController : MonoBehaviour {
     void Update () {
 		if(hp <= 0)
         {
-            Destroy(gameObject);
-        }
-        
+            Release();
+        }   
 	}
 
 
     public void takeDamage(float dmg)
     {
         Hp -= dmg;
+        healthBar.fillAmount = hp / startHP;
+    }
+
+    public void Release()
+    {
+        gameObject.SetActive(false);
+        hp = startHP;
         healthBar.fillAmount = hp / startHP;
     }
 }

@@ -17,11 +17,12 @@ public class PlayerController : Singleton<PlayerController> {
 	void Start () {
         // get the gameobjects rigidbody component and freezes the rotation of the object
         rb = GetComponent<Rigidbody2D>();
+
         rb.freezeRotation = true;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         // gets an input from the keyboard
         getInput();
         // move the gameobject according to the keypresses
@@ -31,7 +32,8 @@ public class PlayerController : Singleton<PlayerController> {
 
     public void move()
     {
-        // check the maximum velocity magnitude
+        transform.Translate(direction * Time.deltaTime * speed);
+        /*// check the maximum velocity magnitude
         if (rb.velocity.magnitude > speed)
         {
             // normalizes the speed of the magnitude is too big
@@ -40,8 +42,8 @@ public class PlayerController : Singleton<PlayerController> {
         else
         {
             // applies movement to the object
-            transform.Translate(direction * Time.deltaTime * speed);
-        }
+            
+        }*/
     }
 
     public void getInput()

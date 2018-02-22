@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 // GManager is a part of the Singleton hierarchy and can be used by other scripts through the Singleton script
 public class GManager : Singleton<GManager> {
@@ -9,6 +10,7 @@ public class GManager : Singleton<GManager> {
     // variable that holds the enemy destination and spawns
     private GameObject _Destination;
     private GameObject[] _Spawn;
+    private GameObject currentTower;
 
     // variable that holds a camera object
     [SerializeField] private Camera camera;
@@ -20,6 +22,8 @@ public class GManager : Singleton<GManager> {
     // A boolean to change from combat and build mode (used by child aswell)
     private bool _BuildMode = false;
 
+    [SerializeField] private Button btn;
+
 
     // getter for bool buildmode
     public bool BuildMode
@@ -30,10 +34,25 @@ public class GManager : Singleton<GManager> {
         }
     }
 
+    public GameObject CurrentTower
+    {
+        get
+        {
+            return currentTower;
+        }
+
+        set
+        {
+            currentTower = value;
+        }
+    }
+
     void Start()
     {
         _Destination = GameObject.FindGameObjectWithTag("EnemyDestination");
         _Spawn = GameObject.FindGameObjectsWithTag("EnemySpawn");
+        btn = btn.GetComponent<Button>();
+        btn.onClick.AddListener(NextWave);
     }
 
 
@@ -41,7 +60,7 @@ public class GManager : Singleton<GManager> {
     void Update()
     {
         // goes into buildmode
-        if (Input.GetKeyUp(KeyCode.B))
+        if (Input.GetKeyUp(KeyCode.O))
         {
             
             if(BuildMode)
@@ -71,7 +90,8 @@ public class GManager : Singleton<GManager> {
 
         // checking if buildmode is false or true
         if (BuildMode)
-        {       
+        {
+            currentTower = null;
             // check if the user clicks the left mousebutton
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
@@ -84,9 +104,16 @@ public class GManager : Singleton<GManager> {
             GameObject tower = getTower();
             if(tower != null)
             {
-                Debug.Log("GOT TOWER");
+                Debug.Log("HIT");
+                currentTower = tower;
+            }
+            else
+            {
+                currentTower = null;
             }
         }
+
+
 
         if (Input.GetKeyUp(KeyCode.Escape))
         {
@@ -263,8 +290,19 @@ public class GManager : Singleton<GManager> {
             {
                 tower = r.transform.gameObject;
             }
+            else if (r.collider.CompareTag("TowerSprite"))
+            {
+                tower = r.transform.parent.gameObject;
+            }
         }
 
         return tower;
+    }
+
+    public void NextWave()
+    {
+        Debug.Log("NEXT WAVE");
+        btn.transform.gameObject.SetActive(false);
+        _BuildMode = false;
     }
 }

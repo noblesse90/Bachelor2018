@@ -4,25 +4,43 @@ using UnityEngine;
 
 public class EnemySpawn : MonoBehaviour {
 
-    [SerializeField]private GameObject _enemyPrefab;
-    private int counter = 1000;
+    private bool canSpawn = true;
+    private float spawnTimer;
+    [SerializeField] private float cooldownTimer;
 
-	
-	// Update is called once per frame
-	void Start () {
-        float start = 1;
-        float interval = 1;
 
-        InvokeRepeating("spawn", start, interval);
+    // Update is called once per frame
+    void Start () {
 	}
+
+    private void LateUpdate()
+    {
+        spawn();
+    }
+
 
     private void spawn()
     {
-        if(--counter == 0)
+        if (!canSpawn)
         {
-            CancelInvoke("spawn");
+            spawnTimer += Time.deltaTime;
+
+            if(spawnTimer >= cooldownTimer)
+            {
+                canSpawn = true;
+                spawnTimer = 0;
+            }
         }
-        Instantiate(_enemyPrefab, transform.position, Quaternion.identity);
+
+        if (canSpawn)
+        {
+            GameObject enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy.transform.position = transform.position;
+
+            canSpawn = false;
+        }
+
         
+
     }
 }

@@ -12,6 +12,7 @@ TagManager:
   - Obstacle
   - Enemy
   - Projectile
+  - TowerSprite
   layers:
   - Default
   - TransparentFX
