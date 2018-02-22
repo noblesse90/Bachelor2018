@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    public int speed = 3;
 
-    public Rigidbody2D rb;
+    [SerializeField] private int speed = 10;
+
+    private Rigidbody2D rb;
+
+    private Vector2 direction;
 
 	// Use this for initialization
 	void Start () {
@@ -17,22 +20,46 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        var x = Input.GetAxis("Horizontal") * speed;
-        var y = Input.GetAxis("Vertical") * speed;
+        getInput();
+        move();
 
-        Vector2 movement = new Vector2(x, y);
+    }
 
-        
+    public void move()
+    {
         if (rb.velocity.magnitude > speed)
         {
-            rb.velocity = rb.velocity.normalized * speed;
+            rb.velocity = rb.velocity.normalized * Time.deltaTime * speed;
         }
         else
         {
-            rb.velocity = movement;
+            transform.Translate(direction * Time.deltaTime * speed);
+        }
+    }
+
+    public void getInput()
+    {
+
+        direction = Vector2.zero;
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            direction += Vector2.up;
         }
 
+        if (Input.GetKey(KeyCode.A))
+        {
+            direction += Vector2.left;
+        }
 
+        if (Input.GetKey(KeyCode.S))
+        {
+            direction += Vector2.down;
+        }
 
+        if (Input.GetKey(KeyCode.D))
+        {
+            direction += Vector2.right;
+        }
     }
 }
