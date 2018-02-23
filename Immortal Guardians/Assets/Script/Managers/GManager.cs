@@ -9,24 +9,17 @@ using UnityEngine.UI;
 public class GManager : Singleton<GManager> {
 
         // A boolean to change from combat and build mode (used by child aswell)
-    private bool _BuildMode = false;
+    private bool _buildMode = false;
 
     // getter for bool buildmode
     public bool BuildMode
     {
-        get
-        {
-            return _BuildMode;
-        }
-
-        set
-        {
-            _BuildMode = value;
-        }
+        get { return _buildMode; }
+        set { _buildMode = value; }
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // resets the game
         if (Input.GetKeyUp(KeyCode.R))
@@ -42,25 +35,25 @@ public class GManager : Singleton<GManager> {
             // check if the user clicks the left mousebutton
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                TowerManager.Instance.placeTower();
+                TowerManager.Instance.PlaceTower();
             }
         }
         // Select tower
         else if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            GameObject tower = TowerManager.Instance.getTower();
+            GameObject tower = TowerManager.Instance.GetTower();
             if(tower != null)
             {
                 TowerManager.Instance.CurrentTower = tower;
-                UIManager.Instance.setTowerStats(tower.GetComponent<TowerController>());
-                UIManager.Instance.Ui.SetActive(true);
+                UIManager.Instance.SetTowerStats(tower.GetComponent<TowerController>());
+                UIManager.Instance.TowerStatsUi.SetActive(true);
             }
             else
             {
                 if (!EventSystem.current.IsPointerOverGameObject())
                 {
                     TowerManager.Instance.CurrentTower = null;
-                    UIManager.Instance.Ui.SetActive(false);
+                    UIManager.Instance.TowerStatsUi.SetActive(false);
                 }
             }
             
@@ -75,20 +68,20 @@ public class GManager : Singleton<GManager> {
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
             //_BuildMode = false;
-            TowerManager.Instance.destroyTower();
+            TowerManager.Instance.DestroyTower();
         }
         
         
     }
 
-    public RaycastHit2D[] getMouseCast()
+    public RaycastHit2D[] GetMouseCast()
     {
-        RaycastHit2D[] ray = Physics2D.RaycastAll(getMousePos(), new Vector2(0, 0), 0F);
+        RaycastHit2D[] ray = Physics2D.RaycastAll(GetMousePos(), new Vector2(0, 0), 0F);
 
         return ray;
     }
 
-    public Vector2 getMousePos()
+    public Vector2 GetMousePos()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 

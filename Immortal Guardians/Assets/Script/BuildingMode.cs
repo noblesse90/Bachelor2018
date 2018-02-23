@@ -7,27 +7,23 @@ public class BuildingMode : Singleton<BuildingMode> {
     private GameObject _basicTowerPrefab;
     private GameObject _canonTowerPrefab;
 
-    private string towerType;
+    private string _towerType;
 
-    private GameObject tower;
+    
+
+    private GameObject _tower;
 
 
     // bool variable to check buildmode from GManager
-    private bool _BuildMode;
+    private bool _buildMode;
+
 
     public string TowerType
     {
-        get
-        {
-            return towerType;
-        }
-
-        set
-        {
-            towerType = value;
-        }
+        get { return _towerType; }
+        set { _towerType = value; }
     }
-
+    
     private void Start()
     {
         _basicTowerPrefab = GameObject.Find("BasicTowerHoverIcon");
@@ -38,60 +34,60 @@ public class BuildingMode : Singleton<BuildingMode> {
 
 
     // Update is called once per frame
-    void Update () {
+    private void Update () {
 
-        _BuildMode = GManager.Instance.BuildMode;
+        _buildMode = GManager.Instance.BuildMode;
         
-        if (_BuildMode)
+        if (_buildMode)
         {
-            followMouseHover();
+            FollowMouseHover();
         }
         else
         {
-            if(tower != null)
+            if(_tower != null)
             {
-                tower.SetActive(false);
+                _tower.SetActive(false);
             }         
         }
         
 	}
 
     // The tower icon is following the mouse
-    private void followMouseHover()
+    private void FollowMouseHover()
     {
-        Vector2 pos = GManager.Instance.getMousePos();
+        Vector2 pos = GManager.Instance.GetMousePos();
         pos = new Vector2(Mathf.Round(pos.x + .5f), Mathf.Round(pos.y + .5f));
 
-        if (tower == null)
+        if (_tower == null)
         {
-            setTower(pos);
+            SetTower(pos);
         }
-        else if (!tower.activeInHierarchy)
+        else if (!_tower.activeInHierarchy)
         {
-            setTower(pos);
+            SetTower(pos);
         }
         else
         {
-            tower.transform.position = pos;
+            _tower.transform.position = pos;
         }
     }
 
-    private void setTower(Vector2 pos)
+    private void SetTower(Vector2 pos)
     {
         
-        switch (towerType)
+        switch (_towerType)
         {
             case "BasicTower":
-                tower = _basicTowerPrefab;
-                tower.transform.position = pos;
-                tower.SetActive(true);
+                _tower = _basicTowerPrefab;
+                _tower.transform.position = pos;
+                _tower.SetActive(true);
                 TowerManager.Instance.Towerprefab = TowerManager.Instance.BasicTowerPrefab;
                 break;
 
             case "CanonTower":
-                tower = _canonTowerPrefab;
-                tower.transform.position = pos;
-                tower.SetActive(true);
+                _tower = _canonTowerPrefab;
+                _tower.transform.position = pos;
+                _tower.SetActive(true);
                 TowerManager.Instance.Towerprefab = TowerManager.Instance.CanonTowerPrefab;
                 break;
         }

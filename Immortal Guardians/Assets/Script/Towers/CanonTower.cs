@@ -56,7 +56,7 @@ public class CanonTower : MonoBehaviour {
 
         tc.TotalPrice += (int)_stats[level, 0];
 
-        UIManager.Instance.setTowerStats(tc);
+        UIManager.Instance.SetTowerStats(tc);
     }
 
 }

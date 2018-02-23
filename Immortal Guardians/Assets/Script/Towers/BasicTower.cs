@@ -6,7 +6,7 @@ using UnityEngine;
 public class BasicTower : MonoBehaviour {
 
     // Price, range, attackCooldown, damange, level, Projectilespeed
-    float[,] _stats = new float[4, 6]
+    readonly float[,] _stats = new float[4, 6]
     {
         { 10,7,1,10,1,10},
         { 25,9,0.9f,20,2,15},
@@ -16,7 +16,7 @@ public class BasicTower : MonoBehaviour {
 
 
     // Use this for initialization
-    void Awake ()
+    private void Awake ()
     {
         InitialiserStats();
     }
@@ -58,6 +58,6 @@ public class BasicTower : MonoBehaviour {
 
         tc.TotalPrice += (int)_stats[level, 0];
 
-        UIManager.Instance.setTowerStats(tc);
+        UIManager.Instance.SetTowerStats(tc);
     }
 }

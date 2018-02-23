@@ -5,60 +5,60 @@ using UnityEngine;
 public class PlayerController : Singleton<PlayerController> {
 
     // Int variable to controll speed and can be changeable through the inspector (SerializeField)
-    [SerializeField] private int speed = 10;
+    [SerializeField] private int _speed = 10;
 
     // Rigidbody variable to hold on a rigidbodody component
-    private Rigidbody2D rb;
+    private Rigidbody2D _rb;
 
     // vector2 variable that controlls direction
-    private Vector2 direction;
+    private Vector2 _direction;
 
 	// Use this for initialization
-	void Start () {
+	private void Start () {
         // get the gameobjects rigidbody component and freezes the rotation of the object
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
 
-        rb.freezeRotation = true;
+        _rb.freezeRotation = true;
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	private void FixedUpdate () {
         // gets an input from the keyboard
-        getInput();
+        GetInput();
         // move the gameobject according to the keypresses
-        move();
+        Move();
 
     }
 
-    public void move()
+    private void Move()
     {
-        transform.Translate(direction * Time.deltaTime * speed);
+        transform.Translate(_direction * Time.deltaTime * _speed);
     }
 
-    public void getInput()
+    private void GetInput()
     {
         // resets the direction
-        direction = Vector2.zero;
+        _direction = Vector2.zero;
 
         // checks if the user presses w, a, s or d and acts accordingly
         if (Input.GetKey(KeyCode.W))
         {
-            direction += Vector2.up;
+            _direction += Vector2.up;
         }
 
         if (Input.GetKey(KeyCode.A))
         {
-            direction += Vector2.left;
+            _direction += Vector2.left;
         }
 
         if (Input.GetKey(KeyCode.S))
         {
-            direction += Vector2.down;
+            _direction += Vector2.down;
         }
 
         if (Input.GetKey(KeyCode.D))
         {
-            direction += Vector2.right;
+            _direction += Vector2.right;
         }
     }
 }

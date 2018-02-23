@@ -5,50 +5,44 @@ using UnityEngine;
 
 public class EnemySpawn : MonoBehaviour {
 
-    private bool canSpawn = true;
-    private float spawnTimer;
-    [SerializeField] private float cooldownTimer;
+    private bool _canSpawn = true;
+    private float _spawnTimer;
+    [SerializeField] private float _cooldownTimer;
     
     private void LateUpdate()
     {
         if (WaveManager.Instance.SpawnMode)
         {
-            spawn();
+            Spawn();
         }
 
 
-        if(WaveManager.Instance.EnemySpawned == WaveManager.Instance.EnemiesPerWave)
-        {
-            if (WaveManager.Instance.EnemySpawned == WaveManager.Instance.EnemyCount)
-            {
-                UIManager.Instance.NextWave.transform.gameObject.SetActive(true);
-                WaveManager.Instance.SpawnMode = false;
-            }
-        }
-        
+        if (WaveManager.Instance.EnemySpawned != WaveManager.Instance.EnemiesPerWave) return;
+        if (WaveManager.Instance.EnemySpawned != WaveManager.Instance.EnemyCount) return;
+        UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
+        WaveManager.Instance.SpawnMode = false;
+
     }
 
 
-    private void spawn()
+    private void Spawn()
     {
-        if (!canSpawn)
+        if (!_canSpawn)
         {
-            spawnTimer += Time.deltaTime;
+            _spawnTimer += Time.deltaTime;
 
-            if(spawnTimer >= cooldownTimer)
+            if(_spawnTimer >= _cooldownTimer)
             {
-                canSpawn = true;
-                spawnTimer = 0;
+                _canSpawn = true;
+                _spawnTimer = 0;
             }
         }
 
-        if (canSpawn && WaveManager.Instance.EnemySpawned < WaveManager.Instance.EnemiesPerWave)
-        {
-            GameObject enemy = ObjectPool.Instance.GetObject("Enemy");
-            enemy.transform.position = transform.position;
-            WaveManager.Instance.EnemySpawned++;
-            canSpawn = false;
-        }
+        if (!_canSpawn || WaveManager.Instance.EnemySpawned >= WaveManager.Instance.EnemiesPerWave) return;
+        GameObject enemy = ObjectPool.Instance.GetObject("Enemy");
+        enemy.transform.position = transform.position;
+        WaveManager.Instance.EnemySpawned++;
+        _canSpawn = false;
 
 
     }

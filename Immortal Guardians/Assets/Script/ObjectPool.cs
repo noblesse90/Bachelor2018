@@ -4,32 +4,28 @@ using UnityEngine;
 
 public class ObjectPool : Singleton<ObjectPool> {
 
-    [SerializeField] private GameObject[] objectPrefabs;
+    [SerializeField] private GameObject[] _objectPrefabs;
 
-    private List<GameObject> pooledObjects = new List<GameObject>();
+    private readonly List<GameObject> _pooledObjects = new List<GameObject>();
 
 	public GameObject GetObject(string type)
     {
 
-        foreach(GameObject go in pooledObjects)
+        foreach(GameObject go in _pooledObjects)
         {
-            if(go.name == type && !go.activeInHierarchy)
-            {
-                go.SetActive(true);
-                return go;
-            }
+            if (go.name != type || go.activeInHierarchy) continue;
+            go.SetActive(true);
+            return go;
         }
 
 
-        for(int i = 0; i < objectPrefabs.Length; i++)
+        foreach (var prefab in _objectPrefabs)
         {
-            if (objectPrefabs[i].name == type)
-            {
-                GameObject newObject = Instantiate(objectPrefabs[i]);
-                pooledObjects.Add(newObject);
-                newObject.name = type;
-                return newObject;
-            }
+            if (prefab.name != type) continue;
+            GameObject newObject = Instantiate(prefab);
+            _pooledObjects.Add(newObject);
+            newObject.name = type;
+            return newObject;
         }
 
         return null;

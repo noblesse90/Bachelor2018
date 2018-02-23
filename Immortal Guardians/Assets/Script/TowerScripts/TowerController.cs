@@ -7,20 +7,22 @@ using UnityEngine;
 public class TowerController : MonoBehaviour
 {
     
-    private GameObject currentTarget;
+    private GameObject _currentTarget;
 
-    [SerializeField] private GameObject projectile;
+    [SerializeField] private GameObject _projectile;
 
-    private bool canAttack = true;
+    private bool _canAttack = true;
 
-    private float attackTimer;
+    private float _attackTimer;
 
-    private float attackCooldown;
+    private float _attackCooldown;
 
-    [SerializeField] private float projectileSpeed;    
+    [SerializeField] private float _projectileSpeed;    
 
 
-    private GameObject rangeSprite;
+    private GameObject _rangeSprite;
+
+    private string _projectileType;
 
 
     // Tower stats (default tower)
@@ -34,9 +36,6 @@ public class TowerController : MonoBehaviour
 
     // Canon tower
     private float _splashDamage = 0;
-
-    // Tower stats text (UI)
-    [SerializeField] 
 
     public float Range
     {
@@ -64,20 +63,20 @@ public class TowerController : MonoBehaviour
 
     public GameObject CurrentTarget
     {
-        get { return currentTarget; }
-        set { currentTarget = value; }
+        get { return _currentTarget; }
+        set { _currentTarget = value; }
     }
 
     public float ProjectileSpeed
     {
-        get { return projectileSpeed; }
-        set { projectileSpeed = value; }
+        get { return _projectileSpeed; }
+        set { _projectileSpeed = value; }
     }
 
     public float AttackCooldown
     {
-        get { return attackCooldown; }
-        set { attackCooldown = value; }
+        get { return _attackCooldown; }
+        set { _attackCooldown = value; }
     }
 
     public int TotalPrice
@@ -111,15 +110,15 @@ public class TowerController : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
-        rangeSprite = transform.Find("RangeSprite").gameObject;
+        _rangeSprite = transform.Find("RangeSprite").gameObject;
 
         InvokeRepeating("UpdateTarget", 0f, 0.2f);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         UpdateTarget();
 
@@ -133,41 +132,55 @@ public class TowerController : MonoBehaviour
         }
     }
 
-    private void shoot()
+    private void Shoot()
     {
         Vector3 currentPos = transform.position;
-        currentPos.y += 1;
-        GameObject projectile = ObjectPool.Instance.GetObject("ProjectileTest");
-        projectile.GetComponent<ProjectileController>().Damage = (int)Damage;
-        projectile.transform.position = currentPos;
-        projectile.transform.rotation = Quaternion.identity;
-        projectile.GetComponent<ProjectileController>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
+        //currentPos.y += 1;
+        GameObject projectile = ObjectPool.Instance.GetObject(_projectileType);
+        switch (_projectileType)
+        {
+                case "BasicProjectile":
+                    projectile.GetComponent<BasicTProjectile>().Damage = (int)Damage;
+                    projectile.transform.position = currentPos;
+                    projectile.transform.rotation = Quaternion.identity;
+                    projectile.GetComponent<BasicTProjectile>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
+                    break;
+                
+                case "CanonProjectile":
+                    projectile.GetComponent<CanonTProjectile>().Damage = (int)Damage;
+                    projectile.transform.position = currentPos;
+                    projectile.transform.rotation = Quaternion.identity;
+                    projectile.GetComponent<CanonTProjectile>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
+                    break;
+        }
+        
         
         //Instantiate(projectile, currentPos, Quaternion.identity, this.transform);
     }
 
     private void Selected() 
     {
-        rangeSprite.SetActive(true);
-        rangeSprite.transform.localScale = new Vector2(_range / 2.05f, _range / 2.05f);
+        _rangeSprite.SetActive(true);
+        _rangeSprite.transform.localScale = new Vector2(_range / 2.05f, _range / 2.05f);
     }
 
-    public void Deselected()
+    private void Deselected()
     {
-        rangeSprite.SetActive(false);
+        _rangeSprite.SetActive(false);
     }
 
-    public void TowerTypeAndInitialiser()
+    private void TowerTypeAndInitialiser()
     {
         switch (gameObject.name)
         {
             case "BasicTower(Clone)":
                 GetComponent<BasicTower>().InitialiserStats();
-                
+                _projectileType = "BasicProjectile";
                 break;
 
             case "CanonTower(Clone)":
-                Debug.Log("CANON TOWER");
+                GetComponent<CanonTower>().InitialiserStats();
+                _projectileType = "CanonProjectile";
                 break;
 
             case "LightningTower(Clone)":
@@ -208,18 +221,17 @@ public class TowerController : MonoBehaviour
     }
 
 
-
-    void UpdateTarget()
+    private void UpdateTarget()
     {
 
-        if (!canAttack)
+        if (!_canAttack)
         {
-            attackTimer += Time.deltaTime;
+            _attackTimer += Time.deltaTime;
 
-            if (attackTimer >= attackCooldown)
+            if (_attackTimer >= _attackCooldown)
             {
-                canAttack = true;
-                attackTimer = 0;
+                _canAttack = true;
+                _attackTimer = 0;
             }
         }
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -228,26 +240,22 @@ public class TowerController : MonoBehaviour
         foreach (GameObject enemy in enemies)
         {
             float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-            if (distanceToEnemy < shortestDistance)
-            {
-                shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
-            }
+            if (!(distanceToEnemy < shortestDistance)) continue;
+            shortestDistance = distanceToEnemy;
+            nearestEnemy = enemy;
         }
 
         if (nearestEnemy != null && shortestDistance <= Range)
         {
-            if (canAttack)
-            {
-                currentTarget = nearestEnemy;
-                shoot();
-                canAttack = false;
-            }
+            if (!_canAttack) return;
+            _currentTarget = nearestEnemy;
+            Shoot();
+            _canAttack = false;
 
         }
         else
         {
-            currentTarget = null;
+            _currentTarget = null;
         }
 
     }

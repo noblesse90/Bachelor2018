@@ -5,24 +5,24 @@ using UnityEngine.UI;
 
 public class WaveManager : Singleton<WaveManager> {
 
-    private bool spawnMode = false;
+    private bool _spawnMode = false;
 
-    private int enemiesPerWave = 10;
-    private int enemyCount = 0;
-    private int enemySpawned = 0;
+    private int _enemiesPerWave = 10;
+    private int _enemyCount = 0;
+    private int _enemySpawned = 0;
 
-    private int waveIndex = 0;
+    private int _waveIndex = 0;
 
-    public int WaveIndex
+    private int WaveIndex
     {
         get
         {
-            return waveIndex;
+            return _waveIndex;
         }
 
         set
         {
-            waveIndex = value;
+            _waveIndex = value;
         }
     }
 
@@ -30,12 +30,12 @@ public class WaveManager : Singleton<WaveManager> {
     {
         get
         {
-            return enemyCount;
+            return _enemyCount;
         }
 
         set
         {
-            enemyCount = value;
+            _enemyCount = value;
         }
     }
 
@@ -43,12 +43,12 @@ public class WaveManager : Singleton<WaveManager> {
     {
         get
         {
-            return enemySpawned;
+            return _enemySpawned;
         }
 
         set
         {
-            enemySpawned = value;
+            _enemySpawned = value;
         }
     }
 
@@ -56,12 +56,12 @@ public class WaveManager : Singleton<WaveManager> {
     {
         get
         {
-            return enemiesPerWave;
+            return _enemiesPerWave;
         }
 
         set
         {
-            enemiesPerWave = value;
+            _enemiesPerWave = value;
         }
     }
 
@@ -69,34 +69,29 @@ public class WaveManager : Singleton<WaveManager> {
     {
         get
         {
-            return spawnMode;
+            return _spawnMode;
         }
 
         set
         {
-            spawnMode = value;
+            _spawnMode = value;
         }
     }
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
 	// Update is called once per frame
-	void Update () {
+    private void Update () {
         UIManager.Instance.Wave = WaveIndex;
 	}
 
     public void NextWave()
     {
         Debug.Log("NEXT WAVE");
-        UIManager.Instance.Wave = waveIndex++;
-        UIManager.Instance.NextWave.transform.gameObject.SetActive(false);
+        UIManager.Instance.Wave = _waveIndex++;
+        UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(false);
         GManager.Instance.BuildMode = false;
         SpawnMode = true;
-        enemyCount = 0;
-        enemySpawned = 0;
+        _enemyCount = 0;
+        _enemySpawned = 0;
 
     }
 }

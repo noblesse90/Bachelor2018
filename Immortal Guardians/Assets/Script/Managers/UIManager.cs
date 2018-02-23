@@ -5,72 +5,72 @@ using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager> {
 
-    [SerializeField] private Button nextWave;
-    [SerializeField] private Button sellTower;
-    [SerializeField] private Button Upgrade;
+    [SerializeField] private Button _nextWaveBtn;
+    [SerializeField] private Button _sellTowerBtn;
+    [SerializeField] private Button _upgradeBtn;
 
-    [SerializeField] private Text currencytxt;
-    [SerializeField] private Text lifetxt;
-    [SerializeField] private Text wavetxt;
+    [SerializeField] private Text _currencyTxt;
+    [SerializeField] private Text _lifeTxt;
+    [SerializeField] private Text _waveTxt;
 
-    private int currency;
-    private int life;
-    private int wave;
+    private int _currency;
+    private int _life;
+    private int _wave;
 
     // Tower Stats
-    [SerializeField] private Text towerTypeText;
-    [SerializeField] private Text damageText;
-    [SerializeField] private Text firerateText;
-    [SerializeField] private Text sellPriceText;
-    [SerializeField] private Text upgradePriceText;
-    [SerializeField] private GameObject ui;
+    [SerializeField] private Text _towerTypeText;
+    [SerializeField] private Text _damageText;
+    [SerializeField] private Text _firerateText;
+    [SerializeField] private Text _sellPriceText;
+    [SerializeField] private Text _upgradePriceText;
+    [SerializeField] private GameObject _towerStatsUi;
 
     // TESTS
-    [SerializeField] private Button basicTowerTest;
-    [SerializeField] private Button canonTowerTest;
+    [SerializeField] private Button _basicTowerTestBtn;
+    [SerializeField] private Button _canonTowerTestBtn;
 
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         Currency = 200;
         Life = 500;
 
-        nextWave = nextWave.GetComponent<Button>();
-        nextWave.onClick.AddListener(WaveManager.Instance.NextWave);
+        _nextWaveBtn = _nextWaveBtn.GetComponent<Button>();
+        _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
-        sellTower = sellTower.GetComponent<Button>();
-        sellTower.onClick.AddListener(TowerManager.Instance.SellTower);
+        _sellTowerBtn = _sellTowerBtn.GetComponent<Button>();
+        _sellTowerBtn.onClick.AddListener(TowerManager.Instance.SellTower);
 
-        Upgrade = Upgrade.GetComponent<Button>();
-        Upgrade.onClick.AddListener(TowerManager.Instance.UpgradeTower);
+        _upgradeBtn = _upgradeBtn.GetComponent<Button>();
+        _upgradeBtn.onClick.AddListener(TowerManager.Instance.UpgradeTower);
 
-        basicTowerTest = basicTowerTest.GetComponent<Button>();
-        basicTowerTest.onClick.AddListener(basicTowerTestMetode);
+        _basicTowerTestBtn = _basicTowerTestBtn.GetComponent<Button>();
+        _basicTowerTestBtn.onClick.AddListener(BasicTowerTestMetode);
 
-        canonTowerTest = canonTowerTest.GetComponent<Button>();
-        canonTowerTest.onClick.AddListener(canonTowerTestMetode);
+        _canonTowerTestBtn = _canonTowerTestBtn.GetComponent<Button>();
+        _canonTowerTestBtn.onClick.AddListener(CanonTowerTestMetode);
 
     }
 
-    private void basicTowerTestMetode()
+    private void BasicTowerTestMetode()
     {
         if(!(Currency - 10 < 0))
         {
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
-            ui.SetActive(false);
+            _towerStatsUi.SetActive(false);
         }
         BuildingMode.Instance.TowerType = "BasicTower";
     }
 
-    private void canonTowerTestMetode()
+    private void CanonTowerTestMetode()
     {
         if (!(Currency - 20 < 0))
         {
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
-            ui.SetActive(false);
+            _towerStatsUi.SetActive(false);
         }
         BuildingMode.Instance.TowerType = "CanonTower";
     }
@@ -79,20 +79,20 @@ public class UIManager : Singleton<UIManager> {
     {
         if(TowerManager.Instance.CurrentTower == null)
         {
-            sellTower.transform.gameObject.SetActive(false);
-            Upgrade.transform.gameObject.SetActive(false);
+            _sellTowerBtn.transform.gameObject.SetActive(false);
+            _upgradeBtn.transform.gameObject.SetActive(false);
         }
         else
         {
             if(!(TowerManager.Instance.CurrentTower.GetComponent<TowerController>().Level > 3))
             {
-                Upgrade.transform.gameObject.SetActive(true);
+                _upgradeBtn.transform.gameObject.SetActive(true);
             }
             else
             {
-                Upgrade.transform.gameObject.SetActive(false);
+                _upgradeBtn.transform.gameObject.SetActive(false);
             }
-            sellTower.transform.gameObject.SetActive(true);
+            _sellTowerBtn.transform.gameObject.SetActive(true);
         }
     }
 
@@ -100,13 +100,13 @@ public class UIManager : Singleton<UIManager> {
     {
         get
         {
-            return currency;
+            return _currency;
         }
 
         set
         {
-            this.currency = value;
-            this.currencytxt.text = value.ToString() + " <color=lime>$</color>";
+            this._currency = value;
+            this._currencyTxt.text = value.ToString() + " <color=lime>$</color>";
         }
     }
 
@@ -114,13 +114,13 @@ public class UIManager : Singleton<UIManager> {
     {
         get
         {
-            return life;
+            return _life;
         }
 
         set
         {
-            this.life = value;
-            this.lifetxt.text = value.ToString() + " <color=red><3</color>";
+            this._life = value;
+            this._lifeTxt.text = value.ToString() + " <color=red><3</color>";
         }
     }
 
@@ -128,43 +128,43 @@ public class UIManager : Singleton<UIManager> {
     {
         get
         {
-            return wave;
+            return _wave;
         }
 
         set
         {
-            wave = value;
-            this.wavetxt.text = "Current Wave: " + value.ToString();
+            _wave = value;
+            this._waveTxt.text = "Current Wave: " + value.ToString();
         }
     }
 
-    public Button NextWave
+    public Button NextWaveBtn
     {
         get
         {
-            return nextWave;
+            return _nextWaveBtn;
         }
     }
 
-    public GameObject Ui
+    public GameObject TowerStatsUi
     {
         get
         {
-            return ui;
+            return _towerStatsUi;
         }
 
         set
         {
-            ui = value;
+            _towerStatsUi = value;
         }
     }
 
-    public void setTowerStats(TowerController tc)
+    public void SetTowerStats(TowerController tc)
     {
-        this.towerTypeText.text =  tc.TowerType + " (level " + tc.Level.ToString() + ")";
-        this.damageText.text = "Dmg: " + tc.Damage.ToString();
-        this.firerateText.text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
-        this.sellPriceText.text = "$" + (tc.TotalPrice / 2).ToString();
-        this.upgradePriceText.text = "$" + tc.UpgradePrice.ToString();
+        this._towerTypeText.text =  tc.TowerType + " (level " + tc.Level.ToString() + ")";
+        this._damageText.text = "Dmg: " + tc.Damage.ToString();
+        this._firerateText.text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
+        this._sellPriceText.text = "$" + (tc.TotalPrice / 2).ToString();
+        this._upgradePriceText.text = "$" + tc.UpgradePrice.ToString();
     }
 }

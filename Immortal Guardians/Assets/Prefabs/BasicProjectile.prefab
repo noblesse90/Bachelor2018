@@ -20,10 +20,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4226230348554626}
   - component: {fileID: 212071676560792178}
-  - component: {fileID: 114646644367303190}
   - component: {fileID: 58982912664078320}
+  - component: {fileID: 114275496084023284}
   m_Layer: 0
-  m_Name: ProjectileTest
+  m_Name: BasicProjectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,8 +36,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1442167707585686}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.750049, y: 12.4351225, z: -0.25141743}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalPosition: {x: -37.564842, y: 151.29134, z: -0.25141743}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -57,7 +57,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &114646644367303190
+--- !u!114 &114275496084023284
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -100,14 +100,14 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1621868977
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300398, guid: 9760fbda53f2caa439fac274f0fb7fca, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 52be1c0a30cc62f44ba8e97a160ba68b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.2, y: 0.2}
+  m_Size: {x: 0.5, y: 0.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
