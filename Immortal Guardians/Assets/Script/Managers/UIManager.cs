@@ -33,7 +33,7 @@ public class UIManager : Singleton<UIManager> {
     // Use this for initialization
     private void Start()
     {
-        Currency = 200;
+        Currency = 500;
         Life = 500;
 
         _nextWaveBtn = _nextWaveBtn.GetComponent<Button>();

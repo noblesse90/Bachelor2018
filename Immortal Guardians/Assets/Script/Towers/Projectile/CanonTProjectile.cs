@@ -10,8 +10,6 @@ public class CanonTProjectile : MonoBehaviour {
 
 	private int _damage = 0;
 
-	private Animator myAnimator;
-
 	private Vector3 _targetPos;
 	private bool _shot = false;
 
@@ -21,11 +19,6 @@ public class CanonTProjectile : MonoBehaviour {
 		set { _damage = value; }
 	}
 
-	private void Start()
-	{
-		myAnimator = GetComponent<Animator>();
-	}
-
 	// Update is called once per frame
 	private void Update () {
 		MoveToTarget();
@@ -33,16 +26,31 @@ public class CanonTProjectile : MonoBehaviour {
 
 	private void MoveToTarget()
 	{
-		if (!(_shot) && transform.position == _targetPos)
-		{
-			SplashDamage(transform.position, 5f);
-			myAnimator.SetTrigger("Impact");
-			_shot = true;
-		}
+		
 		if(_target != null && _target.activeInHierarchy)
+		{
+			_targetPos = _target.transform.position;
+			transform.position = Vector3.MoveTowards(transform.position, _targetPos, Time.deltaTime * _speed);
+		}
+		else
 		{
 			transform.position = Vector3.MoveTowards(transform.position, _targetPos, Time.deltaTime * _speed);
 		}
+		
+		if (!(_shot) && transform.position == _targetPos)
+		{
+			SplashDamage(transform.position, 2.40f);
+			
+			GameObject fap = ObjectPool.Instance.GetObject("ExplosionFap");
+			fap.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
+			
+			
+			
+			_shot = true;
+			Release();
+			
+		}
+		
 	}
 
 	/*private void OnTriggerEnter2D(Collider2D collision)
