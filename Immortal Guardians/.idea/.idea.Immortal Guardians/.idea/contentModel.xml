@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Fedja\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.1729032169.00" t="ExcludeRecursive" />
-    <e p="C:\Users\Fedja\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
+    <e p="C:\Users\finge\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.1325227568.00" t="ExcludeRecursive" />
+    <e p="C:\Users\finge\OneDrive\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
@@ -339,7 +339,6 @@
             </e>
           </e>
         </e>
-        <e p="ImpactBehaviour.cs" t="Include" />
         <e p="Plugins" t="Include">
           <e p="Editor" t="Include">
             <e p="JetBrains" t="Include">
@@ -357,6 +356,7 @@
             <e p="EnemySpawn.cs" t="Include" />
           </e>
           <e p="Explosion.cs" t="Include" />
+          <e p="ImpactBehaviour.cs" t="Include" />
           <e p="Managers" t="Include">
             <e p="GManager.cs" t="Include" />
             <e p="TowerManager.cs" t="Include" />

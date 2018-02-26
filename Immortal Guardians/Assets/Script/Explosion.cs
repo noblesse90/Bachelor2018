@@ -12,11 +12,4 @@ public class Explosion : MonoBehaviour
 		_myAnimator = GetComponent<Animator>();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		if (gameObject.activeInHierarchy)
-		{
-			_myAnimator.SetTrigger("Impact");
-		}
-	}
 }

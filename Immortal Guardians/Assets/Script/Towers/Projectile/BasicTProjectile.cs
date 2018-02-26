@@ -40,6 +40,7 @@ public class BasicTProjectile : MonoBehaviour {
         }
         else
         {
+            _target = null;
             ObjectPool.Instance.ReleaseObject(gameObject);
         }
     }
@@ -50,7 +51,8 @@ public class BasicTProjectile : MonoBehaviour {
         if (!collision.GetComponent<Collider2D>().Equals(_target.GetComponent<Collider2D>())) return;
         _target.GetComponent<EnemyController>().TakeDamage(_damage);
         
-        
+        GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
+        aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
         
         ObjectPool.Instance.ReleaseObject(gameObject);
 

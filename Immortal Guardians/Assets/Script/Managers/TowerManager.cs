@@ -7,7 +7,6 @@ public class TowerManager : Singleton<TowerManager> {
 
     // variable that holds the enemy destination and spawns
     private GameObject _destination;
-    private GameObject[] _spawn;
     private GameObject _currentTower;
 
     // holds gameobjects
@@ -42,7 +41,6 @@ public class TowerManager : Singleton<TowerManager> {
     // Use this for initialization
     private void Start () {
         _destination = GameObject.FindGameObjectWithTag("EnemyDestination");
-        _spawn = GameObject.FindGameObjectsWithTag("EnemySpawn");
     }
 	
 	// Update is called once per frame
@@ -137,7 +135,7 @@ public class TowerManager : Singleton<TowerManager> {
     private GameObject checkValidTower(GameObject tower)
     {
         // check if the list is empty (no spawnpoint nodes)
-        if (_spawn != null && _destination != null)
+        if (WaveManager.Instance.SpawnLocations != null && _destination != null)
         {
             List<GraphNode> g = new List<GraphNode>();
             // gets the bounding volume of the towers renderer to make rough approximations about the tower's location
@@ -147,7 +145,7 @@ public class TowerManager : Singleton<TowerManager> {
             var goalNode = AstarPath.active.GetNearest(_destination.transform.position).node;
             g.Add(goalNode);
             // Making spawnpoints nodes and check them to see if there's a path available
-            foreach (GameObject s in _spawn)
+            foreach (GameObject s in WaveManager.Instance.SpawnLocations)
             {
                 var spawnPointNode = AstarPath.active.GetNearest(s.transform.position).node;
                 g.Add(spawnPointNode);

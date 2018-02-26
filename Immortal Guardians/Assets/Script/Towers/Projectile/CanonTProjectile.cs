@@ -35,14 +35,15 @@ public class CanonTProjectile : MonoBehaviour {
 		else
 		{
 			transform.position = Vector3.MoveTowards(transform.position, _targetPos, Time.deltaTime * _speed);
+			_target = null;
 		}
 		
 		if (!(_shot) && transform.position == _targetPos)
 		{
 			SplashDamage(transform.position, 2.40f);
 			
-			GameObject fap = ObjectPool.Instance.GetObject("ExplosionFap");
-			fap.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
+			GameObject aniPrefab = ObjectPool.Instance.GetObject("CannonExplosion");
+			aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
 			
 			
 			
@@ -53,21 +54,9 @@ public class CanonTProjectile : MonoBehaviour {
 		
 	}
 
-	/*private void OnTriggerEnter2D(Collider2D collision)
-	{
-		if (!_target.activeSelf) return;
-		if (!collision.GetComponent<Collider2D>().Equals(_target.GetComponent<Collider2D>())) return;
-		_target.GetComponent<EnemyController>().TakeDamage(_damage);
-		SplashDamage(transform.position, 5f);
-		
-		// calling cannonball animation and release gameobject after animation is done playing
-		myAnimator.SetTrigger("Impact");
-	}*/
-
 	public void SetTargetAndSpeed(GameObject target, float speed)
 	{
 		this._target = target;
-		this._targetPos = target.transform.position;
 		this._speed = speed;
 	}
 

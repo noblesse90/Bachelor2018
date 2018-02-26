@@ -140,10 +140,10 @@ public class TowerController : MonoBehaviour
         switch (_projectileType)
         {
                 case "BasicProjectile":
-                    projectile.GetComponent<BasicTProjectile>().Damage = (int)Damage;
+                    projectile.GetComponentInChildren<BasicTProjectile>().Damage = (int)Damage;
                     projectile.transform.position = currentPos;
                     projectile.transform.rotation = Quaternion.identity;
-                    projectile.GetComponent<BasicTProjectile>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
+                    projectile.GetComponentInChildren<BasicTProjectile>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
                     break;
                 
                 case "CanonProjectile":

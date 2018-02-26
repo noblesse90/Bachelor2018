@@ -6,12 +6,25 @@ using UnityEngine.UI;
 public class WaveManager : Singleton<WaveManager> {
 
     private bool _spawnMode = false;
+    
+    private GameObject[] _spawnLocations;
+
+    
 
     private int _enemiesPerWave = 10;
     private int _enemyCount = 0;
     private int _enemySpawned = 0;
 
+    private string[] _enemyTypes = {"Enemy01", "Enemy02"};
+    
+
     private int _waveIndex = 0;
+    
+    public GameObject[] SpawnLocations
+    {
+        get { return _spawnLocations; }
+        set { _spawnLocations = value; }
+    }
 
     private int WaveIndex
     {
@@ -78,7 +91,12 @@ public class WaveManager : Singleton<WaveManager> {
         }
     }
 
-	// Update is called once per frame
+    private void Awake()
+    {
+        _spawnLocations = GameObject.FindGameObjectsWithTag("EnemySpawn");
+    }
+
+    // Update is called once per frame
     private void Update () {
         UIManager.Instance.Wave = WaveIndex;
 	}
@@ -90,8 +108,6 @@ public class WaveManager : Singleton<WaveManager> {
         UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(false);
         GManager.Instance.BuildMode = false;
         SpawnMode = true;
-        _enemyCount = 0;
-        _enemySpawned = 0;
 
     }
 }
