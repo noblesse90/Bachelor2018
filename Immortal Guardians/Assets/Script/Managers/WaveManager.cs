@@ -9,11 +9,13 @@ public class WaveManager : Singleton<WaveManager> {
     
     private GameObject[] _spawnLocations;
 
-    
-
-    private int _enemiesPerWave = 10;
-    private int _enemyCount = 0;
+    private int _enemiesPerWave = 30;
+    private int _enemyDied = 0;
     private int _enemySpawned = 0;
+    
+    private bool _canSpawn = true;
+    private float _spawnTimer;
+    [SerializeField] private float _cooldownTimer;
 
     private string[] _enemyTypes = {"Enemy01", "Enemy02"};
     
@@ -26,69 +28,10 @@ public class WaveManager : Singleton<WaveManager> {
         set { _spawnLocations = value; }
     }
 
-    private int WaveIndex
+    public int EnemyDied
     {
-        get
-        {
-            return _waveIndex;
-        }
-
-        set
-        {
-            _waveIndex = value;
-        }
-    }
-
-    public int EnemyCount
-    {
-        get
-        {
-            return _enemyCount;
-        }
-
-        set
-        {
-            _enemyCount = value;
-        }
-    }
-
-    public int EnemySpawned
-    {
-        get
-        {
-            return _enemySpawned;
-        }
-
-        set
-        {
-            _enemySpawned = value;
-        }
-    }
-
-    public int EnemiesPerWave
-    {
-        get
-        {
-            return _enemiesPerWave;
-        }
-
-        set
-        {
-            _enemiesPerWave = value;
-        }
-    }
-
-    public bool SpawnMode
-    {
-        get
-        {
-            return _spawnMode;
-        }
-
-        set
-        {
-            _spawnMode = value;
-        }
+        get { return _enemyDied; }
+        set { _enemyDied = value; }
     }
 
     private void Awake()
@@ -96,18 +39,56 @@ public class WaveManager : Singleton<WaveManager> {
         _spawnLocations = GameObject.FindGameObjectsWithTag("EnemySpawn");
     }
 
-    // Update is called once per frame
+    
     private void Update () {
-        UIManager.Instance.Wave = WaveIndex;
+        //UIManager.Instance.Wave = WaveIndex;
+        if (_spawnMode && _enemySpawned < _enemiesPerWave)
+        {
+            Spawn();
+        }
+        else if (_enemyDied == _enemiesPerWave)
+        {
+            _spawnMode = false;
+            _enemySpawned = 0;
+            _enemyDied = 0;
+            _canSpawn = true;
+            UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
+            Debug.Log("True");
+        }
 	}
 
     public void NextWave()
     {
         Debug.Log("NEXT WAVE");
-        UIManager.Instance.Wave = _waveIndex++;
+        _waveIndex++;
+        UIManager.Instance.Wave = _waveIndex;
         UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(false);
         GManager.Instance.BuildMode = false;
-        SpawnMode = true;
+        _spawnMode = true;
 
+    }
+
+    private void Spawn()
+    {
+        if (!_canSpawn)
+        {
+            _spawnTimer += Time.deltaTime;
+
+            if(_spawnTimer >= _cooldownTimer)
+            {
+                _canSpawn = true;
+                _spawnTimer = 0;
+            }
+        }
+        else
+        {
+            foreach (var spawnLocation in _spawnLocations)
+            {
+                GameObject enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+                enemy.transform.position = spawnLocation.transform.position;
+                _enemySpawned++;
+                _canSpawn = false;
+            }
+        }
     }
 }

@@ -10,14 +10,14 @@ public class BasicTProjectile : MonoBehaviour {
 
     private int _damage = 0;
 
+    private Vector3 _targetPos;
+    private bool _shot = false;
+
     public int Damage
     {
-        set
-        {
-            _damage = value;
-        }
+        get { return _damage; }
+        set { _damage = value; }
     }
-
 
     // Update is called once per frame
     private void Update () {
@@ -28,7 +28,8 @@ public class BasicTProjectile : MonoBehaviour {
     {
         if(_target != null && _target.activeInHierarchy)
         {           
-            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, Time.deltaTime * _speed);
+            _targetPos = _target.transform.position;
+            transform.position = Vector3.MoveTowards(transform.position, _targetPos, Time.deltaTime * _speed);
 
             Vector2 dir = _target.transform.position - transform.position;
 
@@ -41,26 +42,34 @@ public class BasicTProjectile : MonoBehaviour {
         else
         {
             _target = null;
-            ObjectPool.Instance.ReleaseObject(gameObject);
+            Release();
         }
+        
+        Explode();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void Explode()
     {
-        if (!_target.activeSelf) return;
-        if (!collision.GetComponent<Collider2D>().Equals(_target.GetComponent<Collider2D>())) return;
-        _target.GetComponent<EnemyController>().TakeDamage(_damage);
-        
-        GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
-        aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
-        
-        ObjectPool.Instance.ReleaseObject(gameObject);
-
+        if (!(_shot) && Vector2.Distance(transform.position,_targetPos) < 1)
+        {
+            _target.GetComponent<EnemyController>().TakeDamage(_damage);
+            GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
+            aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
+			
+            _shot = true;
+            Release();
+        }
     }
 
     public void SetTargetAndSpeed(GameObject target, float speed)
     {
         this._target = target;
         this._speed = speed;
+    }
+
+    private void Release()
+    {
+        gameObject.SetActive(false);
+        _shot = false;
     }
 }

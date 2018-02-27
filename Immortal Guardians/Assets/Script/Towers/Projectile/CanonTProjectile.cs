@@ -26,7 +26,6 @@ public class CanonTProjectile : MonoBehaviour {
 
 	private void MoveToTarget()
 	{
-		
 		if(_target != null && _target.activeInHierarchy)
 		{
 			_targetPos = _target.transform.position;
@@ -38,20 +37,23 @@ public class CanonTProjectile : MonoBehaviour {
 			_target = null;
 		}
 		
-		if (!(_shot) && transform.position == _targetPos)
+		Explode();
+		
+	}
+
+	private void Explode()
+	{
+		if (!(_shot) && Vector2.Distance(transform.position,_targetPos) < 1)
 		{
 			SplashDamage(transform.position, 2.40f);
 			
 			GameObject aniPrefab = ObjectPool.Instance.GetObject("CannonExplosion");
 			aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
-			
-			
-			
+
 			_shot = true;
 			Release();
 			
 		}
-		
 	}
 
 	public void SetTargetAndSpeed(GameObject target, float speed)
