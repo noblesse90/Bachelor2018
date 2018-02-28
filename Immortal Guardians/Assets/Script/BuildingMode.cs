@@ -58,7 +58,7 @@ public class BuildingMode : Singleton<BuildingMode> {
         Vector2 pos = GManager.Instance.GetMousePos();
         pos = new Vector2(Mathf.Round(pos.x + .5f), Mathf.Round(pos.y + .5f));
 
-        if (_tower == null)
+        if (_tower == null || _tower == _basicTowerPrefab || _tower == _canonTowerPrefab)
         {
             SetTower(pos);
         }
@@ -74,6 +74,10 @@ public class BuildingMode : Singleton<BuildingMode> {
 
     private void SetTower(Vector2 pos)
     {
+        if (_tower != null)
+        {
+            _tower.SetActive(false);
+        }
         
         switch (_towerType)
         {

@@ -46,12 +46,14 @@ public class PlayerProjectile : MonoBehaviour {
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
-		if (other.CompareTag("Enemy"))
+		if (other.CompareTag("Enemy") || other.CompareTag("Obstacle"))
 		{
-			other.GetComponent<EnemyController>().TakeDamage(_damage);
+			
 			GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
-			aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
+			aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y);
 			ObjectPool.Instance.ReleaseObject(gameObject);
+			if (other.CompareTag("Obstacle")) return;
+			other.GetComponent<EnemyController>().TakeDamage(_damage);
 		}
 	}
 

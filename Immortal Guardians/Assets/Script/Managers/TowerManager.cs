@@ -43,18 +43,6 @@ public class TowerManager : Singleton<TowerManager> {
         _destination = GameObject.FindGameObjectWithTag("EnemyDestination");
     }
 	
-	// Update is called once per frame
-    private void Update ()
-    {
-        if (_currentTower == null) return;
-        switch (_currentTower.name)
-        {
-            case "BasicTower(Clone)":
-                break;
-            default: break;
-
-        }
-    }
 
     public void PlaceTower()
     {

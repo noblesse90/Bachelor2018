@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor.UI;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : Singleton<PlayerController> {
 
@@ -53,7 +54,11 @@ public class PlayerController : Singleton<PlayerController> {
 		// gets an input from the keyboard
 		GetInput();
 		// Attacks
-		AttackAnimation();
+		if (!EventSystem.current.IsPointerOverGameObject())
+		{
+			AttackAnimation();
+		}
+		
 		// move the gameobject according to the keypresses
 		Move();
 	}
@@ -197,7 +202,7 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private void AttackAnimation()
 	{
-		if (Input.GetKeyDown(KeyCode.Mouse0))
+		if (Input.GetKey(KeyCode.Mouse0))
 		{
 			if (_down.gameObject.activeInHierarchy)
 			{

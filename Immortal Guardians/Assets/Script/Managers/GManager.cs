@@ -35,7 +35,10 @@ public class GManager : Singleton<GManager> {
             // check if the user clicks the left mousebutton
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                TowerManager.Instance.PlaceTower();
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    TowerManager.Instance.PlaceTower();
+                }
             }
         }
         // Select tower
