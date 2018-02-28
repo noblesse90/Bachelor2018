@@ -135,7 +135,6 @@ public class TowerController : MonoBehaviour
     private void Shoot()
     {
         Vector3 currentPos = transform.position;
-        //currentPos.y += 1;
         GameObject projectile = ObjectPool.Instance.GetObject(_projectileType);
         switch (_projectileType)
         {

@@ -161,10 +161,10 @@ public class UIManager : Singleton<UIManager> {
 
     public void SetTowerStats(TowerController tc)
     {
-        this._towerTypeText.text =  tc.TowerType + " (level " + tc.Level.ToString() + ")";
-        this._damageText.text = "Dmg: " + tc.Damage.ToString();
-        this._firerateText.text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
-        this._sellPriceText.text = "$" + (tc.TotalPrice / 2).ToString();
-        this._upgradePriceText.text = "$" + tc.UpgradePrice.ToString();
+        _towerTypeText.text =  tc.TowerType + " (level " + tc.Level.ToString() + ")";
+        _damageText.text = "Dmg: " + tc.Damage;
+        _firerateText.text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
+        _sellPriceText.text = "$" + (tc.TotalPrice / 2);
+        _upgradePriceText.text = "$" + tc.UpgradePrice;
     }
 }
