@@ -38,6 +38,46 @@ public class EnemyController : MonoBehaviour
 				break;
 			
 			case "Enemy02":
+				_startHp = 200;
+				_money = 100;
+				break;
+			
+			case "Enemy03":
+				_startHp = 300;
+				_money = 100;
+				break;
+			
+			case "Enemy04":
+				_startHp = 400;
+				_money = 100;
+				break;
+			
+			case "Enemy05":
+				_startHp = 500;
+				_money = 100;
+				break;
+			
+			case "Enemy06":
+				_startHp = 600;
+				_money = 100;
+				break;
+			
+			case "Enemy07":
+				_startHp = 700;
+				_money = 100;
+				break;
+			
+			case "Enemy08":
+				_startHp = 800;
+				_money = 100;
+				break;
+			
+			case "Enemy09":
+				_startHp = 900;
+				_money = 100;
+				break;
+			
+			case "Enemy10":
 				_startHp = 1000;
 				_money = 100;
 				break;

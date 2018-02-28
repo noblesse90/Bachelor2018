@@ -17,7 +17,7 @@ public class WaveManager : Singleton<WaveManager> {
     private float _spawnTimer;
     [SerializeField] private float _cooldownTimer;
 
-    private string[] _enemyTypes = {"Enemy01", "Enemy02"};
+    private string[] _enemyTypes = {"Enemy01", "Enemy02", "Enemy03", "Enemy04", "Enemy05", "Enemy06", "Enemy07", "Enemy08", "Enemy09", "Enemy10"};
     
 
     private int _waveIndex = 0;
@@ -41,7 +41,6 @@ public class WaveManager : Singleton<WaveManager> {
 
     
     private void Update () {
-        //UIManager.Instance.Wave = WaveIndex;
         if (_spawnMode && _enemySpawned < _enemiesPerWave)
         {
             Spawn();
@@ -52,8 +51,8 @@ public class WaveManager : Singleton<WaveManager> {
             _enemySpawned = 0;
             _enemyDied = 0;
             _canSpawn = true;
+            if (_waveIndex == _enemyTypes.Length) return;
             UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
-            Debug.Log("True");
         }
 	}
 

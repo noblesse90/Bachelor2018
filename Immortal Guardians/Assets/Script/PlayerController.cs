@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UI;
 using UnityEngine;
 
 public class PlayerController : Singleton<PlayerController> {
@@ -12,6 +13,13 @@ public class PlayerController : Singleton<PlayerController> {
 
     // vector2 variable that controlls direction
     private Vector2 _direction;
+    
+    // player transform directions
+    private Transform _down, _up, _left, _right;
+
+    private Animator _animatorDown, _animatorUp, _animatorLeft, _animatorRight;
+    
+    
 
 	// Use this for initialization
 	private void Start () {
@@ -19,6 +27,17 @@ public class PlayerController : Singleton<PlayerController> {
         _rb = GetComponent<Rigidbody2D>();
 
         _rb.freezeRotation = true;
+	    
+	    // player transform
+	    _down = transform.GetChild(0);
+	    _animatorDown = _down.gameObject.GetComponent<Animator>();
+	    _up = transform.GetChild(1);
+	    _animatorUp = _up.gameObject.GetComponent<Animator>();
+	    _left = transform.GetChild(2);
+	    _animatorLeft = _left.gameObject.GetComponent<Animator>();
+	    _right = transform.GetChild(3);
+		_animatorRight = _right.gameObject.GetComponent<Animator>();
+
 	}
 	
 	// Update is called once per frame
@@ -44,21 +63,56 @@ public class PlayerController : Singleton<PlayerController> {
         if (Input.GetKey(KeyCode.W))
         {
             _direction += Vector2.up;
+            _up.gameObject.SetActive(true);
+	        
+	        //_animatorUp.SetTrigger("Walk");
+            
+            _left.gameObject.SetActive(false);
+            _right.gameObject.SetActive(false);
+            _down.gameObject.SetActive(false);
         }
 
-        if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A))
         {
             _direction += Vector2.left;
+            _left.gameObject.SetActive(true);
+            
+            _up.gameObject.SetActive(false);
+            _right.gameObject.SetActive(false);
+            _down.gameObject.SetActive(false);
         }
 
-        if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
         {
             _direction += Vector2.down;
+            _down.gameObject.SetActive(true);
+	        _animatorDown.SetTrigger("Walk");
+	        
+            
+            _left.gameObject.SetActive(false);
+            _right.gameObject.SetActive(false);
+            _up.gameObject.SetActive(false);
         }
 
-        if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
             _direction += Vector2.right;
+            _right.gameObject.SetActive(true);
+            
+            _left.gameObject.SetActive(false);
+            _up.gameObject.SetActive(false);
+            _down.gameObject.SetActive(false);
         }
+
+	    if (_direction.magnitude <= 0)
+	    {
+		    _animatorDown.SetBool("Idle", true);
+		    Debug.Log(_direction);
+	    }
+	    else
+	    {
+		    _animatorDown.SetBool("Idle", false);
+	    }
+	    
     }
 }
