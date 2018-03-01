@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4987543442760248}
   - component: {fileID: 212087841934755960}
-  - component: {fileID: 58795841904581048}
   - component: {fileID: 114075046734113098}
   m_Layer: 0
   m_Name: BasicProjectileOLD
@@ -71,21 +70,6 @@ Transform:
   m_Father: {fileID: 4559255457969194}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58795841904581048
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1322657039508172}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
 --- !u!114 &114075046734113098
 MonoBehaviour:
   m_ObjectHideFlags: 1

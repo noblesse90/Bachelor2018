@@ -1,18 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 
-public class PlayerProjectile : MonoBehaviour {
-	
+public class PlayerProjectile : MonoBehaviour
+{
+
 	private float _speed = 0;
 
 	private int _damage = 0;
 
-	private Vector2 _playerPos;
-
-	private Vector2 _mousePos;
-
-	private Vector2 _normalizeDirection;
+	private Vector2 _playerPos, _mousePos, _normalizeDirection;
+	
 
 	public void InstantiateProjectile(int damage, float speed, Vector2 playerPos )
 	{
@@ -28,14 +27,15 @@ public class PlayerProjectile : MonoBehaviour {
 		transform.position = _playerPos;
 		_normalizeDirection = (_mousePos - (Vector2) transform.position).normalized;
 		GetDirection();
+
 	}
 
 	// Update is called once per frame
 	private void Update () {
-		Move();
+		Shoot();
 	}
 
-	private void Move()
+	private void Shoot()
 	{
 		if (Vector2.Distance(_playerPos, transform.position) > 20)
 		{
@@ -44,16 +44,15 @@ public class PlayerProjectile : MonoBehaviour {
 		transform.position += (Vector3)_normalizeDirection * _speed * Time.deltaTime;
 	}
 
-	private void OnTriggerEnter2D(Collider2D other)
+	private void OnTriggerEnter2D(Collider2D otherObject)
 	{
-		if (other.CompareTag("Enemy") || other.CompareTag("Obstacle"))
+		if (otherObject.CompareTag("Enemy") || otherObject.CompareTag("Obstacle"))
 		{
-			
 			GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
-			aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y);
+			aniPrefab.transform.position = otherObject.transform.position;
 			ObjectPool.Instance.ReleaseObject(gameObject);
-			if (other.CompareTag("Obstacle")) return;
-			other.GetComponent<EnemyController>().TakeDamage(_damage);
+			if (otherObject.CompareTag("Obstacle")) return;
+			otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
 		}
 	}
 

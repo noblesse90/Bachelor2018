@@ -22,6 +22,9 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private string _class = "Ranged";
 	
+	private bool _canAttack = true;
+	private float _attackTimer, _cooldownTimer;
+	
     
 
 	// Use this for initialization
@@ -41,6 +44,7 @@ public class PlayerController : Singleton<PlayerController> {
 	    _right = transform.GetChild(3);
 		_animatorRight = _right.gameObject.GetComponent<Animator>();
 
+		_cooldownTimer = 1f;
 	}
 	
 	// Update is called once per frame
@@ -204,65 +208,75 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		if (Input.GetKey(KeyCode.Mouse0))
 		{
-			if (_down.gameObject.activeInHierarchy)
+			if (!_canAttack)
+			{
+				_attackTimer += Time.deltaTime;
+
+				if(_attackTimer >= _cooldownTimer)
+				{
+					_canAttack = true;
+					_attackTimer = 0;
+				}
+			}
+			else
 			{
 				if (_class.Equals("Melee"))
 				{
-					_animatorDown.SetTrigger("MeleeAttack");
-					MeleeAttack(_down);
+					if (_down.gameObject.activeInHierarchy)
+					{
+						_animatorDown.SetTrigger("MeleeAttack");
+						MeleeAttack(_down);
+					}
+
+					if (_right.gameObject.activeInHierarchy)
+					{
+						_animatorRight.SetTrigger("MeleeAttack");
+						MeleeAttack(_right);
+					}
+
+					if (_left.gameObject.activeInHierarchy)
+					{
+						_animatorLeft.SetTrigger("MeleeAttack");
+						MeleeAttack(_left);
+					}
+
+					if (_up.gameObject.activeInHierarchy)
+					{
+						_animatorUp.SetTrigger("MeleeAttack");
+						MeleeAttack(_up);
+					}
 				}
 
 				if (_class.Equals("Ranged"))
 				{
-					_animatorDown.SetTrigger("RangedAttack");
-					RangedAttack();
+					if (_down.gameObject.activeInHierarchy)
+					{
+						_animatorDown.SetTrigger("RangedAttack");
+						RangedAttack();
+					}
+
+					if (_right.gameObject.activeInHierarchy)
+					{
+						_animatorRight.SetTrigger("RangedAttack");
+						RangedAttack();
+					}
+
+					if (_left.gameObject.activeInHierarchy)
+					{
+						_animatorLeft.SetTrigger("RangedAttack");
+						RangedAttack();
+					}
+
+					if (_up.gameObject.activeInHierarchy)
+					{
+						_animatorUp.SetTrigger("RangedAttack");
+						RangedAttack();
+					}
 				}
+			
+				_canAttack = false;
 			}
-
-			if (_right.gameObject.activeInHierarchy)
-			{
-				if (_class.Equals("Melee"))
-				{
-					_animatorRight.SetTrigger("MeleeAttack");
-					MeleeAttack(_right);
-				}
-
-				if (_class.Equals("Ranged"))
-				{
-					_animatorRight.SetTrigger("RangedAttack");
-					RangedAttack();
-				}
-			}
-
-			if (_left.gameObject.activeInHierarchy)
-			{
-				if (_class.Equals("Melee"))
-				{
-					_animatorLeft.SetTrigger("MeleeAttack");
-					MeleeAttack(_left);
-				}
-
-				if (_class.Equals("Ranged"))
-				{
-					_animatorLeft.SetTrigger("RangedAttack");
-					RangedAttack();
-				}
-			}
-
-			if (_up.gameObject.activeInHierarchy)
-			{
-				if (_class.Equals("Melee"))
-				{
-					_animatorUp.SetTrigger("MeleeAttack");
-					MeleeAttack(_up);
-				}
-
-				if (_class.Equals("Ranged"))
-				{
-					_animatorUp.SetTrigger("RangedAttack");
-					RangedAttack();
-				}
-			}
+			
 		}
 	}
 
