@@ -14,6 +14,9 @@ public class TowerManager : Singleton<TowerManager> {
 
     [SerializeField] private GameObject _basicTowerPrefab;
     [SerializeField] private GameObject _canonTowerPrefab;
+    
+    private const int BasicTowerCost = 10;
+    private const int CannonTowerCost = 20;
 
     public GameObject CurrentTower
     {
@@ -36,6 +39,21 @@ public class TowerManager : Singleton<TowerManager> {
     {
         get { return _canonTowerPrefab; }
     }
+
+    
+
+    public int GetBasicTowerCost
+    {
+        get { return BasicTowerCost; }
+    }
+
+    public int GetCannonTowerCost
+    {
+        get { return CannonTowerCost; }
+    }
+
+
+    
     
 
     // Use this for initialization

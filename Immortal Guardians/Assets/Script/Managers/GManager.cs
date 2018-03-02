@@ -8,8 +8,11 @@ using UnityEngine.UI;
 // GManager is a part of the Singleton hierarchy and can be used by other scripts through the Singleton script
 public class GManager : Singleton<GManager> {
 
-        // A boolean to change from combat and build mode (used by child aswell)
+    // A boolean to change from combat and build mode (used by child aswell)
     private bool _buildMode = false;
+    
+    // USED FOR RAPID BUILDING
+    private string _towerToBuild;
 
     // getter for bool buildmode
     public bool BuildMode
@@ -21,6 +24,13 @@ public class GManager : Singleton<GManager> {
     // Update is called once per frame
     private void Update()
     {
+        // TOWER CODE
+        TowerCode();
+        
+        
+        
+        // ------------------------ TEMPORARY CODE -----------------
+        
         // resets the game
         if (Input.GetKeyUp(KeyCode.R))
         {
@@ -28,6 +38,90 @@ public class GManager : Singleton<GManager> {
             Time.timeScale = 1;
         }
 
+        // quits the application (game)
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
+        // destroys a tower in the given mouse position
+        if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            //_BuildMode = false;
+            TowerManager.Instance.DestroyTower();
+        }
+
+        // starts buildingmode for cannontower
+        if (Input.GetKeyUp(KeyCode.V))
+        {
+            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
+            {
+                _buildMode = true;
+                TowerManager.Instance.CurrentTower = null;
+                UIManager.Instance.TowerStatsUi.SetActive(false);
+                _towerToBuild = "CanonTower";
+                BuildingMode.Instance.TowerType = _towerToBuild;
+            }
+        }
+        
+        // starts buildingmode for BasicTower
+        if (Input.GetKeyUp(KeyCode.B))
+        {
+            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
+            {
+                _buildMode = true;
+                TowerManager.Instance.CurrentTower = null;
+                UIManager.Instance.TowerStatsUi.SetActive(false);
+                _towerToBuild = "BasicTower";
+                BuildingMode.Instance.TowerType = _towerToBuild;
+            }
+        }
+        
+        
+        // RAPID TOWER PLACEMENT
+        if (BuildMode)
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                switch (_towerToBuild)
+                {
+                        case "BasicTower":
+                            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
+                            {
+                                TowerManager.Instance.PlaceTower();
+                                _buildMode = true;
+                                BuildingMode.Instance.TowerType = _towerToBuild;
+                            }
+                            else
+                            {
+                                _buildMode = false;
+                            }
+                            break;
+                        
+                        case "CanonTower":
+                            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
+                            {
+                                TowerManager.Instance.PlaceTower();
+                                _buildMode = true;
+                                BuildingMode.Instance.TowerType = _towerToBuild;
+                            }
+                            else
+                            {
+                                _buildMode = false;
+                            }
+                            break;
+                }
+                
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                _buildMode = false;
+            }
+        }
+    }
+
+    private void TowerCode()
+    {
         // checking if buildmode is false or true
         if (BuildMode)
         {
@@ -41,6 +135,7 @@ public class GManager : Singleton<GManager> {
                 }
             }
         }
+        
         // Select tower
         else if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -59,22 +154,7 @@ public class GManager : Singleton<GManager> {
                     UIManager.Instance.TowerStatsUi.SetActive(false);
                 }
             }
-            
         }
-
-        if (Input.GetKeyUp(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
-
-        // destroys a tower in the given mouse position
-        if (Input.GetKeyUp(KeyCode.Mouse1))
-        {
-            //_BuildMode = false;
-            TowerManager.Instance.DestroyTower();
-        }
-        
-        
     }
 
     public RaycastHit2D[] GetMouseCast()

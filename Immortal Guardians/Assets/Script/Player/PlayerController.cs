@@ -294,7 +294,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private void RangedAttack()
 	{
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(50, 15f, transform.position);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(50, 25f, transform.position);
 		projectile.transform.position = transform.position;
 	}
 }

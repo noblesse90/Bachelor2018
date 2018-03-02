@@ -55,7 +55,7 @@ public class UIManager : Singleton<UIManager> {
 
     private void BasicTowerTestMetode()
     {
-        if(!(Currency - 10 < 0))
+        if(!(Currency - TowerManager.Instance.GetBasicTowerCost < 0))
         {
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
@@ -66,7 +66,7 @@ public class UIManager : Singleton<UIManager> {
 
     private void CanonTowerTestMetode()
     {
-        if (!(Currency - 20 < 0))
+        if (!(Currency - TowerManager.Instance.GetCannonTowerCost < 0))
         {
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;

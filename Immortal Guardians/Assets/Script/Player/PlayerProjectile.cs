@@ -49,10 +49,17 @@ public class PlayerProjectile : MonoBehaviour
 		if (otherObject.CompareTag("Enemy") || otherObject.CompareTag("Obstacle"))
 		{
 			GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
-			aniPrefab.transform.position = otherObject.transform.position;
+			if (otherObject.CompareTag("Obstacle"))
+			{
+				aniPrefab.transform.position = transform.position;
+			}
+			else
+			{
+				aniPrefab.transform.position = otherObject.transform.position;
+				otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
+			}
 			ObjectPool.Instance.ReleaseObject(gameObject);
-			if (otherObject.CompareTag("Obstacle")) return;
-			otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
+			
 		}
 	}
 
