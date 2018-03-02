@@ -60,8 +60,9 @@ public class UIManager : Singleton<UIManager> {
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
             _towerStatsUi.SetActive(false);
-        }
-        BuildingMode.Instance.TowerType = "BasicTower";
+            BuildingMode.Instance.TowerType = "BasicTower";
+            GManager.Instance.TowerToBuild = "BasicTower";
+        }  
     }
 
     private void CanonTowerTestMetode()
@@ -71,8 +72,9 @@ public class UIManager : Singleton<UIManager> {
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
             _towerStatsUi.SetActive(false);
-        }
-        BuildingMode.Instance.TowerType = "CanonTower";
+            BuildingMode.Instance.TowerType = "CanonTower";
+            GManager.Instance.TowerToBuild = "CanonTower";
+        }    
     }
 
     private void Update()
@@ -105,8 +107,13 @@ public class UIManager : Singleton<UIManager> {
 
         set
         {
+            if (value > 99999)
+            {
+                value = 99999;
+            }
             this._currency = value;
-            this._currencyTxt.text = value.ToString() + " <color=lime>$</color>";
+            this._currencyTxt.text = value.ToString();
+            
         }
     }
 
@@ -120,7 +127,7 @@ public class UIManager : Singleton<UIManager> {
         set
         {
             this._life = value;
-            this._lifeTxt.text = value.ToString() + " <color=red><3</color>";
+            this._lifeTxt.text = value.ToString();
         }
     }
 

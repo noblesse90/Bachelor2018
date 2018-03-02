@@ -6,15 +6,17 @@ using UnityEngine.Assertions.Comparers;
 public class PlayerProjectile : MonoBehaviour
 {
 
-	private float _speed = 0;
+	private float _speed = 0, _damage = 0;
 
-	private int _damage = 0;
+	private int _offset;
 
-	private Vector2 _playerPos, _mousePos, _normalizeDirection;
+	private Vector2 _playerPos, _directionPos, _normalizeDirection;
 	
 
-	public void InstantiateProjectile(int damage, float speed, Vector2 playerPos )
+	public void InstantiateProjectile(float damage, float speed, Vector2 playerPos, Vector2 direction, int offset)
 	{
+		_offset = offset;
+		_directionPos = direction;
 		_damage = damage;
 		_speed = speed;
 		_playerPos = playerPos;
@@ -23,10 +25,15 @@ public class PlayerProjectile : MonoBehaviour
 
 	private void Start()
 	{
-		_mousePos = GManager.Instance.GetMousePos();
 		transform.position = _playerPos;
-		_normalizeDirection = (_mousePos - (Vector2) transform.position).normalized;
-		GetDirection();
+		
+		// direction the arrow is moving towards (with offset)
+		_normalizeDirection = (_directionPos - (Vector2) transform.position);
+		_normalizeDirection = Quaternion.Euler(0, _offset, _offset) * _normalizeDirection;
+		_normalizeDirection = _normalizeDirection.normalized;
+		
+		// angle the arrow correctly
+		TransformRotation();
 
 	}
 
@@ -63,11 +70,9 @@ public class PlayerProjectile : MonoBehaviour
 		}
 	}
 
-	private void GetDirection()
+	private void TransformRotation()
 	{
-		Vector2 dir = _mousePos - (Vector2)transform.position;
-
-		float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		float angle = Mathf.Atan2(_normalizeDirection.y, _normalizeDirection.x) * Mathf.Rad2Deg;
 		
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}

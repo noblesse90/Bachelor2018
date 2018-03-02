@@ -14,12 +14,20 @@ public class GManager : Singleton<GManager> {
     // USED FOR RAPID BUILDING
     private string _towerToBuild;
 
+    
     // getter for bool buildmode
     public bool BuildMode
     {
         get { return _buildMode; }
         set { _buildMode = value; }
     }
+    
+    public string TowerToBuild
+    {
+        get { return _towerToBuild; }
+        set { _towerToBuild = value; }
+    }
+
 
     // Update is called once per frame
     private void Update()
@@ -42,13 +50,6 @@ public class GManager : Singleton<GManager> {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
             Application.Quit();
-        }
-
-        // destroys a tower in the given mouse position
-        if (Input.GetKeyUp(KeyCode.Mouse1))
-        {
-            //_BuildMode = false;
-            TowerManager.Instance.DestroyTower();
         }
 
         // starts buildingmode for cannontower

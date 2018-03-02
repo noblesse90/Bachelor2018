@@ -88,10 +88,24 @@ public class EnemyController : MonoBehaviour
 
 	// Update is called once per frame
 	private void Update () {
+		OnDeath();
+	}
+
+	private void OnDeath()
+	{
 		if(_hp <= 0)
 		{
 			Release();
 			UIManager.Instance.Currency += _money;
+			if (PlayerController.Instance.Mana >= PlayerController.Instance.MaxMana-10)
+			{
+				PlayerController.Instance.Mana = PlayerController.Instance.MaxMana;
+			}
+			else
+			{
+				PlayerController.Instance.Mana += 10;
+			}
+			
 		}   
 	}
     

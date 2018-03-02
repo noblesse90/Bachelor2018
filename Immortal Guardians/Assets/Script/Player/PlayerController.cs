@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters;
+using System.Timers;
 using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PlayerController : Singleton<PlayerController> {
 
@@ -24,8 +27,36 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private bool _canAttack = true;
 	private float _attackTimer, _cooldownTimer;
+
+
 	
-    
+
+
+
+	[SerializeField]private Image _manaBar;
+	[SerializeField]private Image _leftClickCooldownIcon;
+	[SerializeField]private Image _rightClickIcon;
+
+	private int _rightClickCost = 10;
+	
+	
+	// PLAYER STATS
+	
+	private float _mana, _maxMana = 100;
+	private int _damage = 50;
+	
+	
+	public float MaxMana
+	{
+		get { return _maxMana; }
+		set { _maxMana = value; }
+	}
+
+	public float Mana
+	{
+		get { return _mana; }
+		set { _mana = value; }
+	}
 
 	// Use this for initialization
 	private void Start () {
@@ -44,7 +75,7 @@ public class PlayerController : Singleton<PlayerController> {
 	    _right = transform.GetChild(3);
 		_animatorRight = _right.gameObject.GetComponent<Animator>();
 
-		_cooldownTimer = 1f;
+		_cooldownTimer = 0.5f;
 	}
 	
 	// Update is called once per frame
@@ -63,10 +94,15 @@ public class PlayerController : Singleton<PlayerController> {
 			AttackAnimation();
 		}
 		
+		// leftclick Timer
+		LeftClickTimer();
+		
 		// move the gameobject according to the keypresses
 		Move();
+		
+		// Fill manabar
+		UiFillBars();
 	}
-
 
 	private void Move()
     {
@@ -204,21 +240,97 @@ public class PlayerController : Singleton<PlayerController> {
 	    }
     }
 	
+	private void UiFillBars()
+	{
+		// Left click cooldown
+		if (!_canAttack)
+		{
+			_leftClickCooldownIcon.fillAmount = (_attackTimer / _cooldownTimer);	
+		}
+		else
+		{
+			_leftClickCooldownIcon.fillAmount = 1;
+		}
+		//
+		if (UIManager.Instance.NextWaveBtn.gameObject.activeInHierarchy || !(_mana <= _maxMana)) return;
+		_mana += 5f * Time.deltaTime;
+		_manaBar.fillAmount = _mana / _maxMana;
+
+		_rightClickIcon.fillAmount = _mana >= _rightClickCost ? 1 : 0;
+	}
+	
+	private void LeftClickTimer()
+	{
+		if (!_canAttack)
+		{
+			_attackTimer += Time.deltaTime;
+
+			if(_attackTimer >= _cooldownTimer)
+			{
+				_canAttack = true;
+				_attackTimer = 0;
+			}
+		}
+	}
+	
 	private void AttackAnimation()
+	{
+		LeftClick();
+		RightClick();
+	}
+
+	private void MeleeAttack(Transform aniDirection)
+	{
+		List<GameObject> targets = aniDirection.GetChild(1).GetChild(0).gameObject.GetComponent<PlayerAttackCollider>().Targets;
+
+		foreach (GameObject enemy in targets)
+		{
+			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(100);
+			Debug.Log("hit");
+		}
+	}
+	
+	private void RangedAttack()
+	{
+		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
+		projectile.transform.position = transform.position;
+	}
+	
+	private void MeleeRightClickAttack(Transform aniDirection)
+	{
+		_mana -= _rightClickCost;
+		_manaBar.fillAmount = _mana / _maxMana;
+	}
+
+	private void RangedRightClickAttack()
+	{
+		Color color = new Color(1f,1f,0.4f);
+		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
+		projectile.transform.position = transform.position;
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 5);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
+		projectile.transform.position = transform.position;
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), -5);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
+		projectile.transform.position = transform.position;
+		
+		_mana -= _rightClickCost;
+		_manaBar.fillAmount = _mana / _maxMana;
+	}
+
+	private void LeftClick()
 	{
 		if (Input.GetKey(KeyCode.Mouse0))
 		{
-			if (!_canAttack)
-			{
-				_attackTimer += Time.deltaTime;
-
-				if(_attackTimer >= _cooldownTimer)
-				{
-					_canAttack = true;
-					_attackTimer = 0;
-				}
-			}
-			else
+			
+			if(_canAttack)
 			{
 				if (_class.Equals("Melee"))
 				{
@@ -276,25 +388,67 @@ public class PlayerController : Singleton<PlayerController> {
 			
 				_canAttack = false;
 			}
-			
 		}
 	}
 
-	private void MeleeAttack(Transform direction)
+	private void RightClick()
 	{
-		List<GameObject> targets = direction.GetChild(1).GetChild(0).gameObject.GetComponent<PlayerAttackCollider>().Targets;
-
-		foreach (GameObject enemy in targets)
+		if (Input.GetKeyDown(KeyCode.Mouse1) && _mana >= _rightClickCost)
 		{
-			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(100);
-			Debug.Log("hit");
-		}
-	}
+				
+			if (_class.Equals("Melee"))
+			{
+				if (_down.gameObject.activeInHierarchy)
+				{
+					_animatorDown.SetTrigger("MeleeAttack");
+					MeleeRightClickAttack(_down);
+				}
 
-	private void RangedAttack()
-	{
-		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(50, 25f, transform.position);
-		projectile.transform.position = transform.position;
+				if (_right.gameObject.activeInHierarchy)
+				{
+					_animatorRight.SetTrigger("MeleeAttack");
+					MeleeRightClickAttack(_right);
+				}
+
+				if (_left.gameObject.activeInHierarchy)
+				{
+					_animatorLeft.SetTrigger("MeleeAttack");
+					MeleeRightClickAttack(_left);
+				}
+
+				if (_up.gameObject.activeInHierarchy)
+				{
+					_animatorUp.SetTrigger("MeleeAttack");
+					MeleeRightClickAttack(_up);
+				}
+			}
+				
+			if (_class.Equals("Ranged"))
+			{
+				if (_down.gameObject.activeInHierarchy)
+				{
+					_animatorDown.SetTrigger("RangedAttack");
+					RangedRightClickAttack();
+				}
+
+				if (_right.gameObject.activeInHierarchy)
+				{
+					_animatorRight.SetTrigger("RangedAttack");
+					RangedRightClickAttack();
+				}
+
+				if (_left.gameObject.activeInHierarchy)
+				{
+					_animatorLeft.SetTrigger("RangedAttack");
+					RangedRightClickAttack();
+				}
+
+				if (_up.gameObject.activeInHierarchy)
+				{
+					_animatorUp.SetTrigger("RangedAttack");
+					RangedRightClickAttack();
+				}
+			}
+		}
 	}
 }
