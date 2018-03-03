@@ -12,12 +12,20 @@ public class PlayerProjectile : MonoBehaviour
 
 	private Vector2 _playerPos, _directionPos, _normalizeDirection;
 
-	private bool _fractualShot = false;
+	private bool _scatterShot = false;
 
-	public bool FractualShot
+	private GameObject _enemy = null;
+
+	public GameObject Enemy
 	{
-		get { return _fractualShot; }
-		set { _fractualShot = value; }
+		get { return _enemy; }
+		set { _enemy = value; }
+	}
+
+	public bool ScatterShot
+	{
+		get { return _scatterShot; }
+		set { _scatterShot = value; }
 	}
 
 
@@ -53,7 +61,7 @@ public class PlayerProjectile : MonoBehaviour
 		
 		// direction the arrow is moving towards (with offset)
 		_normalizeDirection = (_directionPos - (Vector2) transform.position);
-		_normalizeDirection = Quaternion.Euler(0, _offset, _offset) * _normalizeDirection;
+		_normalizeDirection = Quaternion.Euler(0, 0, _offset) * _normalizeDirection;
 		_normalizeDirection = _normalizeDirection.normalized;
 		
 		// angle the arrow correctly
@@ -67,19 +75,12 @@ public class PlayerProjectile : MonoBehaviour
 
 	private void Shoot()
 	{
-		if (_fractualShot)
+		if (_scatterShot)
 		{
-			// TODO SOMETHING
-			if (Vector2.Distance(_playerPos, transform.position) > 4)
+			if (Vector2.Distance(_playerPos, transform.position) > 20)
 			{
-				if (PlayerController.Instance.Fshot > 0)
-				{
-					PlayerController.Instance.Fshot--;
-					FShoot();
-					
-				}
-				Release();
-				
+				SShot(null);
+				Release();		
 			}
 		}
 		else
@@ -93,35 +94,27 @@ public class PlayerProjectile : MonoBehaviour
 		transform.position += (Vector3)_normalizeDirection * _speed * Time.deltaTime;
 	}
 
-
-	private void FShoot()
-	{
-		Vector2 pos = transform.GetChild(0).transform.position;
-		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().FractualShot = true;
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 20);
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().FractualShot = true;
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, -20);
-	}
-
 	private void OnTriggerEnter2D(Collider2D otherObject)
 	{
 		if (otherObject.CompareTag("Enemy") || otherObject.CompareTag("Obstacle"))
 		{
-			GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
 			if (otherObject.CompareTag("Obstacle"))
 			{
-				aniPrefab.transform.position = transform.position;
+				Release();
 			}
 			else
 			{
-				aniPrefab.transform.position = otherObject.transform.position;
+				if (_scatterShot)
+				{
+					SShot(otherObject.gameObject);
+				}
+
+				if (_enemy == otherObject.gameObject) return;
+				//aniPrefab.transform.position = otherObject.transform.position;
 				otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
+				otherObject.GetComponent<EnemyController>().SetSpeed(otherObject.GetComponent<EnemyController>().DefaultSpeed * 0.5f);
+				Release();
 			}
-			Release();
-			
 		}
 	}
 
@@ -131,13 +124,98 @@ public class PlayerProjectile : MonoBehaviour
 		
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}
+	
+	
+	private void SShot(GameObject enemy)
+	{
+		Color c = new Color(0.9f, 0.137f, 0.137f);
+		Vector2 pos = transform.GetChild(0).transform.position;
+		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 45);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 90);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 135);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 180);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, -45);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, -90);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, -135);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}
+		
+		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 0);
+		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		if (enemy != null)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
+		}		
+	}
+	
+	
+	
 
 	private void Release()
 	{
+		// resets color of the projectile
+		Color color = new Color(0.3f,1f,1f);
+		GetComponentInChildren<SpriteRenderer>().color = color;
+		
+		// adds explosion where it lands
 		GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
 		aniPrefab.transform.position = transform.position;
-		_fractualShot = false;
+		
+		// sets it to false so the projectile doesn't spawn more arrows
+		_scatterShot = false;
+		
+		// sets current parent to false so it can be reused in object pool
 		gameObject.transform.parent.gameObject.SetActive(false);
+		
+		// sets the enemy saved to null so it can be hit
+		_enemy = null;
 	}
 
 }

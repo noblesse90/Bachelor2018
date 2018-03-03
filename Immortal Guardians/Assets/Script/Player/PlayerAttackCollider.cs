@@ -13,7 +13,6 @@ public class PlayerAttackCollider : Singleton<PlayerAttackCollider> {
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
-		
 		if (other.gameObject.CompareTag("Enemy"))
 		{
 			_targets.Add(other.gameObject);

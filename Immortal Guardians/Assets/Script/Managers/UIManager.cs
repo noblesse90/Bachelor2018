@@ -28,6 +28,38 @@ public class UIManager : Singleton<UIManager> {
     // TESTS
     [SerializeField] private Button _basicTowerTestBtn;
     [SerializeField] private Button _canonTowerTestBtn;
+    
+    // MANABAR
+    [SerializeField]private Image _manaBar;
+    [SerializeField] private Text _manaBarText;
+    
+    // ABILITIES
+    [SerializeField]private Image _leftClickIcon;
+    [SerializeField]private Image _rightClickIcon;
+    [SerializeField] private Image _firstAbilityIcon;
+
+    public Image ManaBar
+    {
+        get { return _manaBar; }
+        set { _manaBar = value; }
+    }
+    
+    private bool _canBasicAttack = true, _canGCDAttack = true;
+    private float _basicAttackTimer, _gcdTimer, _gcd;
+
+    public bool CanBasicAttack
+    {
+        get { return _canBasicAttack; }
+        set { _canBasicAttack = value; }
+    }
+
+    public bool CanGcdAttack
+    {
+        get { return _canGCDAttack; }
+        set { _canGCDAttack = value; }
+    }
+
+   
 
 
     // Use this for initialization
@@ -50,7 +82,9 @@ public class UIManager : Singleton<UIManager> {
 
         _canonTowerTestBtn = _canonTowerTestBtn.GetComponent<Button>();
         _canonTowerTestBtn.onClick.AddListener(CanonTowerTestMetode);
-
+        
+        
+        _gcd = 0.5f;
     }
 
     private void BasicTowerTestMetode()
@@ -96,6 +130,12 @@ public class UIManager : Singleton<UIManager> {
             }
             _sellTowerBtn.transform.gameObject.SetActive(true);
         }
+        
+        // Fill manabar
+        UiFillBars();
+        
+        // gcd timer
+        Timers();
     }
 
     public int Currency
@@ -111,8 +151,8 @@ public class UIManager : Singleton<UIManager> {
             {
                 value = 99999;
             }
-            this._currency = value;
-            this._currencyTxt.text = value.ToString();
+            _currency = value;
+            _currencyTxt.text = value.ToString();
             
         }
     }
@@ -126,8 +166,8 @@ public class UIManager : Singleton<UIManager> {
 
         set
         {
-            this._life = value;
-            this._lifeTxt.text = value.ToString();
+            _life = value;
+            _lifeTxt.text = value.ToString();
         }
     }
 
@@ -141,7 +181,7 @@ public class UIManager : Singleton<UIManager> {
         set
         {
             _wave = value;
-            this._waveTxt.text = "Current Wave: " + value.ToString();
+            _waveTxt.text = "Current Wave: " + value.ToString();
         }
     }
 
@@ -173,5 +213,83 @@ public class UIManager : Singleton<UIManager> {
         _firerateText.text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
         _sellPriceText.text = "$" + (tc.TotalPrice / 2);
         _upgradePriceText.text = "$" + tc.UpgradePrice;
+    }
+    
+    private void UiFillBars()
+    {
+        // Basic attack cooldown
+        if (!_canBasicAttack)
+        {
+            _leftClickIcon.fillAmount = (_basicAttackTimer / _gcd);	
+        }
+        else
+        {
+            _leftClickIcon.fillAmount = 1;
+        }
+
+        if (!_canGCDAttack)
+        {
+            if (PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost)
+            {
+                _rightClickIcon.fillAmount = (_gcdTimer / _gcd);
+            }
+            else
+            {
+                _rightClickIcon.fillAmount = 0;
+            }
+
+            if (PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost)
+            {
+                _firstAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+            }
+            else
+            {
+                _firstAbilityIcon.fillAmount = 0;
+            }
+        }
+        else
+        {
+            _rightClickIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost ? 1 : 0;
+            _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost ? 1 : 0;
+        }
+
+		
+        // MANABAR
+        if (!NextWaveBtn.gameObject.activeInHierarchy && PlayerController.Instance.Mana <= PlayerController.Instance.MaxMana)
+        {
+            PlayerController.Instance.Mana += 5f * Time.deltaTime;
+            _manaBar.fillAmount = PlayerController.Instance.Mana / PlayerController.Instance.MaxMana;
+            ToStringManabar(PlayerController.Instance.Mana, PlayerController.Instance.MaxMana);
+        }
+    }
+
+    private void ToStringManabar(float mana, float maxMana)
+    {
+        _manaBarText.text = mana.ToString("#") + "/" + maxMana;
+    }
+    
+    private void Timers()
+    {
+        if (!_canBasicAttack)
+        {
+            _basicAttackTimer += Time.deltaTime;
+
+            if(_basicAttackTimer >= _gcd)
+            {
+                _canBasicAttack = true;
+                _basicAttackTimer = 0;
+            }
+        }
+
+        if (!_canGCDAttack)
+        {
+            _gcdTimer += Time.deltaTime;
+
+            if (_gcdTimer >= _gcd)
+            {
+                _canGCDAttack = true;
+                _gcdTimer = 0;
+            }
+        }
     }
 }

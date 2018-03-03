@@ -18,7 +18,6 @@ public class WaveManager : Singleton<WaveManager> {
     [SerializeField] private float _cooldownTimer;
 
     private string[] _enemyTypes = {"Enemy01", "Enemy02", "Enemy03", "Enemy04", "Enemy05", "Enemy06", "Enemy07", "Enemy08", "Enemy09", "Enemy10"};
-    
 
     private int _waveIndex = 0;
     

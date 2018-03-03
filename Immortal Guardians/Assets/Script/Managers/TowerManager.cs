@@ -53,9 +53,6 @@ public class TowerManager : Singleton<TowerManager> {
     }
 
 
-    
-    
-
     // Use this for initialization
     private void Start () {
         _destination = GameObject.FindGameObjectWithTag("EnemyDestination");
@@ -85,7 +82,7 @@ public class TowerManager : Singleton<TowerManager> {
         //tower.GetComponent<SpriteRenderer>().sortingOrder = (int)Mathf.Round(mousePosition.y) * -1;
 
         // checks if the tower is valid and subtracts money
-        if (checkValidTower(tower) != null)
+        if (CheckValidTower(tower) != null)
         {
             UIManager.Instance.Currency -= tower.GetComponent<TowerController>().Price;
             Physics2D.IgnoreCollision(tower.GetComponent<BoxCollider2D>(), PlayerController.Instance.GetComponent<Collider2D>());
@@ -138,7 +135,7 @@ public class TowerManager : Singleton<TowerManager> {
         return empty;
     }
 
-    private GameObject checkValidTower(GameObject tower)
+    private GameObject CheckValidTower(GameObject tower)
     {
         // check if the list is empty (no spawnpoint nodes)
         if (WaveManager.Instance.SpawnLocations != null && _destination != null)
@@ -175,21 +172,15 @@ public class TowerManager : Singleton<TowerManager> {
 
     public void DestroyTower()
     {
-        RaycastHit2D[] ray = GManager.Instance.GetMouseCast();
-        foreach (RaycastHit2D r in ray)
-        {
-            if (!r.collider.CompareTag("Tower")) continue;
-            // Destroys the tower
-            Destroy(r.transform.gameObject);
-            // get the bounds of the currect object that was hit by the raycast (tower)
-            Bounds b = r.transform.GetComponent<BoxCollider2D>().bounds;
-            // expands the bounds since the nodes are further out
-            b.Expand(2);
-            // makes a graph update object
-            GraphUpdateObject guo = new GraphUpdateObject(b);
-            // updates the graph inside the given area of the bounds
-            AstarPath.active.UpdateGraphs(guo);
-        }
+        Destroy(_currentTower);
+        // get the bounds of the currect object that was hit by the raycast (tower)
+        Bounds b = _currentTower.transform.GetComponent<BoxCollider2D>().bounds;
+        // expands the bounds since the nodes are further out
+        b.Expand(2);
+        // makes a graph update object
+        GraphUpdateObject guo = new GraphUpdateObject(b);
+        // updates the graph inside the given area of the bounds
+        AstarPath.active.UpdateGraphs(guo);
     }
 
     public GameObject GetTower()
@@ -215,8 +206,8 @@ public class TowerManager : Singleton<TowerManager> {
     {
         if (_currentTower == null) return;
         UIManager.Instance.Currency += _currentTower.GetComponent<TowerController>().TotalPrice/2;
-        Destroy(_currentTower);
         UIManager.Instance.TowerStatsUi.SetActive(false);
+        DestroyTower();
     }
 
     public void UpgradeTower()
