@@ -35,8 +35,7 @@ public class BasicTProjectile : MonoBehaviour {
 
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             
-            transform.rotation
-                 = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
         }
         else
@@ -69,7 +68,8 @@ public class BasicTProjectile : MonoBehaviour {
 
     private void Release()
     {
-        gameObject.SetActive(false);
+        gameObject.transform.parent.gameObject.SetActive(false);
+        gameObject.transform.position = gameObject.transform.parent.transform.position;
         _shot = false;
     }
 }

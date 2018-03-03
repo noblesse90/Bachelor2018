@@ -28,10 +28,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private bool _canAttack = true;
 	private float _attackTimer, _cooldownTimer;
 
-
 	
-
-
 
 	[SerializeField]private Image _manaBar;
 	[SerializeField]private Image _leftClickCooldownIcon;
@@ -56,6 +53,24 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		get { return _mana; }
 		set { _mana = value; }
+	}
+	
+	// FRACTUAL SHOT 
+	
+	private int _fshot;
+	
+	public int Fshot
+	{
+		get { return _fshot; }
+		set { _fshot = value; }
+	}
+	
+	private void FractalShot()
+	{
+		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+		projectile.GetComponentInChildren<PlayerProjectile>().FractualShot = true;
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
+		
 	}
 
 	// Use this for initialization
@@ -252,10 +267,11 @@ public class PlayerController : Singleton<PlayerController> {
 			_leftClickCooldownIcon.fillAmount = 1;
 		}
 		//
-		if (UIManager.Instance.NextWaveBtn.gameObject.activeInHierarchy || !(_mana <= _maxMana)) return;
-		_mana += 5f * Time.deltaTime;
-		_manaBar.fillAmount = _mana / _maxMana;
-
+		if (!UIManager.Instance.NextWaveBtn.gameObject.activeInHierarchy && _mana <= _maxMana)
+		{
+			_mana += 5f * Time.deltaTime;
+			_manaBar.fillAmount = _mana / _maxMana;
+		}
 		_rightClickIcon.fillAmount = _mana >= _rightClickCost ? 1 : 0;
 	}
 	
@@ -277,6 +293,7 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		LeftClick();
 		RightClick();
+		QClick();
 	}
 
 	private void MeleeAttack(Transform aniDirection)
@@ -292,9 +309,10 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private void RangedAttack()
 	{
+		Color color = new Color(0.3f,1f,1f);
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
-		projectile.transform.position = transform.position;
+		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
 	}
 	
 	private void MeleeRightClickAttack(Transform aniDirection)
@@ -309,17 +327,14 @@ public class PlayerController : Singleton<PlayerController> {
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
-		projectile.transform.position = transform.position;
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 5);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
-		projectile.transform.position = transform.position;
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), -5);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
-		projectile.transform.position = transform.position;
 		
 		_mana -= _rightClickCost;
 		_manaBar.fillAmount = _mana / _maxMana;
@@ -448,6 +463,37 @@ public class PlayerController : Singleton<PlayerController> {
 					_animatorUp.SetTrigger("RangedAttack");
 					RangedRightClickAttack();
 				}
+			}
+		}
+	}
+
+	private void QClick()
+	{
+		if (Input.GetKeyDown(KeyCode.Q))
+		{
+			_fshot = 7;
+			if (_down.gameObject.activeInHierarchy)
+			{
+				_animatorDown.SetTrigger("RangedAttack");
+				FractalShot();
+			}
+
+			if (_right.gameObject.activeInHierarchy)
+			{
+				_animatorRight.SetTrigger("RangedAttack");
+				FractalShot();
+			}
+
+			if (_left.gameObject.activeInHierarchy)
+			{
+				_animatorLeft.SetTrigger("RangedAttack");
+				FractalShot();
+			}
+
+			if (_up.gameObject.activeInHierarchy)
+			{
+				_animatorUp.SetTrigger("RangedAttack");
+				FractalShot();
 			}
 		}
 	}
