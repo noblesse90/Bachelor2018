@@ -25,6 +25,9 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private string _class = "Ranged";
 	
+	private LookDirection _lookDirection = LookDirection.Down;
+	
+	//Manacost for skills
 	private int _rightClickCost = 10;
 	private int _firstAbilityCost = 20;
 
@@ -76,11 +79,13 @@ public class PlayerController : Singleton<PlayerController> {
 	    _right = transform.GetChild(3);
 		_animatorRight = _right.gameObject.GetComponent<Animator>();
 	}
-	
+
 	// Update is called once per frame
 	private void FixedUpdate () {
 		_rb.velocity = _rb.velocity.normalized * _speed;
 
+
+			DashAbility();
     }
 
 	private void Update()
@@ -95,12 +100,17 @@ public class PlayerController : Singleton<PlayerController> {
 
 		// move the gameobject according to the keypresses
 		Move();
+		
 	}
 
 	private void Move()
     {
         transform.Translate(_direction * Time.deltaTime * _speed);
+	    
+	    
     }
+
+	
 
     private void GetInput()
     {
@@ -122,7 +132,7 @@ public class PlayerController : Singleton<PlayerController> {
 			    _direction += Vector2.left;
 			    _direction += Vector2.up;
 		    }
-		    
+		    _lookDirection = LookDirection.Left;
 		    _left.gameObject.SetActive(true);
 	        
 		    _animatorLeft.SetBool("Walking", true);
@@ -146,7 +156,7 @@ public class PlayerController : Singleton<PlayerController> {
 			    _direction += Vector2.right;
 			    _direction += Vector2.up;
 		    }
-		    
+		    _lookDirection = LookDirection.Right;
 		    _right.gameObject.SetActive(true);
 	        
 		    _animatorRight.SetBool("Walking", true);
@@ -160,6 +170,7 @@ public class PlayerController : Singleton<PlayerController> {
         if (Input.GetKey(KeyCode.W))
         {
             _direction += Vector2.up;
+	        _lookDirection = LookDirection.Up;
             _up.gameObject.SetActive(true);
 	        
 	        _animatorUp.SetBool("Walking", true);
@@ -173,6 +184,7 @@ public class PlayerController : Singleton<PlayerController> {
         if (Input.GetKey(KeyCode.A))
         {
             _direction += Vector2.left;
+	        _lookDirection = LookDirection.Left;
             _left.gameObject.SetActive(true);
 	        
 	        _animatorLeft.SetBool("Walking", true);
@@ -186,6 +198,7 @@ public class PlayerController : Singleton<PlayerController> {
         if (Input.GetKey(KeyCode.S))
         {
             _direction += Vector2.down;
+	        _lookDirection = LookDirection.Down;
             _down.gameObject.SetActive(true);
 	        
 	        _animatorDown.SetBool("Walking", true);
@@ -200,6 +213,7 @@ public class PlayerController : Singleton<PlayerController> {
         if (Input.GetKey(KeyCode.D))
         {
             _direction += Vector2.right;
+	        _lookDirection = LookDirection.Right;
             _right.gameObject.SetActive(true);
 	        
 	        _animatorRight.SetBool("Walking", true);
@@ -232,10 +246,6 @@ public class PlayerController : Singleton<PlayerController> {
 		    }
 	    }
     }
-	
-	
-	
-	
 	
 	private void AttackAnimation()
 	{
@@ -466,4 +476,46 @@ public class PlayerController : Singleton<PlayerController> {
 			}
 		}
 	}
+
+	
+	private enum LookDirection
+	{
+		Left,
+		Right,
+		Up,
+		Down
+	}
+
+	
+	private void DashAbility()
+	{
+		
+		
+		if (Input.GetKey(KeyCode.Space))
+		{
+			switch (_lookDirection)
+			{
+				case LookDirection.Left:
+					_rb.AddForce(Vector2.left*35,ForceMode2D.Impulse);
+					break;
+				case LookDirection.Down:
+					_rb.AddForce(Vector2.down*35,ForceMode2D.Impulse);
+					break;
+				case LookDirection.Right:
+					_rb.AddForce(Vector2.right*35,ForceMode2D.Impulse);
+					break;
+				case LookDirection.Up:
+					_rb.AddForce(Vector2.up*35,ForceMode2D.Impulse);
+					break;
+			}
+		}
+		else
+		{
+			_rb.velocity = Vector2.zero;
+			_rb.angularVelocity = 0;
+			
+		}
+	}
+	
+	
 }
