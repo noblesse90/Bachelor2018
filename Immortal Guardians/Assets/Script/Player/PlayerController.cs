@@ -21,12 +21,12 @@ public class PlayerController : Singleton<PlayerController> {
     // player transform directions
     private Transform _down, _up, _left, _right;
 
-    private Animator _animatorDown, _animatorUp, _animatorLeft, _animatorRight;    
-	
-	private string _class = "Ranged";
-	
+    private Animator _animatorDown, _animatorUp, _animatorLeft, _animatorRight;
+
+	private Class _class = Class.Ranged;
+
 	private LookDirection _lookDirection = LookDirection.Down;
-	
+
 	//Manacost for skills
 	private int _rightClickCost = 10;
 	private int _firstAbilityCost = 20;
@@ -61,6 +61,12 @@ public class PlayerController : Singleton<PlayerController> {
 		get { return _mana; }
 		set { _mana = value; }
 	}
+	
+	public Class GetClass
+	{
+		get { return _class; }
+		set { _class = value; }
+	}
 
 	// Use this for initialization
 	private void Start () {
@@ -83,9 +89,6 @@ public class PlayerController : Singleton<PlayerController> {
 	// Update is called once per frame
 	private void FixedUpdate () {
 		_rb.velocity = _rb.velocity.normalized * _speed;
-
-
-			DashAbility();
     }
 
 	private void Update()
@@ -106,8 +109,6 @@ public class PlayerController : Singleton<PlayerController> {
 	private void Move()
     {
         transform.Translate(_direction * Time.deltaTime * _speed);
-	    
-	    
     }
 
 	
@@ -267,7 +268,8 @@ public class PlayerController : Singleton<PlayerController> {
 		foreach (GameObject enemy in targets)
 		{
 			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(100);
-			Debug.Log("hit");
+			GameObject explosion = ObjectPool.Instance.GetObject("ArrowExplosion");
+			explosion.transform.position = enemy.transform.position;
 		}
 	}
 	
@@ -277,8 +279,11 @@ public class PlayerController : Singleton<PlayerController> {
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
 	}
 	
-	private void MeleeRightClickAttack(Transform aniDirection)
+	
+	private void AxeThrow()
 	{
+		GameObject axe = ObjectPool.Instance.GetObject("AxeThrow");
+		axe.GetComponent<WeaponCollider>().InstantiateProjectile(_damage, 20, transform.position, GManager.Instance.GetMousePos(),0);
 		ManaCost(_rightClickCost);
 	}
 
@@ -315,61 +320,65 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		if (Input.GetKey(KeyCode.Mouse0))
 		{
-			
 			if(UIManager.Instance.CanBasicAttack)
 			{
-				if (_class.Equals("Melee"))
+				switch (_class)
 				{
-					if (_down.gameObject.activeInHierarchy)
-					{
-						_animatorDown.SetTrigger("MeleeAttack");
-						MeleeAttack(_down);
-					}
-
-					if (_right.gameObject.activeInHierarchy)
-					{
-						_animatorRight.SetTrigger("MeleeAttack");
-						MeleeAttack(_right);
-					}
-
-					if (_left.gameObject.activeInHierarchy)
-					{
-						_animatorLeft.SetTrigger("MeleeAttack");
-						MeleeAttack(_left);
-					}
-
-					if (_up.gameObject.activeInHierarchy)
-					{
-						_animatorUp.SetTrigger("MeleeAttack");
-						MeleeAttack(_up);
-					}
-				}
-
-				if (_class.Equals("Ranged"))
-				{
-					if (_down.gameObject.activeInHierarchy)
-					{
-						_animatorDown.SetTrigger("RangedAttack");
-						RangedAttack();
-					}
-
-					if (_right.gameObject.activeInHierarchy)
-					{
-						_animatorRight.SetTrigger("RangedAttack");
-						RangedAttack();
-					}
-
-					if (_left.gameObject.activeInHierarchy)
-					{
-						_animatorLeft.SetTrigger("RangedAttack");
-						RangedAttack();
-					}
-
-					if (_up.gameObject.activeInHierarchy)
-					{
-						_animatorUp.SetTrigger("RangedAttack");
-						RangedAttack();
-					}
+					case Class.Ranged:
+						switch (_lookDirection)
+						{
+							case LookDirection.Down:
+								_animatorDown.SetTrigger("RangedAttack");
+								RangedAttack();
+								break;
+							
+							case LookDirection.Left:
+								_animatorLeft.SetTrigger("RangedAttack");
+								RangedAttack();
+								break;
+							
+							case LookDirection.Right:
+								_animatorRight.SetTrigger("RangedAttack");
+								RangedAttack();
+								break;
+							
+							case LookDirection.Up:
+								_animatorUp.SetTrigger("RangedAttack");
+								RangedAttack();
+								break;
+							
+							default: break;
+						}
+						break;
+					
+					case Class.Melee:
+						switch (_lookDirection)
+						{
+							case LookDirection.Down:
+								_animatorDown.SetTrigger("MeleeAttack");
+								StartCoroutine(MeleeAttackCoroutine(_down));
+								break;
+							
+							case LookDirection.Left:
+								_animatorLeft.SetTrigger("MeleeAttack");
+								StartCoroutine(MeleeAttackCoroutine(_left));
+								break;
+							
+							case LookDirection.Right:
+								_animatorRight.SetTrigger("MeleeAttack");
+								StartCoroutine(MeleeAttackCoroutine(_right));
+								break;
+							
+							case LookDirection.Up:
+								_animatorUp.SetTrigger("MeleeAttack");
+								StartCoroutine(MeleeAttackCoroutine(_up));
+								break;
+							
+							default: break;
+						}
+						break;
+					
+					default: break;
 				}
 
 				UIManager.Instance.CanBasicAttack = false;
@@ -383,58 +392,63 @@ public class PlayerController : Singleton<PlayerController> {
 		{
 			if (UIManager.Instance.CanGcdAttack)
 			{
-				if (_class.Equals("Melee"))
+				switch (_class)
 				{
-					if (_down.gameObject.activeInHierarchy)
-					{
-						_animatorDown.SetTrigger("MeleeAttack");
-						MeleeRightClickAttack(_down);
-					}
-
-					if (_right.gameObject.activeInHierarchy)
-					{
-						_animatorRight.SetTrigger("MeleeAttack");
-						MeleeRightClickAttack(_right);
-					}
-
-					if (_left.gameObject.activeInHierarchy)
-					{
-						_animatorLeft.SetTrigger("MeleeAttack");
-						MeleeRightClickAttack(_left);
-					}
-
-					if (_up.gameObject.activeInHierarchy)
-					{
-						_animatorUp.SetTrigger("MeleeAttack");
-						MeleeRightClickAttack(_up);
-					}
-				}
-				
-				if (_class.Equals("Ranged"))
-				{
-					if (_down.gameObject.activeInHierarchy)
-					{
-						_animatorDown.SetTrigger("RangedAttack");
-						RangedRightClickAttack();
-					}
-
-					if (_right.gameObject.activeInHierarchy)
-					{
-						_animatorRight.SetTrigger("RangedAttack");
-						RangedRightClickAttack();
-					}
-
-					if (_left.gameObject.activeInHierarchy)
-					{
-						_animatorLeft.SetTrigger("RangedAttack");
-						RangedRightClickAttack();
-					}
-
-					if (_up.gameObject.activeInHierarchy)
-					{
-						_animatorUp.SetTrigger("RangedAttack");
-						RangedRightClickAttack();
-					}
+					case Class.Ranged:
+						switch (_lookDirection)
+						{
+							case LookDirection.Down:
+								_animatorDown.SetTrigger("RangedAttack");
+								RangedRightClickAttack();
+								break;
+							
+							case LookDirection.Left:
+								_animatorLeft.SetTrigger("RangedAttack");
+								RangedRightClickAttack();
+								break;
+							
+							case LookDirection.Right:
+								_animatorRight.SetTrigger("RangedAttack");
+								RangedRightClickAttack();
+								break;
+							
+							case LookDirection.Up:
+								_animatorUp.SetTrigger("RangedAttack");
+								RangedRightClickAttack();
+								break;
+							
+							default: break;
+						}
+						break;
+					
+					case Class.Melee:
+						switch (_lookDirection)
+						{
+							case LookDirection.Down:
+								_animatorDown.SetTrigger("AxeThrow");
+								Invoke("AxeThrow", 0.5f);
+								break;
+							
+							case LookDirection.Left:
+								_animatorLeft.SetTrigger("AxeThrow");
+								Invoke("AxeThrow", 0.5f);
+								break;
+							
+							case LookDirection.Right:
+								_animatorRight.SetTrigger("AxeThrow");
+								Invoke("AxeThrow", 0.5f);
+								break;
+							
+							case LookDirection.Up:
+								_animatorUp.SetTrigger("AxeThrow");
+								Invoke("AxeThrow", 0.5f);
+								break;
+							
+							default: break;
+						}
+						break;
+					
+					default: break;
 				}
 
 				UIManager.Instance.CanGcdAttack = false;
@@ -448,28 +462,63 @@ public class PlayerController : Singleton<PlayerController> {
 		{
 			if (UIManager.Instance.CanGcdAttack)
 			{
-				if (_down.gameObject.activeInHierarchy)
+				switch (_class)
 				{
-					_animatorDown.SetTrigger("RangedAttack");
-					ScatterShot();
-				}
-
-				if (_right.gameObject.activeInHierarchy)
-				{
-					_animatorRight.SetTrigger("RangedAttack");
-					ScatterShot();
-				}
-
-				if (_left.gameObject.activeInHierarchy)
-				{
-					_animatorLeft.SetTrigger("RangedAttack");
-					ScatterShot();
-				}
-
-				if (_up.gameObject.activeInHierarchy)
-				{
-					_animatorUp.SetTrigger("RangedAttack");
-					ScatterShot();
+					case Class.Ranged:
+						switch (_lookDirection)
+						{
+							case LookDirection.Down:
+								_animatorDown.SetTrigger("RangedAttack");
+								ScatterShot();
+								break;
+							
+							case LookDirection.Left:
+								_animatorLeft.SetTrigger("RangedAttack");
+								ScatterShot();
+								break;
+							
+							case LookDirection.Right:
+								_animatorRight.SetTrigger("RangedAttack");
+								ScatterShot();
+								break;
+							
+							case LookDirection.Up:
+								_animatorUp.SetTrigger("RangedAttack");
+								ScatterShot();
+								break;
+							
+							default: break;
+						}
+						break;
+					/*
+					case Class.Melee:
+						switch (_lookDirection)
+						{
+							case LookDirection.Down:
+								_animatorDown.SetTrigger("MeleeAttack");
+								MeleeAttack(_down);
+								break;
+							
+							case LookDirection.Left:
+								_animatorLeft.SetTrigger("MeleeAttack");
+								MeleeAttack(_left);
+								break;
+							
+							case LookDirection.Right:
+								_animatorRight.SetTrigger("MeleeAttack");
+								MeleeAttack(_right);
+								break;
+							
+							case LookDirection.Up:
+								_animatorUp.SetTrigger("MeleeAttack");
+								MeleeAttack(_up);
+								break;
+							
+							default: break;
+						}
+						break;
+					*/
+					default: break;
 				}
 
 				UIManager.Instance.CanGcdAttack = false;
@@ -486,36 +535,27 @@ public class PlayerController : Singleton<PlayerController> {
 		Down
 	}
 
-	
-	private void DashAbility()
+	public enum Class
 	{
-		
-		
-		if (Input.GetKey(KeyCode.Space))
-		{
-			switch (_lookDirection)
-			{
-				case LookDirection.Left:
-					_rb.AddForce(Vector2.left*35,ForceMode2D.Impulse);
-					break;
-				case LookDirection.Down:
-					_rb.AddForce(Vector2.down*35,ForceMode2D.Impulse);
-					break;
-				case LookDirection.Right:
-					_rb.AddForce(Vector2.right*35,ForceMode2D.Impulse);
-					break;
-				case LookDirection.Up:
-					_rb.AddForce(Vector2.up*35,ForceMode2D.Impulse);
-					break;
-			}
-		}
-		else
-		{
-			_rb.velocity = Vector2.zero;
-			_rb.angularVelocity = 0;
-			
-		}
+		Ranged,
+		Melee
 	}
+
+
+	IEnumerator MeleeAttackCoroutine(Transform direction)
+	{
+		yield return new WaitForSeconds(0.35f);
+		MeleeAttack(direction);
+	}
+	
+	// SWITCH CLASS
+	public void SwitchClass()
+	{
+		_class = _class == Class.Melee ? Class.Ranged : Class.Melee;
+		UIManager.Instance.SwitchClassIcons();
+	}
+
+
 	
 	
 }

@@ -49,7 +49,7 @@ public class PlayerProjectile : MonoBehaviour
 		TransformRotation();
 	}
 
-	public void InstantiateFProjectile(float damage, float speed, Vector2 playerPos, Vector2 direction, int offset)
+	public void InstantiateSProjectile(float damage, float speed, Vector2 playerPos, Vector2 direction, int offset)
 	{
 		_offset = offset;
 		_directionPos = direction;
@@ -131,7 +131,7 @@ public class PlayerProjectile : MonoBehaviour
 		Color c = new Color(0.9f, 0.137f, 0.137f);
 		Vector2 pos = transform.GetChild(0).transform.position;
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 45);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 45);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{
@@ -139,7 +139,7 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 90);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 90);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{
@@ -147,7 +147,7 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 135);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 135);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{
@@ -155,7 +155,7 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 180);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 180);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{
@@ -163,7 +163,7 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, -45);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, -45);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{
@@ -171,7 +171,7 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, -90);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, -90);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{
@@ -179,7 +179,7 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, -135);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, -135);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{
@@ -187,7 +187,7 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateFProjectile(_damage, 25f, transform.position, pos, 0);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 0);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
 		if (enemy != null)
 		{

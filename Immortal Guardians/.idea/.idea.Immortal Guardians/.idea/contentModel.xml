@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Rajak\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.1995664626.00" t="ExcludeRecursive" />
-    <e p="C:\Users\Rajak\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
+    <e p="C:\Users\finge\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.1325227568.00" t="ExcludeRecursive" />
+    <e p="C:\Users\finge\OneDrive\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
@@ -375,7 +375,9 @@
             <e p="PlayerAttackCollider.cs" t="Include" />
             <e p="PlayerController.cs" t="Include" />
             <e p="PlayerProjectile.cs" t="Include" />
+            <e p="WeaponCollider.cs" t="Include" />
           </e>
+          <e p="RotateTest.cs" t="Include" />
           <e p="Singleton.cs" t="Include" />
           <e p="SpawnRotator.cs" t="Include" />
           <e p="Towers" t="Include">

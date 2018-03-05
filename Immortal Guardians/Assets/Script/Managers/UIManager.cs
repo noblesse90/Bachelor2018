@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager> {
 
+    [Header("Wave button")]
     [SerializeField] private Button _nextWaveBtn;
-    [SerializeField] private Button _sellTowerBtn;
-    [SerializeField] private Button _upgradeBtn;
-
+    
+    [Header("Display Text")]
     [SerializeField] private Text _currencyTxt;
     [SerializeField] private Text _lifeTxt;
     [SerializeField] private Text _waveTxt;
@@ -18,25 +18,46 @@ public class UIManager : Singleton<UIManager> {
     private int _wave;
 
     // Tower Stats
+    [Header("Tower UI")]
     [SerializeField] private Text _towerTypeText;
     [SerializeField] private Text _damageText;
     [SerializeField] private Text _firerateText;
     [SerializeField] private Text _sellPriceText;
     [SerializeField] private Text _upgradePriceText;
     [SerializeField] private GameObject _towerStatsUi;
+    [SerializeField] private Button _sellTowerBtn;
+    [SerializeField] private Button _upgradeBtn;
 
-    // TESTS
+    // TOWER BUILD BUTTONS
+    [Header("Tower Build Buttons")]
     [SerializeField] private Button _basicTowerTestBtn;
     [SerializeField] private Button _canonTowerTestBtn;
     
     // MANABAR
+    [Header("Player Manabar")]
     [SerializeField]private Image _manaBar;
     [SerializeField] private Text _manaBarText;
     
     // ABILITIES
-    [SerializeField]private Image _leftClickIcon;
-    [SerializeField]private Image _rightClickIcon;
+    [Header("Ability Images(gameobjects)")]
+    [SerializeField] private Image _leftClickIcon;
+    [SerializeField] private Image _rightClickIcon;
     [SerializeField] private Image _firstAbilityIcon;
+    
+    // ABILITIES SPRITES
+    [Header("Melee")]
+    [SerializeField] private Sprite _leftClickSpriteMelee;
+    [SerializeField] private Sprite _rightClickSpriteMelee;
+    [SerializeField] private Sprite _firstAbilitySpriteMelee;
+    [Header("Ranged")]
+    [SerializeField] private Sprite _leftClickSpriteRanged;
+    [SerializeField] private Sprite _rightClickSpriteRanged;
+    [SerializeField] private Sprite _firstAbilitySpriteRanged;
+    
+    // SWITCH CLASS BUTTON
+    [Header("Switch Class")] 
+    [SerializeField] private Button _switchClass;
+   
 
     public Image ManaBar
     {
@@ -68,23 +89,46 @@ public class UIManager : Singleton<UIManager> {
         Currency = 500;
         Life = 500;
 
-        _nextWaveBtn = _nextWaveBtn.GetComponent<Button>();
         _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
-        _sellTowerBtn = _sellTowerBtn.GetComponent<Button>();
         _sellTowerBtn.onClick.AddListener(TowerManager.Instance.SellTower);
 
-        _upgradeBtn = _upgradeBtn.GetComponent<Button>();
         _upgradeBtn.onClick.AddListener(TowerManager.Instance.UpgradeTower);
 
-        _basicTowerTestBtn = _basicTowerTestBtn.GetComponent<Button>();
         _basicTowerTestBtn.onClick.AddListener(BasicTowerTestMetode);
 
-        _canonTowerTestBtn = _canonTowerTestBtn.GetComponent<Button>();
         _canonTowerTestBtn.onClick.AddListener(CanonTowerTestMetode);
-        
+
+        _switchClass.onClick.AddListener(PlayerController.Instance.SwitchClass);
         
         _gcd = 0.5f;
+        
+        SwitchClassIcons();
+    }
+
+    public void SwitchClassIcons()
+    {
+        switch (PlayerController.Instance.GetClass)
+        {
+            case PlayerController.Class.Melee:
+                _leftClickIcon.GetComponent<Image>().sprite = _leftClickSpriteMelee;
+                _leftClickIcon.transform.parent.GetComponent<Image>().sprite = _leftClickSpriteMelee;
+                _rightClickIcon.GetComponent<Image>().sprite = _rightClickSpriteMelee;
+                _rightClickIcon.transform.parent.GetComponent<Image>().sprite = _rightClickSpriteMelee;
+                _firstAbilityIcon.GetComponent<Image>().sprite = _firstAbilitySpriteMelee;
+                _firstAbilityIcon.transform.parent.GetComponent<Image>().sprite = _firstAbilitySpriteMelee;
+                break;
+            case PlayerController.Class.Ranged:
+                _leftClickIcon.GetComponent<Image>().sprite = _leftClickSpriteRanged;
+                _leftClickIcon.transform.parent.GetComponent<Image>().sprite = _leftClickSpriteRanged;
+                _rightClickIcon.GetComponent<Image>().sprite = _rightClickSpriteRanged;
+                _rightClickIcon.transform.parent.GetComponent<Image>().sprite = _rightClickSpriteRanged;
+                _firstAbilityIcon.GetComponent<Image>().sprite = _firstAbilitySpriteRanged;
+                _firstAbilityIcon.transform.parent.GetComponent<Image>().sprite =
+                    _firstAbilitySpriteRanged;
+                break;
+                    
+        }
     }
 
     private void BasicTowerTestMetode()
@@ -258,14 +302,21 @@ public class UIManager : Singleton<UIManager> {
         if (!NextWaveBtn.gameObject.activeInHierarchy && PlayerController.Instance.Mana <= PlayerController.Instance.MaxMana)
         {
             PlayerController.Instance.Mana += 5f * Time.deltaTime;
-            _manaBar.fillAmount = PlayerController.Instance.Mana / PlayerController.Instance.MaxMana;
-            ToStringManabar(PlayerController.Instance.Mana, PlayerController.Instance.MaxMana);
         }
+        _manaBar.fillAmount = PlayerController.Instance.Mana / PlayerController.Instance.MaxMana;
+        ToStringManabar(PlayerController.Instance.Mana, PlayerController.Instance.MaxMana);
     }
 
     private void ToStringManabar(float mana, float maxMana)
     {
-        _manaBarText.text = mana.ToString("#") + "/" + maxMana;
+        if (mana <= 0.49f)
+        {
+            _manaBarText.text = "0/" + maxMana;
+        }
+        else
+        {
+            _manaBarText.text = mana.ToString("#") + "/" + maxMana;
+        }
     }
     
     private void Timers()
