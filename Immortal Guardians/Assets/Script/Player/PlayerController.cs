@@ -11,6 +11,7 @@ public class PlayerController : Singleton<PlayerController> {
 
     // Int variable to controll speed and can be changeable through the inspector (SerializeField)
     [SerializeField] private int _speed = 10;
+	[SerializeField] private GameObject _orbitingSword;
 
     // Rigidbody variable to hold on a rigidbodody component
     private Rigidbody2D _rb;
@@ -29,7 +30,8 @@ public class PlayerController : Singleton<PlayerController> {
 
 	//Manacost for skills
 	private int _rightClickCost = 10;
-	private int _firstAbilityCost = 20;
+	private int _scatterShotCost = 20;
+	private int _orbitingSwordCost = 10;
 
 	public int RightClickCost
 	{
@@ -37,10 +39,22 @@ public class PlayerController : Singleton<PlayerController> {
 		set { _rightClickCost = value; }
 	}
 
-	public int FirstAbilityCost
+	public int ScatterShotCost
 	{
-		get { return _firstAbilityCost; }
-		set { _firstAbilityCost = value; }
+		get { return _scatterShotCost; }
+		set { _scatterShotCost = value; }
+	}
+	
+	// ORBITING SWORDS
+	
+	private bool _orbitingSwordBool = false;
+	private GameObject _sword1;
+	private GameObject _sword2;
+	
+	public bool OrbitingSwordBool
+	{
+		get { return _orbitingSwordBool; }
+		set { _orbitingSwordBool = value; }
 	}
 
 
@@ -68,7 +82,7 @@ public class PlayerController : Singleton<PlayerController> {
 		set { _class = value; }
 	}
 
-	// Use this for initialization
+	
 	private void Start () {
         // get the gameobjects rigidbody component and freezes the rotation of the object
         _rb = GetComponent<Rigidbody2D>();
@@ -86,7 +100,7 @@ public class PlayerController : Singleton<PlayerController> {
 		_animatorRight = _right.gameObject.GetComponent<Animator>();
 	}
 
-	// Update is called once per frame
+	// PLAYER MOVEMENT
 	private void FixedUpdate () {
 		_rb.velocity = _rb.velocity.normalized * _speed;
     }
@@ -103,7 +117,7 @@ public class PlayerController : Singleton<PlayerController> {
 
 		// move the gameobject according to the keypresses
 		Move();
-		
+		OrbitingSwordManaReduction();
 	}
 
 	private void Move()
@@ -111,7 +125,7 @@ public class PlayerController : Singleton<PlayerController> {
         transform.Translate(_direction * Time.deltaTime * _speed);
     }
 
-	
+	// GET INPUT FROM USER
 
     private void GetInput()
     {
@@ -248,12 +262,16 @@ public class PlayerController : Singleton<PlayerController> {
 	    }
     }
 	
+	// RUNS THE ATTACKANIMATIONS AND ABILITIES
+	
 	private void AttackAnimation()
 	{
 		LeftClick();
 		RightClick();
 		FirstAbilityClick();
 	}
+	
+	// CALCULATE THE MANACOST
 
 	private void ManaCost(int cost)
 	{
@@ -261,33 +279,21 @@ public class PlayerController : Singleton<PlayerController> {
 		UIManager.Instance.ManaBar.fillAmount = _mana / _maxMana;
 	}
 
-	private void MeleeAttack(Transform aniDirection)
-	{
-		List<GameObject> targets = aniDirection.GetChild(1).GetChild(0).gameObject.GetComponent<PlayerAttackCollider>().Targets;
-
-		foreach (GameObject enemy in targets)
-		{
-			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(100);
-			GameObject explosion = ObjectPool.Instance.GetObject("ArrowExplosion");
-			explosion.transform.position = enemy.transform.position;
-		}
-	}
+	
+	// ------------------------ RANGED ATTACKS ---------------
+	
+	
+	// LEFT CLICK ATTACK
 	
 	private void RangedAttack()
 	{
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
 	}
-	
-	
-	private void AxeThrow()
-	{
-		GameObject axe = ObjectPool.Instance.GetObject("AxeThrow");
-		axe.GetComponent<WeaponCollider>().InstantiateProjectile(_damage, 20, transform.position, GManager.Instance.GetMousePos(),0);
-		ManaCost(_rightClickCost);
-	}
 
-	private void RangedRightClickAttack()
+	// RIGHT CLICK (MULTISHOT)
+	
+	private void Multishot()
 	{
 		Color color = new Color(1f,1f,0.4f);
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
@@ -313,8 +319,69 @@ public class PlayerController : Singleton<PlayerController> {
 		projectile.GetComponentInChildren<PlayerProjectile>().ScatterShot = true;
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
 		
-		ManaCost(_firstAbilityCost);
+		ManaCost(_scatterShotCost);
 	}
+	
+	// ------------------------- MELEE ATTACKS --------------------
+	
+	
+	// LEFT CLICK ATTACK
+	
+	private void MeleeAttack(Transform aniDirection)
+	{
+		List<GameObject> targets = aniDirection.GetChild(1).GetChild(0).gameObject.GetComponent<PlayerAttackCollider>().Targets;
+
+		foreach (GameObject enemy in targets)
+		{
+			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(100);
+			GameObject explosion = ObjectPool.Instance.GetObject("ArrowExplosion");
+			explosion.transform.position = enemy.transform.position;
+		}
+	}
+	
+	// RIGHT CLICK ATTACK (AXE THROW) 
+	
+	private void AxeThrow()
+	{
+		GameObject axe = ObjectPool.Instance.GetObject("AxeThrow");
+		axe.GetComponent<WeaponCollider>().InstantiateProjectile(_damage, 20, transform.position, GManager.Instance.GetMousePos(),0);
+		ManaCost(_rightClickCost);
+	}
+	
+	// FIRST ABILITY (ORBITING SWORDS)
+	
+	private void OrbitingSwords()
+	{
+		_sword1 = Instantiate(_orbitingSword, transform);
+		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(-180, 0, 0), new Vector3(0, 0, 90));
+		_sword2 = Instantiate(_orbitingSword, transform);
+		_sword2.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(180, 0, 0), new Vector3(0, 0, -90));
+
+		_orbitingSwordBool = true;
+	}
+
+	private void DestroySwords()
+	{
+		if (_sword1 != null && _sword2 != null)
+		{
+			_orbitingSwordBool = false;
+		}
+	}
+
+	private void OrbitingSwordManaReduction()
+	{
+		if (_orbitingSwordBool && _mana >= 0)
+		{
+			_mana -= _orbitingSwordCost * Time.deltaTime;
+		}
+		else
+		{
+			_orbitingSwordBool = false;
+		}
+		
+	}
+	
+	// LEFT CLICK KEYPRESS
 
 	private void LeftClick()
 	{
@@ -385,6 +452,8 @@ public class PlayerController : Singleton<PlayerController> {
 			}
 		}
 	}
+	
+	// RIGHT CLICK KEYPRESS
 
 	private void RightClick()
 	{
@@ -399,22 +468,22 @@ public class PlayerController : Singleton<PlayerController> {
 						{
 							case LookDirection.Down:
 								_animatorDown.SetTrigger("RangedAttack");
-								RangedRightClickAttack();
+								Multishot();
 								break;
 							
 							case LookDirection.Left:
 								_animatorLeft.SetTrigger("RangedAttack");
-								RangedRightClickAttack();
+								Multishot();
 								break;
 							
 							case LookDirection.Right:
 								_animatorRight.SetTrigger("RangedAttack");
-								RangedRightClickAttack();
+								Multishot();
 								break;
 							
 							case LookDirection.Up:
 								_animatorUp.SetTrigger("RangedAttack");
-								RangedRightClickAttack();
+								Multishot();
 								break;
 							
 							default: break;
@@ -456,9 +525,11 @@ public class PlayerController : Singleton<PlayerController> {
 		}
 	}
 
+	// 1 KEY PRESS
+	
 	private void FirstAbilityClick()
 	{
-		if (Input.GetKeyDown(KeyCode.Alpha1) && _mana >= _firstAbilityCost)
+		if (Input.GetKeyDown(KeyCode.Alpha1) && _mana >= _scatterShotCost)
 		{
 			if (UIManager.Instance.CanGcdAttack)
 			{
@@ -490,35 +561,20 @@ public class PlayerController : Singleton<PlayerController> {
 							default: break;
 						}
 						break;
-					/*
+					
 					case Class.Melee:
-						switch (_lookDirection)
+						if (!_orbitingSwordBool)
 						{
-							case LookDirection.Down:
-								_animatorDown.SetTrigger("MeleeAttack");
-								MeleeAttack(_down);
-								break;
-							
-							case LookDirection.Left:
-								_animatorLeft.SetTrigger("MeleeAttack");
-								MeleeAttack(_left);
-								break;
-							
-							case LookDirection.Right:
-								_animatorRight.SetTrigger("MeleeAttack");
-								MeleeAttack(_right);
-								break;
-							
-							case LookDirection.Up:
-								_animatorUp.SetTrigger("MeleeAttack");
-								MeleeAttack(_up);
-								break;
-							
-							default: break;
+							OrbitingSwords();
 						}
+						else
+						{
+							DestroySwords();
+						}
+						
 						break;
-					*/
-					default: break;
+					
+						default: break;
 				}
 
 				UIManager.Instance.CanGcdAttack = false;
@@ -554,6 +610,8 @@ public class PlayerController : Singleton<PlayerController> {
 		_class = _class == Class.Melee ? Class.Ranged : Class.Melee;
 		UIManager.Instance.SwitchClassIcons();
 	}
+
+	
 
 
 	

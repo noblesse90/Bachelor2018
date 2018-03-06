@@ -57,6 +57,10 @@ public class UIManager : Singleton<UIManager> {
     // SWITCH CLASS BUTTON
     [Header("Switch Class")] 
     [SerializeField] private Button _switchClass;
+    
+    // TOGGLE EFFECT
+    [Header("Toggle Effect")] 
+    [SerializeField] private GameObject _toggleEffect;
    
 
     public Image ManaBar
@@ -80,10 +84,7 @@ public class UIManager : Singleton<UIManager> {
         set { _canGCDAttack = value; }
     }
 
-   
 
-
-    // Use this for initialization
     private void Start()
     {
         Currency = 500;
@@ -282,7 +283,7 @@ public class UIManager : Singleton<UIManager> {
                 _rightClickIcon.fillAmount = 0;
             }
 
-            if (PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost)
+            if (PlayerController.Instance.Mana >= PlayerController.Instance.ScatterShotCost)
             {
                 _firstAbilityIcon.fillAmount = (_gcdTimer / _gcd);
             }
@@ -294,7 +295,7 @@ public class UIManager : Singleton<UIManager> {
         else
         {
             _rightClickIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost ? 1 : 0;
-            _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost ? 1 : 0;
+            _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ScatterShotCost ? 1 : 0;
         }
 
 		
@@ -305,11 +306,15 @@ public class UIManager : Singleton<UIManager> {
         }
         _manaBar.fillAmount = PlayerController.Instance.Mana / PlayerController.Instance.MaxMana;
         ToStringManabar(PlayerController.Instance.Mana, PlayerController.Instance.MaxMana);
+        
+        // TOGGLE
+        _toggleEffect.SetActive(PlayerController.Instance.OrbitingSwordBool);
     }
 
     private void ToStringManabar(float mana, float maxMana)
     {
-        if (mana <= 0.49f)
+        Mathf.Floor(mana);
+        if (mana <= 0)
         {
             _manaBarText.text = "0/" + maxMana;
         }
