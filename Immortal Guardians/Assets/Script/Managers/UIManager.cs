@@ -69,6 +69,12 @@ public class UIManager : Singleton<UIManager> {
     // TOGGLE EFFECT
     [Header("Toggle Effect")] 
     [SerializeField] private GameObject _toggleEffect;
+    
+    // PAUSE MENU BUTTON
+    [Header("Pause Menu")] 
+    [SerializeField] private Button _pause;
+    [SerializeField] private GameObject _pauseWindow;
+    [SerializeField] private GameObject _settingsWindow;
    
 
     public Image ManaBar
@@ -108,6 +114,8 @@ public class UIManager : Singleton<UIManager> {
 
         _canonTowerTestBtn.onClick.AddListener(CanonTowerTestMetode);
         
+        _pause.onClick.AddListener(Pause);
+        
         _gcd = 0.5f;
 
         _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
@@ -141,6 +149,23 @@ public class UIManager : Singleton<UIManager> {
             // gcd timer
             Timers();
         }  
+    }
+    
+    // PAUSE MENU
+    public void Pause()
+    {
+        if (_pauseWindow.activeInHierarchy || _settingsWindow.activeInHierarchy)
+        {
+            _pauseWindow.SetActive(false);
+            _settingsWindow.SetActive(false);
+            Time.timeScale = 1;
+        }
+        else
+        {
+            _pauseWindow.SetActive(true);
+            Time.timeScale = 0;
+            CameraZoom.Instance.Zoom = false;
+        }
     }
     
     public void ClassIcons()

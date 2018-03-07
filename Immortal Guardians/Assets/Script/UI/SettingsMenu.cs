@@ -7,12 +7,12 @@ using UnityEngine.UI;
 public class SettingsMenu : MonoBehaviour
 {
 
-	public TMP_Dropdown _resolutionDropdown;
+	[SerializeField] private TMP_Dropdown _resolutionDropdown;
 
 	private Resolution[] _resolutions;
 
 	// Use this for initialization
-	void Start ()
+	private void Start()
 	{
 		_resolutions = Screen.resolutions;
 		

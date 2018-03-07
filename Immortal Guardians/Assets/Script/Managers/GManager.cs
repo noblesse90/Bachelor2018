@@ -13,8 +13,10 @@ public class GManager : Singleton<GManager> {
     
     // USED FOR RAPID BUILDING
     private string _towerToBuild;
-
     
+    // CHECK IF GAME IS STARTED
+    private bool _gameStarted = false;
+
     // getter for bool buildmode
     public bool BuildMode
     {
@@ -27,6 +29,12 @@ public class GManager : Singleton<GManager> {
         get { return _towerToBuild; }
         set { _towerToBuild = value; }
     }
+    
+    public bool GameStarted
+    {
+        get { return _gameStarted; }
+        set { _gameStarted = value; }
+    }
 
 
     // Update is called once per frame
@@ -38,46 +46,42 @@ public class GManager : Singleton<GManager> {
         
         
         // ------------------------ TEMPORARY CODE -----------------
-        
-        // resets the game
-        if (Input.GetKeyUp(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            Time.timeScale = 1;
-        }
 
         // quits the application (game)
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (_gameStarted)
         {
-            Application.Quit();
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                UIManager.Instance.Pause();
+            }
+            
+            // starts buildingmode for cannontower
+            if (Input.GetKeyUp(KeyCode.V))
+            {
+                if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
+                {
+                    _buildMode = true;
+                    TowerManager.Instance.CurrentTower = null;
+                    UIManager.Instance.TowerStatsUi.SetActive(false);
+                    _towerToBuild = "CanonTower";
+                    BuildingMode.Instance.TowerType = _towerToBuild;
+                }
+            }
+        
+            // starts buildingmode for BasicTower
+            if (Input.GetKeyUp(KeyCode.B))
+            {
+                if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
+                {
+                    _buildMode = true;
+                    TowerManager.Instance.CurrentTower = null;
+                    UIManager.Instance.TowerStatsUi.SetActive(false);
+                    _towerToBuild = "BasicTower";
+                    BuildingMode.Instance.TowerType = _towerToBuild;
+                }
+            }
         }
 
-        // starts buildingmode for cannontower
-        if (Input.GetKeyUp(KeyCode.V))
-        {
-            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
-            {
-                _buildMode = true;
-                TowerManager.Instance.CurrentTower = null;
-                UIManager.Instance.TowerStatsUi.SetActive(false);
-                _towerToBuild = "CanonTower";
-                BuildingMode.Instance.TowerType = _towerToBuild;
-            }
-        }
-        
-        // starts buildingmode for BasicTower
-        if (Input.GetKeyUp(KeyCode.B))
-        {
-            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
-            {
-                _buildMode = true;
-                TowerManager.Instance.CurrentTower = null;
-                UIManager.Instance.TowerStatsUi.SetActive(false);
-                _towerToBuild = "BasicTower";
-                BuildingMode.Instance.TowerType = _towerToBuild;
-            }
-        }
-        
         
         // RAPID TOWER PLACEMENT
         if (BuildMode)

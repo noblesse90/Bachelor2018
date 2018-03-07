@@ -22,6 +22,9 @@ public class MainMenuScript : MonoBehaviour
 			_melee.SetActive(true);
 			_melee.GetComponent<PlayerController>().GetClass = PlayerController.Class.Melee;
 		}
+
+		GManager.Instance.GameStarted = true;
+		CameraZoom.Instance.Zoom = true;
 	}
 
 	public void ChooseRanged()
