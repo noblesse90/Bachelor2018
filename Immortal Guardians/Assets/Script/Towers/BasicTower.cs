@@ -35,6 +35,9 @@ public class BasicTower : MonoBehaviour {
         tc.UpgradePrice = (int)_stats[1, 0];
 
         tc.TotalPrice = (int)_stats[0, 0];
+
+        tc.Slow = 0;
+        tc.Poison = 0;
     }
 
     public void Upgrade(int level)

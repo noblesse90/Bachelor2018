@@ -33,10 +33,12 @@ public class TowerController : MonoBehaviour
     private int _upgradePrice;
     private int _level;
     private int _totalPrice;
+    
+    // Other Tower stats
+    private float _slow;
+    private float _poison;
 
-    // Canon tower
-    private float _splashDamage = 0;
-
+    // GETTER AND SETTERS
     public float Range
     {
         get { return _range; }
@@ -96,13 +98,20 @@ public class TowerController : MonoBehaviour
         get { return _upgradePrice; }
         set { _upgradePrice = value; }
     }
-
-    public float SplashDamage
+    
+    public float Slow
     {
-        get { return _splashDamage; }
-
-        set { _splashDamage = value; }
+        get { return _slow; }
+        set { _slow = value; }
     }
+
+    public float Poison
+    {
+        get { return _poison; }
+        set { _poison = value; }
+    }
+    
+    // END OF GETTERS AND SETTERS
 
     private void Awake()
     {
@@ -131,6 +140,8 @@ public class TowerController : MonoBehaviour
             Deselected();
         }
     }
+    
+    // SHOOT METHOD
 
     private void Shoot()
     {

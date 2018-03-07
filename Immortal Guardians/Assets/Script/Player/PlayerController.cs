@@ -1,11 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters;
-using System.Timers;
-using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using Cinemachine;
 
 public class PlayerController : Singleton<PlayerController> {
 
@@ -24,14 +21,14 @@ public class PlayerController : Singleton<PlayerController> {
 
     private Animator _animatorDown, _animatorUp, _animatorLeft, _animatorRight;
 
-	private Class _class = Class.Ranged;
+	private Class _class;
 
 	private LookDirection _lookDirection = LookDirection.Down;
 
 	//Manacost for skills
 	private int _rightClickCost = 10;
 	private int _scatterShotCost = 20;
-	private int _orbitingSwordCost = 10;
+	private float _orbitingSwordCost = 10;
 
 	public int RightClickCost
 	{
@@ -356,6 +353,10 @@ public class PlayerController : Singleton<PlayerController> {
 		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(-180, 0, 0), new Vector3(0, 0, 90));
 		_sword2 = Instantiate(_orbitingSword, transform);
 		_sword2.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(180, 0, 0), new Vector3(0, 0, -90));
+		_sword2 = Instantiate(_orbitingSword, transform);
+		_sword2.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, 180, 0), new Vector3(0, 0, 0));
+		_sword2 = Instantiate(_orbitingSword, transform);
+		_sword2.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, -180, 0), new Vector3(0, 0, 180));
 
 		_orbitingSwordBool = true;
 	}
@@ -608,7 +609,8 @@ public class PlayerController : Singleton<PlayerController> {
 	public void SwitchClass()
 	{
 		_class = _class == Class.Melee ? Class.Ranged : Class.Melee;
-		UIManager.Instance.SwitchClassIcons();
+		UIManager.Instance.ClassIcons();
+		_orbitingSwordBool = false;
 	}
 
 	

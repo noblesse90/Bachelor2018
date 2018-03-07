@@ -1,17 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager> {
+    
+    // GAME STARTED BOOL
+    private bool _start = false;
+
+    public bool StartGame
+    {
+        get { return _start; }
+        set { _start = value; }
+    }
 
     [Header("Wave button")]
     [SerializeField] private Button _nextWaveBtn;
     
     [Header("Display Text")]
-    [SerializeField] private Text _currencyTxt;
-    [SerializeField] private Text _lifeTxt;
-    [SerializeField] private Text _waveTxt;
+    [SerializeField] private GameObject _currencyTxt;
+    [SerializeField] private GameObject _lifeTxt;
+    [SerializeField] private GameObject _waveTxt;
 
     private int _currency;
     private int _life;
@@ -19,14 +29,16 @@ public class UIManager : Singleton<UIManager> {
 
     // Tower Stats
     [Header("Tower UI")]
-    [SerializeField] private Text _towerTypeText;
-    [SerializeField] private Text _damageText;
-    [SerializeField] private Text _firerateText;
-    [SerializeField] private Text _sellPriceText;
-    [SerializeField] private Text _upgradePriceText;
+    [SerializeField] private GameObject _towerTypeText;
+    [SerializeField] private GameObject _damageText;
+    [SerializeField] private GameObject _firerateText;
+    [SerializeField] private GameObject _slowText;
+    [SerializeField] private GameObject _poisonText;
     [SerializeField] private GameObject _towerStatsUi;
     [SerializeField] private Button _sellTowerBtn;
     [SerializeField] private Button _upgradeBtn;
+    [SerializeField] private GameObject _sellPriceText;
+    [SerializeField] private GameObject _upgradePriceText;
 
     // TOWER BUILD BUTTONS
     [Header("Tower Build Buttons")]
@@ -36,7 +48,7 @@ public class UIManager : Singleton<UIManager> {
     // MANABAR
     [Header("Player Manabar")]
     [SerializeField]private Image _manaBar;
-    [SerializeField] private Text _manaBarText;
+    [SerializeField] private GameObject _manaBarText;
     
     // ABILITIES
     [Header("Ability Images(gameobjects)")]
@@ -53,10 +65,6 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Sprite _leftClickSpriteRanged;
     [SerializeField] private Sprite _rightClickSpriteRanged;
     [SerializeField] private Sprite _firstAbilitySpriteRanged;
-    
-    // SWITCH CLASS BUTTON
-    [Header("Switch Class")] 
-    [SerializeField] private Button _switchClass;
     
     // TOGGLE EFFECT
     [Header("Toggle Effect")] 
@@ -99,15 +107,43 @@ public class UIManager : Singleton<UIManager> {
         _basicTowerTestBtn.onClick.AddListener(BasicTowerTestMetode);
 
         _canonTowerTestBtn.onClick.AddListener(CanonTowerTestMetode);
-
-        _switchClass.onClick.AddListener(PlayerController.Instance.SwitchClass);
         
         _gcd = 0.5f;
-        
-        SwitchClassIcons();
+
+        _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
     }
 
-    public void SwitchClassIcons()
+    private void Update()
+    {
+        if (_start)
+        {
+            if(TowerManager.Instance.CurrentTower == null)
+            {
+                _sellTowerBtn.transform.gameObject.SetActive(false);
+                _upgradeBtn.transform.gameObject.SetActive(false);
+            }
+            else
+            {
+                if(!(TowerManager.Instance.CurrentTower.GetComponent<TowerController>().Level > 3))
+                {
+                    _upgradeBtn.transform.gameObject.SetActive(true);
+                }
+                else
+                {
+                    _upgradeBtn.transform.gameObject.SetActive(false);
+                }
+                _sellTowerBtn.transform.gameObject.SetActive(true);
+            }
+        
+            // Fill manabar
+            UiFillBars();
+        
+            // gcd timer
+            Timers();
+        }  
+    }
+    
+    public void ClassIcons()
     {
         switch (PlayerController.Instance.GetClass)
         {
@@ -131,7 +167,7 @@ public class UIManager : Singleton<UIManager> {
                     
         }
     }
-
+    
     private void BasicTowerTestMetode()
     {
         if(!(Currency - TowerManager.Instance.GetBasicTowerCost < 0))
@@ -156,33 +192,6 @@ public class UIManager : Singleton<UIManager> {
         }    
     }
 
-    private void Update()
-    {
-        if(TowerManager.Instance.CurrentTower == null)
-        {
-            _sellTowerBtn.transform.gameObject.SetActive(false);
-            _upgradeBtn.transform.gameObject.SetActive(false);
-        }
-        else
-        {
-            if(!(TowerManager.Instance.CurrentTower.GetComponent<TowerController>().Level > 3))
-            {
-                _upgradeBtn.transform.gameObject.SetActive(true);
-            }
-            else
-            {
-                _upgradeBtn.transform.gameObject.SetActive(false);
-            }
-            _sellTowerBtn.transform.gameObject.SetActive(true);
-        }
-        
-        // Fill manabar
-        UiFillBars();
-        
-        // gcd timer
-        Timers();
-    }
-
     public int Currency
     {
         get
@@ -197,7 +206,7 @@ public class UIManager : Singleton<UIManager> {
                 value = 99999;
             }
             _currency = value;
-            _currencyTxt.text = value.ToString();
+            _currencyTxt.GetComponent<TextMeshProUGUI>().text = value.ToString();
             
         }
     }
@@ -212,7 +221,7 @@ public class UIManager : Singleton<UIManager> {
         set
         {
             _life = value;
-            _lifeTxt.text = value.ToString();
+            _lifeTxt.GetComponent<TextMeshProUGUI>().text = value.ToString();
         }
     }
 
@@ -226,7 +235,7 @@ public class UIManager : Singleton<UIManager> {
         set
         {
             _wave = value;
-            _waveTxt.text = "Current Wave: " + value.ToString();
+            _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: " + value;
         }
     }
 
@@ -253,11 +262,40 @@ public class UIManager : Singleton<UIManager> {
 
     public void SetTowerStats(TowerController tc)
     {
-        _towerTypeText.text =  tc.TowerType + " (level " + tc.Level.ToString() + ")";
-        _damageText.text = "Dmg: " + tc.Damage;
-        _firerateText.text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
-        _sellPriceText.text = "$" + (tc.TotalPrice / 2);
-        _upgradePriceText.text = "$" + tc.UpgradePrice;
+        // TOWER TYPE
+        _towerTypeText.GetComponent<TextMeshProUGUI>().text = tc.TowerType + " (level " + tc.Level.ToString() + ")";
+        // DAMAGE
+        _damageText.GetComponent<TextMeshProUGUI>().text = "Dmg: " + tc.Damage;
+        // FIRE RATE
+        if (1 / tc.AttackCooldown < 1)
+        {
+            _firerateText.GetComponent<TextMeshProUGUI>().text = "Firerate: " + "0" + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
+        }
+        else
+        {
+            _firerateText.GetComponent<TextMeshProUGUI>().text = "Firerate: " + (1 / tc.AttackCooldown).ToString("#.##") + "/s";
+        }
+        // SLOW
+        if (tc.Slow <= 0)
+        {
+            _slowText.GetComponent<TextMeshProUGUI>().text = "";
+        }
+        else
+        {
+            _slowText.GetComponent<TextMeshProUGUI>().text = "Slow: " + tc.Slow*100 + "%";
+        }
+        // POISON
+        if (tc.Poison <= 0)
+        {
+            _poisonText.GetComponent<TextMeshProUGUI>().text = "";
+        }
+        else
+        {
+            _poisonText.GetComponent<TextMeshProUGUI>().text = "Poison: " + tc.Poison;
+        }
+        
+        _sellPriceText.GetComponent<TextMeshProUGUI>().text = "$" + (tc.TotalPrice / 2);
+        _upgradePriceText.GetComponent<TextMeshProUGUI>().text = "$" + tc.UpgradePrice;
     }
     
     private void UiFillBars()
@@ -316,11 +354,11 @@ public class UIManager : Singleton<UIManager> {
         Mathf.Floor(mana);
         if (mana <= 0)
         {
-            _manaBarText.text = "0/" + maxMana;
+            _manaBarText.GetComponent<TextMeshProUGUI>().text = "0/" + maxMana;
         }
         else
         {
-            _manaBarText.text = mana.ToString("#") + "/" + maxMana;
+          _manaBarText.GetComponent<TextMeshProUGUI>().text = mana.ToString("#") + "/" + maxMana;
         }
     }
     

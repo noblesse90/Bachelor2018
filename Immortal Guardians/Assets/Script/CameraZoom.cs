@@ -31,7 +31,5 @@ public class CameraZoom : MonoBehaviour {
         {
             _vcam.m_Lens.OrthographicSize += 0.5f;
         }
-
-
     }
 }
