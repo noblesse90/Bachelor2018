@@ -126,6 +126,10 @@ public class GManager : Singleton<GManager> {
         // checking if buildmode is false or true
         if (BuildMode)
         {
+            if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                BuildMode = false;
+            }
             TowerManager.Instance.CurrentTower = null;
             // check if the user clicks the left mousebutton
             if (Input.GetKeyDown(KeyCode.Mouse0))

@@ -197,6 +197,7 @@ MonoBehaviour:
   centerOffset: 1
   rotationIn2D: 1
   targetCompatibility: {fileID: 0}
+  maxAcceleration: -2.5
   rotationSpeed: 360
   slowdownDistance: 0.6
   pickNextWaypointDist: 0.6
@@ -280,6 +281,7 @@ MonoBehaviour:
     useGraphRaycasting: 0
   traversableTags: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask: -1
 --- !u!114 &114412449494836354
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -390,8 +392,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0868d445fc50f214f939553a735651d5, type: 3}
-  m_Color: {r: 1, g: 0, b: 0.6000004, a: 1}
+  m_Sprite: {fileID: 21300012, guid: 5b32c2d36abe44540bed74c1f787033b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

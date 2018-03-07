@@ -9,8 +9,6 @@ public class BuildingMode : Singleton<BuildingMode> {
 
     private string _towerType;
 
-    
-
     private GameObject _tower;
 
 
