@@ -276,7 +276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1046791068340420
 GameObject:
   m_ObjectHideFlags: 1
@@ -3129,6 +3129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4895906869403238}
   - component: {fileID: 20400547500998472}
+  - component: {fileID: 114531969130802292}
   m_Layer: 0
   m_Name: MinimapCamera
   m_TagString: Untagged
@@ -12226,7 +12227,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1439487755759144}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.24306011, y: 1.0156193, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -160}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4972327485589528}
@@ -12958,10 +12959,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 20
+  orthographic size: 15
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -13273,6 +13274,36 @@ MonoBehaviour:
   _speed: 10
   _orbitingSword: {fileID: 1313754891367436, guid: 8e58d3933bb47be4284a0a257c10bfcb,
     type: 2}
+--- !u!114 &114531969130802292
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1439487755759144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowDebugText: 0
+  m_ShowCameraFrustum: 1
+  m_IgnoreTimeScale: 0
+  m_WorldUpOverride: {fileID: 0}
+  m_UpdateMethod: 2
+  m_DefaultBlend:
+    m_Style: 1
+    m_Time: 2
+  m_CustomBlends: {fileID: 0}
+  m_CameraCutEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Cinemachine.CinemachineBrain+BrainEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  m_CameraActivatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Cinemachine.CinemachineBrain+VcamEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114760706402671570
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13956,7 +13987,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 36
-  m_Sprite: {fileID: 21301120, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
+  m_Sprite: {fileID: 21301130, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -14528,7 +14559,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 32
-  m_Sprite: {fileID: 21300462, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
+  m_Sprite: {fileID: 21300448, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -15716,7 +15747,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 32
-  m_Sprite: {fileID: 21300462, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
+  m_Sprite: {fileID: 21300448, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -16816,7 +16847,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 6
-  m_Sprite: {fileID: 21300642, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
+  m_Sprite: {fileID: 21300628, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -17124,7 +17155,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 7
-  m_Sprite: {fileID: 21301120, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
+  m_Sprite: {fileID: 21301130, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -17476,7 +17507,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 35
-  m_Sprite: {fileID: 21301120, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
+  m_Sprite: {fileID: 21301130, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0

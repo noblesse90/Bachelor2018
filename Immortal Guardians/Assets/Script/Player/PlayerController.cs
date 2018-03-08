@@ -42,11 +42,16 @@ public class PlayerController : Singleton<PlayerController> {
 		set { _scatterShotCost = value; }
 	}
 	
+	public float OrbitingSwordCost
+	{
+		get { return _orbitingSwordCost; }
+		set { _orbitingSwordCost = value; }
+	}
+	
 	// ORBITING SWORDS
 	
 	private bool _orbitingSwordBool = false;
 	private GameObject _sword1;
-	private GameObject _sword2;
 	
 	public bool OrbitingSwordBool
 	{
@@ -104,6 +109,7 @@ public class PlayerController : Singleton<PlayerController> {
 
 	private void Update()
 	{
+		if (GManager.Instance.Paused) return;
 		// gets an input from the keyboard
 		GetInput();
 		// Attacks
@@ -113,6 +119,7 @@ public class PlayerController : Singleton<PlayerController> {
 		}
 
 		// move the gameobject according to the keypresses
+		
 		Move();
 		OrbitingSwordManaReduction();
 	}
@@ -351,19 +358,19 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		_sword1 = Instantiate(_orbitingSword, transform);
 		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(-180, 0, 0), new Vector3(0, 0, 90));
-		_sword2 = Instantiate(_orbitingSword, transform);
-		_sword2.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(180, 0, 0), new Vector3(0, 0, -90));
-		_sword2 = Instantiate(_orbitingSword, transform);
-		_sword2.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, 180, 0), new Vector3(0, 0, 0));
-		_sword2 = Instantiate(_orbitingSword, transform);
-		_sword2.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, -180, 0), new Vector3(0, 0, 180));
+		_sword1 = Instantiate(_orbitingSword, transform);
+		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(180, 0, 0), new Vector3(0, 0, -90));
+		_sword1 = Instantiate(_orbitingSword, transform);
+		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, 180, 0), new Vector3(0, 0, 0));
+		_sword1 = Instantiate(_orbitingSword, transform);
+		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, -180, 0), new Vector3(0, 0, 180));
 
 		_orbitingSwordBool = true;
 	}
 
 	private void DestroySwords()
 	{
-		if (_sword1 != null && _sword2 != null)
+		if (_sword1 != null)
 		{
 			_orbitingSwordBool = false;
 		}
@@ -379,7 +386,6 @@ public class PlayerController : Singleton<PlayerController> {
 		{
 			_orbitingSwordBool = false;
 		}
-		
 	}
 	
 	// LEFT CLICK KEYPRESS
@@ -530,53 +536,51 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private void FirstAbilityClick()
 	{
-		if (Input.GetKeyDown(KeyCode.Alpha1) && _mana >= _scatterShotCost)
+		if (Input.GetKeyDown(KeyCode.Alpha1) )
 		{
 			if (UIManager.Instance.CanGcdAttack)
 			{
-				switch (_class)
+				if (_class == Class.Ranged && _mana >= _scatterShotCost)
 				{
-					case Class.Ranged:
-						switch (_lookDirection)
-						{
-							case LookDirection.Down:
-								_animatorDown.SetTrigger("RangedAttack");
-								ScatterShot();
-								break;
+					switch (_lookDirection)
+					{
+						case LookDirection.Down:
+							_animatorDown.SetTrigger("RangedAttack");
+							ScatterShot();
+							break;
 							
-							case LookDirection.Left:
-								_animatorLeft.SetTrigger("RangedAttack");
-								ScatterShot();
-								break;
+						case LookDirection.Left:
+							_animatorLeft.SetTrigger("RangedAttack");
+							ScatterShot();
+							break;
 							
-							case LookDirection.Right:
-								_animatorRight.SetTrigger("RangedAttack");
-								ScatterShot();
-								break;
+						case LookDirection.Right:
+							_animatorRight.SetTrigger("RangedAttack");
+							ScatterShot();
+							break;
 							
-							case LookDirection.Up:
-								_animatorUp.SetTrigger("RangedAttack");
-								ScatterShot();
-								break;
+						case LookDirection.Up:
+							_animatorUp.SetTrigger("RangedAttack");
+							ScatterShot();
+							break;
 							
-							default: break;
-						}
-						break;
-					
-					case Class.Melee:
-						if (!_orbitingSwordBool)
-						{
-							OrbitingSwords();
-						}
-						else
-						{
-							DestroySwords();
-						}
-						
-						break;
-					
 						default: break;
+					}
 				}
+				else if (_class == Class.Melee)
+				{
+					if (OrbitingSwordBool)
+					{
+						DestroySwords();
+						return;
+					}
+					
+					if (_mana >= _orbitingSwordCost)
+					{
+						OrbitingSwords();
+					}
+				}
+				
 
 				UIManager.Instance.CanGcdAttack = false;
 			}

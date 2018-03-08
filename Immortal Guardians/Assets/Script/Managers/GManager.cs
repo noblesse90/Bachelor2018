@@ -14,8 +14,9 @@ public class GManager : Singleton<GManager> {
     // USED FOR RAPID BUILDING
     private string _towerToBuild;
     
-    // CHECK IF GAME IS STARTED
+    // CHECK IF GAME IS STARTED OR PAUSED
     private bool _gameStarted = false;
+    private bool _paused = false;
 
     // getter for bool buildmode
     public bool BuildMode
@@ -34,6 +35,12 @@ public class GManager : Singleton<GManager> {
     {
         get { return _gameStarted; }
         set { _gameStarted = value; }
+    }
+    
+    public bool Paused
+    {
+        get { return _paused; }
+        set { _paused = value; }
     }
 
 
@@ -54,7 +61,9 @@ public class GManager : Singleton<GManager> {
             {
                 UIManager.Instance.Pause();
             }
-            
+
+            // CHECKS IF THE GAME IS PAUSED
+            if (_paused) return;
             // starts buildingmode for cannontower
             if (Input.GetKeyUp(KeyCode.V))
             {
@@ -146,23 +155,26 @@ public class GManager : Singleton<GManager> {
         }
         
         // Select tower
-        else if (Input.GetKeyDown(KeyCode.Mouse0))
+        else if (!_paused)
         {
-            GameObject tower = TowerManager.Instance.GetTower();
-            if(tower != null)
-            {
-                TowerManager.Instance.CurrentTower = tower;
-                UIManager.Instance.SetTowerStats(tower.GetComponent<TowerController>());
-                UIManager.Instance.TowerStatsUi.SetActive(true);
-            }
-            else
+            if(Input.GetKeyDown(KeyCode.Mouse0))
             {
                 if (!EventSystem.current.IsPointerOverGameObject())
                 {
-                    TowerManager.Instance.CurrentTower = null;
-                    UIManager.Instance.TowerStatsUi.SetActive(false);
+                    GameObject tower = TowerManager.Instance.GetTower();
+                    if(tower != null)
+                    {
+                        TowerManager.Instance.CurrentTower = tower;
+                        UIManager.Instance.SetTowerStats(tower.GetComponent<TowerController>());
+                        UIManager.Instance.TowerStatsUi.SetActive(true);
+                    }
+                    else
+                    {
+                        TowerManager.Instance.CurrentTower = null;
+                        UIManager.Instance.TowerStatsUi.SetActive(false);
+                    }
                 }
-            }
+            }    
         }
     }
 

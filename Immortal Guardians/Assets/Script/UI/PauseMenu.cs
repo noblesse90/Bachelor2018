@@ -5,14 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
 
-
-	public void Resume()
-	{
-		Time.timeScale = 1;
-		CameraZoom.Instance.Zoom = true;
-		gameObject.SetActive(false);
-	}
-
 	public void Restart()
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);

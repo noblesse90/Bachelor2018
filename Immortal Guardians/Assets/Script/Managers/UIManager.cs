@@ -1,19 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager> {
     
-    // GAME STARTED BOOL
-    private bool _start = false;
-
-    public bool StartGame
-    {
-        get { return _start; }
-        set { _start = value; }
-    }
 
     [Header("Wave button")]
     [SerializeField] private Button _nextWaveBtn;
@@ -75,6 +68,9 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Button _pause;
     [SerializeField] private GameObject _pauseWindow;
     [SerializeField] private GameObject _settingsWindow;
+    
+    // MANA COSTS
+    private float _manaCostFirstAbility;
    
 
     public Image ManaBar
@@ -123,7 +119,7 @@ public class UIManager : Singleton<UIManager> {
 
     private void Update()
     {
-        if (_start)
+        if (GManager.Instance.GameStarted)
         {
             if(TowerManager.Instance.CurrentTower == null)
             {
@@ -159,12 +155,21 @@ public class UIManager : Singleton<UIManager> {
             _pauseWindow.SetActive(false);
             _settingsWindow.SetActive(false);
             Time.timeScale = 1;
+            CameraZoom.Instance.Zoom = true;
+            _nextWaveBtn.interactable = true;
+            _basicTowerTestBtn.interactable = true;
+            _canonTowerTestBtn.interactable = true;
+            GManager.Instance.Paused = false;
         }
         else
         {
             _pauseWindow.SetActive(true);
             Time.timeScale = 0;
             CameraZoom.Instance.Zoom = false;
+            _nextWaveBtn.interactable = false;
+            _basicTowerTestBtn.interactable = false;
+            _canonTowerTestBtn.interactable = false;
+            GManager.Instance.Paused = true;
         }
     }
     
@@ -179,6 +184,7 @@ public class UIManager : Singleton<UIManager> {
                 _rightClickIcon.transform.parent.GetComponent<Image>().sprite = _rightClickSpriteMelee;
                 _firstAbilityIcon.GetComponent<Image>().sprite = _firstAbilitySpriteMelee;
                 _firstAbilityIcon.transform.parent.GetComponent<Image>().sprite = _firstAbilitySpriteMelee;
+                _manaCostFirstAbility = PlayerController.Instance.OrbitingSwordCost;
                 break;
             case PlayerController.Class.Ranged:
                 _leftClickIcon.GetComponent<Image>().sprite = _leftClickSpriteRanged;
@@ -188,6 +194,7 @@ public class UIManager : Singleton<UIManager> {
                 _firstAbilityIcon.GetComponent<Image>().sprite = _firstAbilitySpriteRanged;
                 _firstAbilityIcon.transform.parent.GetComponent<Image>().sprite =
                     _firstAbilitySpriteRanged;
+                _manaCostFirstAbility = PlayerController.Instance.ScatterShotCost;
                 break;
                     
         }
@@ -260,6 +267,11 @@ public class UIManager : Singleton<UIManager> {
         set
         {
             _wave = value;
+            if (value == 10)
+            {
+                _waveTxt.GetComponent<TextMeshProUGUI>().text = "Final Wave";
+                return;
+            }
             _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: " + value;
         }
     }
@@ -346,19 +358,28 @@ public class UIManager : Singleton<UIManager> {
                 _rightClickIcon.fillAmount = 0;
             }
 
-            if (PlayerController.Instance.Mana >= PlayerController.Instance.ScatterShotCost)
+            if (PlayerController.Instance.Mana >= _manaCostFirstAbility)
             {
                 _firstAbilityIcon.fillAmount = (_gcdTimer / _gcd);
             }
             else
             {
-                _firstAbilityIcon.fillAmount = 0;
+                _firstAbilityIcon.fillAmount = 0; 
             }
+            
         }
         else
-        {
+        {    
             _rightClickIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost ? 1 : 0;
-            _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ScatterShotCost ? 1 : 0;
+            
+            if (PlayerController.Instance.OrbitingSwordBool)
+            {
+                _firstAbilityIcon.fillAmount = 1;
+            }
+            else
+            {
+                _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= _manaCostFirstAbility ? 1 : 0;
+            }
         }
 
 		

@@ -35,10 +35,10 @@ public class OrbitingSwordScript : MonoBehaviour
 
 	private void Update()
 	{
-		if (_alpha <= 255 && PlayerController.Instance.OrbitingSwordBool)
+		if (_alpha <= 1 && PlayerController.Instance.OrbitingSwordBool)
 		{
 			_alpha += 0.5f * Time.deltaTime;
-			_color = new Color(255,255,255, _alpha);
+			_color = new Color(1,1,1, _alpha);
 		}
 
 		if (!PlayerController.Instance.OrbitingSwordBool)
@@ -65,8 +65,8 @@ public class OrbitingSwordScript : MonoBehaviour
 	{
 		if (_alpha > 0)
 		{
-			_alpha -= 5 * Time.deltaTime;
-			_color = new Color(255,255,255, _alpha);
+			_alpha -= 1f * Time.deltaTime*2.1f;
+			_color = new Color(1,1,1, _alpha);
 		}
 		else
 		{

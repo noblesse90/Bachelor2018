@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using NUnit.Framework.Internal;
+using TMPro;
+using Random = System.Random;
 
 public class WaveManager : Singleton<WaveManager> {
 
@@ -18,6 +22,7 @@ public class WaveManager : Singleton<WaveManager> {
     [SerializeField] private float _cooldownTimer;
 
     private string[] _enemyTypes = {"Enemy01", "Enemy02", "Enemy03", "Enemy04", "Enemy05", "Enemy06", "Enemy07", "Enemy08", "Enemy09", "Enemy10"};
+    private Random _rnd = new Random();
 
     private int _waveIndex = 0;
     
@@ -33,7 +38,7 @@ public class WaveManager : Singleton<WaveManager> {
         set { _enemyDied = value; }
     }
 
-    private void Awake()
+    private void Start()
     {
         _spawnLocations = GameObject.FindGameObjectsWithTag("EnemySpawn");
     }
@@ -52,6 +57,10 @@ public class WaveManager : Singleton<WaveManager> {
             _canSpawn = true;
             if (_waveIndex == _enemyTypes.Length) return;
             UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
+            if (UIManager.Instance.Wave == 9)
+            {
+                UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
+            }
         }
 	}
 
@@ -82,7 +91,15 @@ public class WaveManager : Singleton<WaveManager> {
         {
             foreach (var spawnLocation in _spawnLocations)
             {
-                GameObject enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+                GameObject enemy;
+                if (_waveIndex == 10)
+                {
+                    enemy = ObjectPool.Instance.GetObject(_enemyTypes[_rnd.Next(10)]);
+                }
+                else
+                {
+                    enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+                }
                 enemy.transform.position = spawnLocation.transform.position;
                 _enemySpawned++;
                 _canSpawn = false;
