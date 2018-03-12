@@ -10,22 +10,21 @@ public class WaveManager : Singleton<WaveManager> {
 
     private bool _spawnMode = false;
     
-    private GameObject[] _spawnLocations;
-
+    private List<GameObject> _spawnLocations = new List<GameObject>();
     private int _enemiesPerWave = 30;
     private int _enemyDied = 0;
     private int _enemySpawned = 0;
     
     private bool _canSpawn = true;
     private float _spawnTimer;
-    [SerializeField] private float _cooldownTimer;
+    private float _cooldownTimer = 1;
 
     private string[] _enemyTypes = {"Enemy01", "Enemy02", "Enemy03", "Enemy04", "Enemy05", "Enemy06", "Enemy07", "Enemy08", "Enemy09", "Enemy10"};
     private Random _rnd = new Random();
 
     private int _waveIndex = 0;
     
-    public GameObject[] SpawnLocations
+    public List<GameObject> SpawnLocations
     {
         get { return _spawnLocations; }
         set { _spawnLocations = value; }
@@ -39,7 +38,12 @@ public class WaveManager : Singleton<WaveManager> {
 
     private void Start()
     {
-        _spawnLocations = GameObject.FindGameObjectsWithTag("EnemySpawn");
+        GameObject spawnLocation = GameObject.FindGameObjectWithTag("EnemySpawn");
+        foreach (Transform child in spawnLocation.transform)
+        {
+            _spawnLocations.Add(child.gameObject);
+        }
+        
     }
 
     
@@ -88,21 +92,31 @@ public class WaveManager : Singleton<WaveManager> {
         }
         else
         {
-            foreach (var spawnLocation in _spawnLocations)
+            // TODO CHECK WHICH MAP IS ACTIVE
+            GameObject enemy;
+            var spawn1 = _spawnLocations[1];
+            enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+            enemy.transform.position = spawn1.transform.position;
+            _enemySpawned++;
+
+            if (_waveIndex > 3)
             {
-                GameObject enemy;
-                if (_waveIndex == 10)
-                {
-                    enemy = ObjectPool.Instance.GetObject(_enemyTypes[_rnd.Next(10)]);
-                }
-                else
-                {
-                    enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
-                }
-                enemy.transform.position = spawnLocation.transform.position;
+                var spawn2 = _spawnLocations[0];
+                enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+                enemy.transform.position = spawn2.transform.position;
                 _enemySpawned++;
-                _canSpawn = false;
             }
+
+            if (_waveIndex > 7)
+            {
+                var spawn3 = _spawnLocations[2];
+                enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+                enemy.transform.position = spawn3.transform.position;
+                _enemySpawned++;
+            }
+            
+            _canSpawn = false;
+            
         }
     }
 }

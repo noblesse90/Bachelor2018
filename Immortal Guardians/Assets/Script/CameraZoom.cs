@@ -16,7 +16,6 @@ public class CameraZoom : Singleton<CameraZoom> {
     // Use this for initialization
     private void Start () {
         _vcam = GetComponent<CinemachineVirtualCamera>();
-        
 	}
 	
 	// Update is called once per frame

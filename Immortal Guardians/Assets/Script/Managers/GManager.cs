@@ -14,9 +14,16 @@ public class GManager : Singleton<GManager> {
     // USED FOR RAPID BUILDING
     private string _towerToBuild;
     
+    // SELECTED TOWER
+    GameObject _tower = null;
+    
     // CHECK IF GAME IS STARTED OR PAUSED
     private bool _gameStarted = false;
     private bool _paused = false;
+    
+    // TIMER FOR RAPID BUILDING
+    private bool _canBuild = true;
+    private float _buildTimer, _buildCooldown = 0.05f;
 
     // getter for bool buildmode
     public bool BuildMode
@@ -43,14 +50,25 @@ public class GManager : Singleton<GManager> {
         set { _paused = value; }
     }
 
+    
+    // LIMITS THE FPS TO 144
+    private void Awake()
+    {
+        Application.targetFrameRate = 144;
+    }
+
 
     // Update is called once per frame
     private void Update()
     {
         // TOWER CODE
         TowerCode();
-        
-        
+
+        if (UIManager.Instance.Life <= 0)
+        {
+            Time.timeScale = 0;
+            // TODO YOU LOSE SCREEN
+        }
         
         // ------------------------ TEMPORARY CODE -----------------
 
@@ -97,6 +115,18 @@ public class GManager : Singleton<GManager> {
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
+                if (!_canBuild)
+                {
+                    _buildTimer += Time.deltaTime;
+
+                    if (_buildTimer >= _buildCooldown)
+                    {
+                        _canBuild = true;
+                        _buildTimer = 0;
+                    }
+                }
+
+                if (!_canBuild) return;
                 switch (_towerToBuild)
                 {
                         case "BasicTower":
@@ -125,7 +155,8 @@ public class GManager : Singleton<GManager> {
                             }
                             break;
                 }
-                
+
+                _canBuild = false;
             }
             else if (Input.GetKeyUp(KeyCode.LeftShift))
             {
@@ -157,25 +188,51 @@ public class GManager : Singleton<GManager> {
         // Select tower
         else if (!_paused)
         {
-            if(Input.GetKeyDown(KeyCode.Mouse0))
+            
+            if (Input.GetKey(KeyCode.Space))
             {
-                if (!EventSystem.current.IsPointerOverGameObject())
+                if(Input.GetKeyDown(KeyCode.Mouse0))
                 {
-                    GameObject tower = TowerManager.Instance.GetTower();
-                    if(tower != null)
-                    {
-                        TowerManager.Instance.CurrentTower = tower;
-                        UIManager.Instance.SetTowerStats(tower.GetComponent<TowerController>());
-                        UIManager.Instance.TowerStatsUi.SetActive(true);
-                    }
-                    else
-                    {
-                        TowerManager.Instance.CurrentTower = null;
-                        UIManager.Instance.TowerStatsUi.SetActive(false);
-                    }
+                    SelectTower();
                 }
-            }    
+            }
+            else if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+               DeselectTower();    
+            }
         }
+    }
+
+    private void SelectTower()
+    {
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            _tower = TowerManager.Instance.GetTower();
+            if(_tower != null)
+            {
+                TowerManager.Instance.CurrentTower = _tower;
+                UIManager.Instance.SetTowerStats(_tower.GetComponent<TowerController>());
+                UIManager.Instance.TowerStatsUi.SetActive(true);
+            }
+            else
+            {
+                TowerManager.Instance.CurrentTower = null;
+                UIManager.Instance.TowerStatsUi.SetActive(false);
+            }
+        }
+    }
+
+    private void DeselectTower()
+    {
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            if (_tower != null)
+            {
+                TowerManager.Instance.CurrentTower = null;
+                UIManager.Instance.TowerStatsUi.SetActive(false);
+            }
+                    
+        } 
     }
 
     public RaycastHit2D[] GetMouseCast()

@@ -24,6 +24,7 @@ public class BuildingMode : Singleton<BuildingMode> {
     
     private void Start()
     {
+
         _basicTowerPrefab = GameObject.Find("BasicTowerHoverIcon");
         _basicTowerPrefab.SetActive(false);
         _canonTowerPrefab = GameObject.Find("CanonTowerHoverIcon");

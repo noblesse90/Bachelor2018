@@ -110,7 +110,6 @@ public class PlayerProjectile : MonoBehaviour
 				}
 
 				if (_enemy == otherObject.gameObject) return;
-				//aniPrefab.transform.position = otherObject.transform.position;
 				otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
 				otherObject.GetComponent<EnemyController>().SetSpeed(otherObject.GetComponent<EnemyController>().DefaultSpeed * 0.5f);
 				Release();

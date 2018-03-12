@@ -38,71 +38,71 @@ public class EnemyController : MonoBehaviour
 		switch (gameObject.name)
 		{
 			case "Enemy01":
-				_startHp = 100;
-				_money = 1;
+				_startHp = 200;
+				_money = 5;
 				_defaultSpeed = 5;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy02":
-				_startHp = 200;
-				_money = 100;
+				_startHp = 400;
+				_money = 5;
 				_defaultSpeed = 5;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy03":
-				_startHp = 300;
-				_money = 100;
+				_startHp = 600;
+				_money = 5;
 				_defaultSpeed = 5;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy04":
-				_startHp = 400;
-				_money = 100;
+				_startHp = 900;
+				_money = 10;
 				_defaultSpeed = 7;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy05":
-				_startHp = 500;
-				_money = 100;
+				_startHp = 1200;
+				_money = 10;
 				_defaultSpeed = 7;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy06":
-				_startHp = 600;
-				_money = 100;
+				_startHp = 1600;
+				_money = 20;
 				_defaultSpeed = 7;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy07":
-				_startHp = 700;
-				_money = 100;
+				_startHp = 2000;
+				_money = 20;
 				_defaultSpeed = 7;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy08":
-				_startHp = 800;
-				_money = 100;
+				_startHp = 2400;
+				_money = 20;
 				_defaultSpeed = 10;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy09":
-				_startHp = 900;
-				_money = 100;
+				_startHp = 3000;
+				_money = 20;
 				_defaultSpeed = 10;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;
 			
 			case "Enemy10":
-				_startHp = 1000;
-				_money = 100;
+				_startHp = 4000;
+				_money = 20;
 				_defaultSpeed = 10;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 				break;

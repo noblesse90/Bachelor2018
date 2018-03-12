@@ -24,6 +24,9 @@ public class PlayerController : Singleton<PlayerController> {
 	private Class _class;
 
 	private LookDirection _lookDirection = LookDirection.Down;
+	
+	// SET TARGET FOR VCAM
+	[SerializeField] private CinemachineVirtualCamera _vcam;
 
 	//Manacost for skills
 	private int _rightClickCost = 10;
@@ -109,6 +112,11 @@ public class PlayerController : Singleton<PlayerController> {
 			_leftCollider = transform.GetChild(6);
 			_rightCollider = transform.GetChild(7);
 		}
+	}
+
+	private void OnEnable()
+	{
+		_vcam.Follow = transform;
 	}
 
 	// PLAYER MOVEMENT
@@ -330,9 +338,9 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().ScatterShot = true;
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
 		
-		ManaCost(_scatterShotCost);
+		ManaCost(_scatterShotCost);	
 	}
 	
 	// ------------------------- MELEE ATTACKS --------------------
@@ -346,7 +354,7 @@ public class PlayerController : Singleton<PlayerController> {
 
 		foreach (GameObject enemy in targets)
 		{
-			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(100);
+			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(_damage);
 			GameObject explosion = ObjectPool.Instance.GetObject("ArrowExplosion");
 			explosion.transform.position = enemy.transform.position;
 		}

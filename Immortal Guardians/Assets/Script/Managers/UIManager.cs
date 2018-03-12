@@ -97,8 +97,8 @@ public class UIManager : Singleton<UIManager> {
 
     private void Start()
     {
-        Currency = 500;
-        Life = 500;
+        Currency = 150;
+        Life = 50;
 
         _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
