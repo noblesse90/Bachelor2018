@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -15,7 +16,7 @@ public class WaveManager : Singleton<WaveManager>
     private bool _spawnMode = false;
     
     private List<GameObject> _spawnLocations = new List<GameObject>();
-    private int _enemiesPerWave = 5;
+    private int _enemiesPerWave = 15;
     private int _enemyDied = 0;
     private int _enemySpawned = 0;
     
@@ -98,6 +99,8 @@ public class WaveManager : Singleton<WaveManager>
 
     }
 
+
+
     private void Spawn()
     {
         if (!_canSpawn)
@@ -113,12 +116,22 @@ public class WaveManager : Singleton<WaveManager>
         else
         {
             // TODO CHECK WHICH MAP IS ACTIVE
+            if (_enemySpawned == _enemiesPerWave)
+            {
+                _canSpawn = false;
+                return;
+            }
             GameObject enemy;
             var spawn1 = _spawnLocations[1];
             enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
             enemy.transform.position = spawn1.transform.position;
             _enemySpawned++;
 
+            if (_enemySpawned == _enemiesPerWave)
+            {
+                _canSpawn = false;
+                return;
+            }
             if (_waveIndex > 3)
             {
                 var spawn2 = _spawnLocations[0];
@@ -127,6 +140,11 @@ public class WaveManager : Singleton<WaveManager>
                 _enemySpawned++;
             }
 
+            if (_enemySpawned == _enemiesPerWave)
+            {
+                _canSpawn = false;
+                return;
+            }
             if (_waveIndex > 7)
             {
                 var spawn3 = _spawnLocations[2];
