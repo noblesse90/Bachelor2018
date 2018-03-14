@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class UIManager : Singleton<UIManager> {
     
@@ -204,6 +206,17 @@ public class UIManager : Singleton<UIManager> {
             _canonTowerTestBtn.interactable = true;
             GManager.Instance.Paused = false;
         }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1;
+        CameraZoom.Instance.Zoom = true;
+        _nextWaveBtn.interactable = true;
+        _basicTowerTestBtn.interactable = true;
+        _canonTowerTestBtn.interactable = true;
+        GManager.Instance.Paused = false;
     }
     
     public void ClassIcons()

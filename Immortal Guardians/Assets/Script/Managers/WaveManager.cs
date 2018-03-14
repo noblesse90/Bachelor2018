@@ -70,16 +70,21 @@ public class WaveManager : Singleton<WaveManager>
             if (_waveIndex >= 3)
             {
                 _path2.SetActive(true);
+                _enemiesPerWave = 30;
             }
 
             if (_waveIndex >= 7)
             {
                 _path3.SetActive(true);
+                _enemiesPerWave = 45;
             }
             if (_waveIndex == 9)
             {
                 UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
             }
+            
+            // TEST
+            PlayerController.Instance.Speed = 20;
         }
 	}
 
@@ -96,7 +101,10 @@ public class WaveManager : Singleton<WaveManager>
         _path3.SetActive(false);
         
         _spawnMode = true;
-
+        
+        
+        // TEST
+        PlayerController.Instance.Speed = 10;
     }
 
 

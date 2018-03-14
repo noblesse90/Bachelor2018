@@ -116,48 +116,41 @@ public class GManager : Singleton<GManager> {
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                if (!_canBuild)
-                {
-                    _buildTimer += Time.deltaTime;
-
-                    if (_buildTimer >= _buildCooldown)
-                    {
-                        _canBuild = true;
-                        _buildTimer = 0;
-                    }
-                }
-
-                if (!_canBuild) return;
                 switch (_towerToBuild)
                 {
                         case "BasicTower":
-                            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
+                            if (Input.GetKeyDown(KeyCode.Mouse0))
                             {
-                                TowerManager.Instance.PlaceTower();
-                                _buildMode = true;
-                                BuildingMode.Instance.TowerType = _towerToBuild;
+                                if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
+                                {
+                                    TowerManager.Instance.PlaceTower();
+                                    _buildMode = true;
+                                    BuildingMode.Instance.TowerType = _towerToBuild;
+                                }
+                                else
+                                {
+                                    _buildMode = false;
+                                }
                             }
-                            else
-                            {
-                                _buildMode = false;
-                            }
+                            
                             break;
                         
                         case "CanonTower":
-                            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
+                            if (Input.GetKeyDown(KeyCode.Mouse0))
                             {
-                                TowerManager.Instance.PlaceTower();
-                                _buildMode = true;
-                                BuildingMode.Instance.TowerType = _towerToBuild;
-                            }
-                            else
-                            {
-                                _buildMode = false;
-                            }
+                                if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
+                                {
+                                    TowerManager.Instance.PlaceTower();
+                                    _buildMode = true;
+                                    BuildingMode.Instance.TowerType = _towerToBuild;
+                                }
+                                else
+                                {
+                                    _buildMode = false;
+                                }
+                            } 
                             break;
                 }
-
-                _canBuild = false;
             }
             else if (Input.GetKeyUp(KeyCode.LeftShift))
             {
@@ -171,6 +164,7 @@ public class GManager : Singleton<GManager> {
         // checking if buildmode is false or true
         if (BuildMode)
         {
+            if (Input.GetKey(KeyCode.LeftShift)) return;
             if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Escape))
             {
                 BuildMode = false;

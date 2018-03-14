@@ -8,10 +8,10 @@ public class BasicTower : MonoBehaviour {
     // Price, range, attackCooldown, damange, level, Projectilespeed
     readonly float[,] _stats = new float[4, 6]
     {
-        { 10,7,1,10,1,10},
-        { 25,9,0.9f,15,2,15},
-        { 25,10,0.7f,20,3,20},
-        { 50,13,0.4f,30, 4,30}
+        { 10,7,1,10,1,20},
+        { 25,9,0.9f,15,2,25},
+        { 25,10,0.7f,20,3,30},
+        { 50,13,0.4f,30, 4,40}
     };
 
 

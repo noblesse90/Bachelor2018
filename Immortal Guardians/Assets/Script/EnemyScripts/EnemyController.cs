@@ -101,7 +101,7 @@ public class EnemyController : MonoBehaviour
 				break;
 			
 			case "Enemy10":
-				_startHp = 2500;
+				_startHp = 20000;
 				_money = 40;
 				_defaultSpeed = 10;
 				GetComponent<AIPath>().maxSpeed = _defaultSpeed;

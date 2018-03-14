@@ -7,8 +7,7 @@ public class PauseMenu : MonoBehaviour {
 
 	public void Restart()
 	{
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-		Time.timeScale = 1;
+		UIManager.Instance.Restart();
 	}
 
 	public void Quit()

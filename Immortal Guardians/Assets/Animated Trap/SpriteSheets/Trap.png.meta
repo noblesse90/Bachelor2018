@@ -2,7 +2,37 @@ fileFormatVersion: 2
 guid: f0b941f098b8dbf47abd4b0037fa3a4a
 timeCreated: 18446744011573954816
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: Trap_0
+    21300002: Trap_1
+    21300004: Trap_2
+    21300006: Trap_3
+    21300008: Trap_4
+    21300010: Trap_5
+    21300012: Trap_6
+    21300014: Trap_7
+    21300016: Trap_8
+    21300018: Trap_9
+    21300020: Trap_10
+    21300022: Trap_11
+    21300024: Trap_12
+    21300026: Trap_13
+    21300028: Trap_14
+    21300030: Trap_15
+    21300032: Trap_16
+    21300034: Trap_17
+    21300036: Trap_18
+    21300038: Trap_19
+    21300040: Trap_20
+    21300042: Trap_21
+    21300044: Trap_22
+    21300046: Trap_23
+    21300048: Trap_24
+    21300050: Trap_25
+    21300052: Trap_26
+    21300054: Trap_27
+    21300056: Trap_28
+    21300058: Trap_29
   externalObjects: {}
   serializedVersion: 4
   mipmaps:

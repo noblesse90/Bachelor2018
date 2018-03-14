@@ -1,13 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Cinemachine;
 
 public class PlayerController : Singleton<PlayerController> {
 
-    // Int variable to controll speed and can be changeable through the inspector (SerializeField)
-    [SerializeField] private int _speed = 10;
+    // PLAYER SPEED
+    private int _speed = 20;
+
+	public int Speed
+	{
+		get { return _speed; }
+		set { _speed = value; }
+	}
+
 	[SerializeField] private GameObject _orbitingSword;
 
     // Rigidbody variable to hold on a rigidbodody component
@@ -139,6 +147,7 @@ public class PlayerController : Singleton<PlayerController> {
 		
 		Move();
 		OrbitingSwordManaReduction();
+		
 	}
 
 	private void Move()
