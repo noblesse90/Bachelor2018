@@ -4,4 +4,7 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ImmortalGuardiansV1.unity
+    guid: 14fad075d01fc1c45be10fde5c63ed1d
