@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using TMPro;
 using Random = System.Random;
 
-public class WaveManager : Singleton<WaveManager> {
+public class WaveManager : Singleton<WaveManager>
+{
+
+    [SerializeField] private GameObject _path1;
+    [SerializeField] private GameObject _path2;
+    [SerializeField] private GameObject _path3;
 
     private bool _spawnMode = false;
     
     private List<GameObject> _spawnLocations = new List<GameObject>();
-    private int _enemiesPerWave = 30;
+    private int _enemiesPerWave = 5;
     private int _enemyDied = 0;
     private int _enemySpawned = 0;
     
@@ -23,6 +27,7 @@ public class WaveManager : Singleton<WaveManager> {
     private Random _rnd = new Random();
 
     private int _waveIndex = 0;
+    
     
     public List<GameObject> SpawnLocations
     {
@@ -60,7 +65,17 @@ public class WaveManager : Singleton<WaveManager> {
             _canSpawn = true;
             if (_waveIndex == _enemyTypes.Length) return;
             UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
-            if (UIManager.Instance.Wave == 9)
+            _path1.SetActive(true);
+            if (_waveIndex >= 3)
+            {
+                _path2.SetActive(true);
+            }
+
+            if (_waveIndex >= 7)
+            {
+                _path3.SetActive(true);
+            }
+            if (_waveIndex == 9)
             {
                 UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
             }
@@ -74,6 +89,11 @@ public class WaveManager : Singleton<WaveManager> {
         UIManager.Instance.Wave = _waveIndex;
         UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(false);
         GManager.Instance.BuildMode = false;
+        
+        _path1.SetActive(false);
+        _path2.SetActive(false);
+        _path3.SetActive(false);
+        
         _spawnMode = true;
 
     }

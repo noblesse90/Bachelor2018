@@ -15,6 +15,11 @@
             <e p="CharacterSetup.cs" t="Include" />
           </e>
         </e>
+        <e p="Animated Trap" t="Include">
+          <e p="SpriteSheets" t="Include">
+            <e p="Trap.txt" t="Include" />
+          </e>
+        </e>
         <e p="AstarPathfindingProject" t="Include">
           <e p="Behaviors" t="Include">
             <e p="AIDestinationSetter.cs" t="Include" />
@@ -492,6 +497,7 @@
             <e p="WaveManager.cs" t="Include" />
           </e>
           <e p="MenuScripts" t="Include">
+            <e p="HelpMenu.cs" t="Include" />
             <e p="MainMenu.cs" t="Include" />
             <e p="PauseMenu.cs" t="Include" />
             <e p="SettingsMenu.cs" t="Include" />

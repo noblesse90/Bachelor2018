@@ -78,6 +78,7 @@ public class GManager : Singleton<GManager> {
             if (Input.GetKeyUp(KeyCode.Escape))
             {
                 UIManager.Instance.Pause();
+                UIManager.Instance.CloseHelp();
             }
 
             // CHECKS IF THE GAME IS PAUSED

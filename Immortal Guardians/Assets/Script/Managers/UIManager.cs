@@ -69,6 +69,11 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private GameObject _pauseWindow;
     [SerializeField] private GameObject _settingsWindow;
     
+    // HELP MENU
+    [Header("Help Menu")]
+    [SerializeField] private GameObject _helpWindow;
+    [SerializeField] private GameObject _uiHelp;
+    
     // MANA COSTS
     private float _manaCostFirstAbility;
    
@@ -150,7 +155,8 @@ public class UIManager : Singleton<UIManager> {
     // PAUSE MENU
     public void Pause()
     {
-        if (_pauseWindow.activeInHierarchy || _settingsWindow.activeInHierarchy)
+        if (_pauseWindow.activeInHierarchy || _settingsWindow.activeInHierarchy
+            || _helpWindow.activeInHierarchy || _uiHelp.activeInHierarchy)
         {
             _pauseWindow.SetActive(false);
             _settingsWindow.SetActive(false);
@@ -170,6 +176,33 @@ public class UIManager : Singleton<UIManager> {
             _basicTowerTestBtn.interactable = false;
             _canonTowerTestBtn.interactable = false;
             GManager.Instance.Paused = true;
+        }
+    }
+    
+    // HELP MENU
+    public void OpenHelp()
+    {
+        _helpWindow.SetActive(true);
+        Time.timeScale = 0;
+        CameraZoom.Instance.Zoom = false;
+        _nextWaveBtn.interactable = false;
+        _basicTowerTestBtn.interactable = false;
+        _canonTowerTestBtn.interactable = false;
+        GManager.Instance.Paused = true;
+    }
+
+    public void CloseHelp()
+    {
+        if (_helpWindow.activeInHierarchy || _uiHelp.activeInHierarchy)
+        {
+            _helpWindow.SetActive(false);
+            _uiHelp.SetActive(false);
+            Time.timeScale = 1;
+            CameraZoom.Instance.Zoom = true;
+            _nextWaveBtn.interactable = true;
+            _basicTowerTestBtn.interactable = true;
+            _canonTowerTestBtn.interactable = true;
+            GManager.Instance.Paused = false;
         }
     }
     
