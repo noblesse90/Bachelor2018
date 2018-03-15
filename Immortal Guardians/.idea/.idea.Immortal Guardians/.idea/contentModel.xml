@@ -487,6 +487,7 @@
             <e p="DestinationCollider.cs" t="Include" />
             <e p="EnemyController.cs" t="Include" />
             <e p="HealtbarScript.cs" t="Include" />
+            <e p="MinimapIconPulsate.cs" t="Include" />
             <e p="SpawnRotator.cs" t="Include" />
           </e>
           <e p="ImpactBehaviour.cs" t="Include" />

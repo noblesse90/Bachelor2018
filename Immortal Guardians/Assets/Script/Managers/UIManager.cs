@@ -9,6 +9,8 @@ using UnityEngine.Video;
 
 public class UIManager : Singleton<UIManager> {
     
+    private float _loseTimer;
+    
 
     [Header("Wave button")]
     [SerializeField] private Button _nextWaveBtn;
@@ -87,16 +89,17 @@ public class UIManager : Singleton<UIManager> {
     
     // MANA COSTS
     private float _manaCostFirstAbility;
-   
 
     public Image ManaBar
     {
         get { return _manaBar; }
         set { _manaBar = value; }
     }
-    
-    private bool _canBasicAttack = true, _canGCDAttack = true;
-    private float _basicAttackTimer, _gcdTimer, _gcd;
+
+    private bool _canBasicAttack = true, _canGCDAttack = true, _canGoldOverTime = true;
+
+
+    private float _basicAttackTimer, _gcdTimer, _gcd, _goldTimer, _goldCooldown;
 
     public bool CanBasicAttack
     {
@@ -114,7 +117,8 @@ public class UIManager : Singleton<UIManager> {
     private void Start()
     {
         Currency = 150;
-        Life = 5;
+        Life = 100;
+        _loseTimer = 0;
 
         _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
@@ -129,6 +133,7 @@ public class UIManager : Singleton<UIManager> {
         _pause.onClick.AddListener(Pause);
         
         _gcd = 0.5f;
+        _goldCooldown = 5;
         
         _enemyCountTxt.GetComponent<TextMeshProUGUI>().text = "0";
         _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
@@ -143,6 +148,8 @@ public class UIManager : Singleton<UIManager> {
         
             // gcd timer
             Timers();
+            
+            GoldOverTime();
         }  
     }
     
@@ -154,24 +161,12 @@ public class UIManager : Singleton<UIManager> {
         {
             _pauseWindow.SetActive(false);
             _settingsWindow.SetActive(false);
-            Time.timeScale = 1;
-            CameraZoom.Instance.Zoom = true;
-            _nextWaveBtn.interactable = true;
-            _basicTowerTestBtn.interactable = true;
-            _canonTowerTestBtn.interactable = true;
-            GManager.Instance.Paused = false;
+            StartGame();
         }
         else
         {
             _pauseWindow.SetActive(true);
-            Time.timeScale = 0;
-            CameraZoom.Instance.Zoom = false;
-            _nextWaveBtn.interactable = false;
-            _basicTowerTestBtn.interactable = false;
-            _canonTowerTestBtn.interactable = false;
-            GManager.Instance.Paused = true;
-            GManager.Instance.BuildMode = false;
-            GManager.Instance.DeselectTower();  
+            StopGame(); 
         }
     }
     
@@ -179,6 +174,27 @@ public class UIManager : Singleton<UIManager> {
     public void OpenHelp()
     {
         _helpWindow.SetActive(true);
+        StopGame();
+    }
+
+    public void CloseHelp()
+    {
+        if (_helpWindow.activeInHierarchy || _uiHelp.activeInHierarchy)
+        {
+            _helpWindow.SetActive(false);
+            _uiHelp.SetActive(false);
+            StartGame();
+        }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartGame();
+    }
+
+    private void StopGame()
+    {
         Time.timeScale = 0;
         CameraZoom.Instance.Zoom = false;
         _nextWaveBtn.interactable = false;
@@ -189,24 +205,8 @@ public class UIManager : Singleton<UIManager> {
         GManager.Instance.DeselectTower();
     }
 
-    public void CloseHelp()
+    private void StartGame()
     {
-        if (_helpWindow.activeInHierarchy || _uiHelp.activeInHierarchy)
-        {
-            _helpWindow.SetActive(false);
-            _uiHelp.SetActive(false);
-            Time.timeScale = 1;
-            CameraZoom.Instance.Zoom = true;
-            _nextWaveBtn.interactable = true;
-            _basicTowerTestBtn.interactable = true;
-            _canonTowerTestBtn.interactable = true;
-            GManager.Instance.Paused = false;
-        }
-    }
-
-    public void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale = 1;
         CameraZoom.Instance.Zoom = true;
         _nextWaveBtn.interactable = true;
@@ -487,22 +487,39 @@ public class UIManager : Singleton<UIManager> {
                 _gcdTimer = 0;
             }
         }
-    }
-    
-    public IEnumerator LoseScreenFade()
-    {
-        GManager.Instance.BuildMode = false;
-        for (float i = 0; i <= 1.0f; i += Time.deltaTime / 1.5f)
+
+        if (!_canGoldOverTime)
         {
-            _loseText.SetActive(true);
-            _loseText.GetComponent<TextMeshProUGUI>().color = new Color(1,0,0,i);
-            _loseText.transform.localScale = new Vector3(1+i, 1+i, 0);
-            yield return null;
+            _goldTimer += Time.deltaTime;
+
+            if (_goldTimer >= _goldCooldown)
+            {
+                _canGoldOverTime = true;
+                _goldTimer = 0;
+            }
         }
-        
+    }
+    public void LoseScreenFade()
+    {
+        _loseText.SetActive(true);
+        _loseText.GetComponent<TextMeshProUGUI>().color = new Color(1,0,0,_loseTimer);
+        _loseText.transform.localScale = new Vector3(1+_loseTimer, 1+_loseTimer, 0);
+        _loseTimer += Time.deltaTime / 1.5f;
+
+        if (_loseTimer <= 1.0f) return;
         _restartBtn.gameObject.SetActive(true);
         _quitBtn.gameObject.SetActive(true);
-        Time.timeScale = 0;
+        StopGame();
 
+    }
+
+    public void GoldOverTime()
+    {
+        if (WaveManager.Instance.SpawnMode && _canGoldOverTime)
+        {
+            Currency += 3;
+            _canGoldOverTime = false;
+        }
+       
     }
 }

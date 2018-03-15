@@ -14,7 +14,7 @@ public class WaveManager : Singleton<WaveManager>
     [SerializeField] private GameObject _path3;
 
     private bool _spawnMode = false;
-    
+
     private List<GameObject> _spawnLocations = new List<GameObject>();
     private int _enemiesPerWave = 15;
     private int _enemyDied = 0;
@@ -41,6 +41,11 @@ public class WaveManager : Singleton<WaveManager>
         get { return _enemyDied; }
         set { _enemyDied = value; }
     }
+    
+    public bool SpawnMode
+    {
+        get { return _spawnMode; }
+    }
 
     private void Start()
     {
@@ -54,13 +59,9 @@ public class WaveManager : Singleton<WaveManager>
 
     
     private void Update () {
-        if (_spawnMode)
+        if (_spawnMode && _enemySpawned < _enemiesPerWave)
         {
-            UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
-            if (_enemySpawned < _enemiesPerWave)
-            {
-                Spawn();
-            }
+            Spawn();
         }
         else if (_enemyDied == _enemiesPerWave)
         {
@@ -68,18 +69,22 @@ public class WaveManager : Singleton<WaveManager>
             _enemySpawned = 0;
             _enemyDied = 0;
             _canSpawn = true;
+            UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
             if (_waveIndex == _enemyTypes.Length) return;
             UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
             _path1.SetActive(true);
+            _spawnLocations[1].transform.GetChild(0).gameObject.SetActive(true);
             if (_waveIndex >= 3)
             {
                 _path2.SetActive(true);
+                _spawnLocations[0].transform.GetChild(0).gameObject.SetActive(true);
                 _enemiesPerWave = 30;
             }
 
             if (_waveIndex >= 7)
             {
                 _path3.SetActive(true);
+                _spawnLocations[2].transform.GetChild(0).gameObject.SetActive(true);
                 _enemiesPerWave = 45;
             }
             if (_waveIndex == 9)
@@ -90,8 +95,9 @@ public class WaveManager : Singleton<WaveManager>
             // BOOST PLAYER SPEED WHILE WAVE IS NOT ACTIVE
             PlayerController.Instance.Speed = 20;
         }
-       
-	}
+        
+        if (_enemySpawned > 0) UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
+    }
 
     public void NextWave()
     {
@@ -104,8 +110,12 @@ public class WaveManager : Singleton<WaveManager>
         _path1.SetActive(false);
         _path2.SetActive(false);
         _path3.SetActive(false);
+        _spawnLocations[0].transform.GetChild(0).gameObject.SetActive(false);
+        _spawnLocations[1].transform.GetChild(0).gameObject.SetActive(false);
+        _spawnLocations[2].transform.GetChild(0).gameObject.SetActive(false);
         
         _spawnMode = true;
+        
         
         
         // SETS THE PLAYER SPEED TO NORMAL AFTER WAVE HAVE STARTED

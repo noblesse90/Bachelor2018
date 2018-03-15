@@ -69,10 +69,8 @@ public class GManager : Singleton<GManager> {
         
         if (UIManager.Instance.Life <= 0)
         {
-            StartCoroutine(UIManager.Instance.LoseScreenFade());
+            UIManager.Instance.LoseScreenFade();
         }
-
-        
 
     }
 
