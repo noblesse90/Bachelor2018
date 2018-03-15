@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\finge\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.1325227568.00" t="ExcludeRecursive" />
-    <e p="C:\Users\finge\OneDrive\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
+    <e p="C:\Users\Phuc\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.-541683201.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Phuc\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
@@ -499,7 +499,6 @@
           <e p="MenuScripts" t="Include">
             <e p="HelpMenu.cs" t="Include" />
             <e p="MainMenu.cs" t="Include" />
-            <e p="PauseMenu.cs" t="Include" />
             <e p="SettingsMenu.cs" t="Include" />
           </e>
           <e p="ObjectPool.cs" t="Include" />

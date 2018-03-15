@@ -54,9 +54,13 @@ public class WaveManager : Singleton<WaveManager>
 
     
     private void Update () {
-        if (_spawnMode && _enemySpawned < _enemiesPerWave)
+        if (_spawnMode)
         {
-            Spawn();
+            UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
+            if (_enemySpawned < _enemiesPerWave)
+            {
+                Spawn();
+            }
         }
         else if (_enemyDied == _enemiesPerWave)
         {
@@ -83,9 +87,10 @@ public class WaveManager : Singleton<WaveManager>
                 UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
             }
             
-            // TEST
+            // BOOST PLAYER SPEED WHILE WAVE IS NOT ACTIVE
             PlayerController.Instance.Speed = 20;
         }
+       
 	}
 
     public void NextWave()
@@ -103,7 +108,7 @@ public class WaveManager : Singleton<WaveManager>
         _spawnMode = true;
         
         
-        // TEST
+        // SETS THE PLAYER SPEED TO NORMAL AFTER WAVE HAVE STARTED
         PlayerController.Instance.Speed = 10;
     }
 

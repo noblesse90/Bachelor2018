@@ -11,11 +11,6 @@ public class DestinationCollider : MonoBehaviour {
             collision.transform.GetComponent<EnemyController>().Release();
 
             UIManager.Instance.Life -= 1;
-            if (UIManager.Instance.Life == 0)
-            {
-                Debug.Log("YOU LOST!");
-                Time.timeScale = 0;
-            }
         }
 
     }

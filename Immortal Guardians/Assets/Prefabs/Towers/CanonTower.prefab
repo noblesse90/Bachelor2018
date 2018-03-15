@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 70306990672537690}
   m_Layer: 0
   m_Name: Cannon_Tower
-  m_TagString: Untagged
+  m_TagString: TowerSprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -187,7 +187,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1594683921321222}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -27.655762, y: -25.824928, z: 0}
+  m_LocalPosition: {x: -62.232674, y: 4.9386992, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 4320108281929360}

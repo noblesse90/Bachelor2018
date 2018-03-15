@@ -137,16 +137,18 @@ public class PlayerController : Singleton<PlayerController> {
 		if (GManager.Instance.Paused) return;
 		// gets an input from the keyboard
 		GetInput();
+		// move the gameobject according to the keypresses
+		
+		Move();
+		OrbitingSwordManaReduction();
+		
+		// stops player from attacking if he tries to select tower
+		if (Input.GetKey(KeyCode.Space) || GManager.Instance.BuildMode) return;
 		// Attacks
 		if (!EventSystem.current.IsPointerOverGameObject())
 		{
 			AttackAnimation();
 		}
-
-		// move the gameobject according to the keypresses
-		
-		Move();
-		OrbitingSwordManaReduction();
 		
 	}
 

@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using Pathfinding;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
@@ -59,20 +61,24 @@ public class GManager : Singleton<GManager> {
 
 
     // Update is called once per frame
-    private void Update()
+    private void LateUpdate()
     {
         // TOWER CODE
         TowerCode();
-
+        Game();
+        
         if (UIManager.Instance.Life <= 0)
         {
-            Time.timeScale = 0;
-            // TODO YOU LOSE SCREEN
+            StartCoroutine(UIManager.Instance.LoseScreenFade());
         }
-        
-        // ------------------------ TEMPORARY CODE -----------------
 
-        // quits the application (game)
+        
+
+    }
+
+    private void Game()
+    {
+        // CHECKS IF THE GAME HAS STARTED
         if (_gameStarted)
         {
             if (Input.GetKeyUp(KeyCode.Escape))
@@ -109,54 +115,6 @@ public class GManager : Singleton<GManager> {
                 }
             }
         }
-
-        
-        // RAPID TOWER PLACEMENT
-        if (BuildMode)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                switch (_towerToBuild)
-                {
-                        case "BasicTower":
-                            if (Input.GetKeyDown(KeyCode.Mouse0))
-                            {
-                                if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
-                                {
-                                    TowerManager.Instance.PlaceTower();
-                                    _buildMode = true;
-                                    BuildingMode.Instance.TowerType = _towerToBuild;
-                                }
-                                else
-                                {
-                                    _buildMode = false;
-                                }
-                            }
-                            
-                            break;
-                        
-                        case "CanonTower":
-                            if (Input.GetKeyDown(KeyCode.Mouse0))
-                            {
-                                if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
-                                {
-                                    TowerManager.Instance.PlaceTower();
-                                    _buildMode = true;
-                                    BuildingMode.Instance.TowerType = _towerToBuild;
-                                }
-                                else
-                                {
-                                    _buildMode = false;
-                                }
-                            } 
-                            break;
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.LeftShift))
-            {
-                _buildMode = false;
-            }
-        }
     }
 
     private void TowerCode()
@@ -164,6 +122,48 @@ public class GManager : Singleton<GManager> {
         // checking if buildmode is false or true
         if (BuildMode)
         {
+            // CONTINUOUS TOWER PLACEMENT
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    switch (_towerToBuild)
+                    {
+                        case "BasicTower":
+                            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
+                            {
+                                TowerManager.Instance.PlaceTower();
+                                _buildMode = true;
+                                BuildingMode.Instance.TowerType = _towerToBuild;
+                            }
+                            else
+                            {
+                                _buildMode = false;
+                            }
+                            break;
+                        
+                        case "CanonTower":
+                            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
+                            {
+                                TowerManager.Instance.PlaceTower();
+                                _buildMode = true;
+                                BuildingMode.Instance.TowerType = _towerToBuild;
+                            }
+                            else
+                            {
+                                _buildMode = false;
+                            }
+                            break;
+                    }
+                }
+                
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                _buildMode = false;
+            }
+            // END OF CONTINUOUS TOWER PLACEMENT
+            
             if (Input.GetKey(KeyCode.LeftShift)) return;
             if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Escape))
             {
@@ -193,6 +193,7 @@ public class GManager : Singleton<GManager> {
             }
             else if (Input.GetKeyDown(KeyCode.Mouse0))
             {
+                if (EventSystem.current.IsPointerOverGameObject()) return;
                DeselectTower();    
             }
         }
@@ -208,6 +209,7 @@ public class GManager : Singleton<GManager> {
                 TowerManager.Instance.CurrentTower = _tower;
                 UIManager.Instance.SetTowerStats(_tower.GetComponent<TowerController>());
                 UIManager.Instance.TowerStatsUi.SetActive(true);
+                UIManager.Instance.SelectTower();
             }
             else
             {
@@ -217,17 +219,13 @@ public class GManager : Singleton<GManager> {
         }
     }
 
-    private void DeselectTower()
+    public void DeselectTower()
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (_tower != null)
         {
-            if (_tower != null)
-            {
-                TowerManager.Instance.CurrentTower = null;
-                UIManager.Instance.TowerStatsUi.SetActive(false);
-            }
-                    
-        } 
+            TowerManager.Instance.CurrentTower = null;
+            UIManager.Instance.TowerStatsUi.SetActive(false);
+        }
     }
 
     public RaycastHit2D[] GetMouseCast()
@@ -243,6 +241,5 @@ public class GManager : Singleton<GManager> {
 
         return mousePosition;
     }
-
     
 }

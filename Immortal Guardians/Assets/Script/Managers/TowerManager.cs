@@ -205,7 +205,8 @@ public class TowerManager : Singleton<TowerManager> {
     public void SellTower()
     {
         if (_currentTower == null) return;
-        UIManager.Instance.Currency += _currentTower.GetComponent<TowerController>().TotalPrice/2;
+        
+        UIManager.Instance.Currency += Mathf.FloorToInt(_currentTower.GetComponent<TowerController>().TotalPrice * 0.75f);
         UIManager.Instance.TowerStatsUi.SetActive(false);
         DestroyTower();
     }
@@ -220,13 +221,12 @@ public class TowerManager : Singleton<TowerManager> {
             return;
         }
 
-        if (tc.Level > 3)
-        {
-            Debug.Log("MAX LEVEL");
-            return;
-        }
         UIManager.Instance.Currency -= tc.UpgradePrice;
         tc.Upgrade();
         _currentTower.transform.GetChild(tc.Level).GetComponent<SpriteRenderer>().enabled = true;
+
+        if (tc.Level <= 3) return;
+        Debug.Log("MAX LEVEL");
+        UIManager.Instance.UpgradeBtn.gameObject.SetActive(false);
     }
 }

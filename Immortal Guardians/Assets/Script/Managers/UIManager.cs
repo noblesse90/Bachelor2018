@@ -14,12 +14,15 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Button _nextWaveBtn;
     
     [Header("Display Text")]
-    [SerializeField] private GameObject _currencyTxt;
     [SerializeField] private GameObject _lifeTxt;
+    [SerializeField] private GameObject _currencyTxt;
+    [SerializeField] private GameObject _enemyCountTxt;
     [SerializeField] private GameObject _waveTxt;
+    
 
     private int _currency;
     private int _life;
+    private int _enemyCount;
     private int _wave;
 
     // Tower Stats
@@ -76,6 +79,12 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private GameObject _helpWindow;
     [SerializeField] private GameObject _uiHelp;
     
+    // LOSE SCREEN
+    [Header("LOSE")] 
+    [SerializeField] private GameObject _loseText;
+    [SerializeField] private Button _restartBtn;
+    [SerializeField] private Button _quitBtn;
+    
     // MANA COSTS
     private float _manaCostFirstAbility;
    
@@ -105,7 +114,7 @@ public class UIManager : Singleton<UIManager> {
     private void Start()
     {
         Currency = 150;
-        Life = 50;
+        Life = 5;
 
         _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
@@ -120,7 +129,8 @@ public class UIManager : Singleton<UIManager> {
         _pause.onClick.AddListener(Pause);
         
         _gcd = 0.5f;
-
+        
+        _enemyCountTxt.GetComponent<TextMeshProUGUI>().text = "0";
         _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
     }
 
@@ -128,24 +138,6 @@ public class UIManager : Singleton<UIManager> {
     {
         if (GManager.Instance.GameStarted)
         {
-            if(TowerManager.Instance.CurrentTower == null)
-            {
-                _sellTowerBtn.transform.gameObject.SetActive(false);
-                _upgradeBtn.transform.gameObject.SetActive(false);
-            }
-            else
-            {
-                if(!(TowerManager.Instance.CurrentTower.GetComponent<TowerController>().Level > 3))
-                {
-                    _upgradeBtn.transform.gameObject.SetActive(true);
-                }
-                else
-                {
-                    _upgradeBtn.transform.gameObject.SetActive(false);
-                }
-                _sellTowerBtn.transform.gameObject.SetActive(true);
-            }
-        
             // Fill manabar
             UiFillBars();
         
@@ -178,6 +170,8 @@ public class UIManager : Singleton<UIManager> {
             _basicTowerTestBtn.interactable = false;
             _canonTowerTestBtn.interactable = false;
             GManager.Instance.Paused = true;
+            GManager.Instance.BuildMode = false;
+            GManager.Instance.DeselectTower();  
         }
     }
     
@@ -191,6 +185,8 @@ public class UIManager : Singleton<UIManager> {
         _basicTowerTestBtn.interactable = false;
         _canonTowerTestBtn.interactable = false;
         GManager.Instance.Paused = true;
+        GManager.Instance.BuildMode = false;
+        GManager.Instance.DeselectTower();
     }
 
     public void CloseHelp()
@@ -217,6 +213,11 @@ public class UIManager : Singleton<UIManager> {
         _basicTowerTestBtn.interactable = true;
         _canonTowerTestBtn.interactable = true;
         GManager.Instance.Paused = false;
+    }
+    
+    public void Quit()
+    {
+        Application.Quit();
     }
     
     public void ClassIcons()
@@ -269,13 +270,22 @@ public class UIManager : Singleton<UIManager> {
             GManager.Instance.TowerToBuild = "CanonTower";
         }    
     }
+    
+    public int Life
+    {
+        get{ return _life; }
+
+        set
+        {
+            _life = value;
+            if (_life <= 0) _life = 0;
+            _lifeTxt.GetComponent<TextMeshProUGUI>().text = _life.ToString();
+        }
+    }
 
     public int Currency
     {
-        get
-        {
-            return _currency;
-        }
+        get{ return _currency; }
 
         set
         {
@@ -284,31 +294,21 @@ public class UIManager : Singleton<UIManager> {
                 value = 99999;
             }
             _currency = value;
-            _currencyTxt.GetComponent<TextMeshProUGUI>().text = value.ToString();
+            _currencyTxt.GetComponent<TextMeshProUGUI>().text = _currency.ToString("#.##");
             
         }
     }
 
-    public int Life
+    public void EnemyCount(int spawned, int died)
     {
-        get
-        {
-            return _life;
-        }
-
-        set
-        {
-            _life = value;
-            _lifeTxt.GetComponent<TextMeshProUGUI>().text = value.ToString();
-        }
+        _enemyCount = spawned - died;
+        _enemyCountTxt.GetComponent<TextMeshProUGUI>().text = _enemyCount.ToString();
     }
+
 
     public int Wave
     {
-        get
-        {
-            return _wave;
-        }
+        get{ return _wave; }
 
         set
         {
@@ -324,23 +324,20 @@ public class UIManager : Singleton<UIManager> {
 
     public Button NextWaveBtn
     {
-        get
-        {
-            return _nextWaveBtn;
-        }
+        get{ return _nextWaveBtn; }
     }
 
     public GameObject TowerStatsUi
     {
-        get
-        {
-            return _towerStatsUi;
-        }
+        get{ return _towerStatsUi; }
 
-        set
-        {
-            _towerStatsUi = value;
-        }
+        set{ _towerStatsUi = value; }
+    }
+    
+    public Button UpgradeBtn
+    {
+        get { return _upgradeBtn; }
+        set { _upgradeBtn = value; }
     }
 
     public void SetTowerStats(TowerController tc)
@@ -376,9 +373,22 @@ public class UIManager : Singleton<UIManager> {
         {
             _poisonText.GetComponent<TextMeshProUGUI>().text = "Poison: " + tc.Poison;
         }
-        
-        _sellPriceText.GetComponent<TextMeshProUGUI>().text = "$" + (tc.TotalPrice / 2);
+
+        _sellPriceText.GetComponent<TextMeshProUGUI>().text = "$" + Mathf.FloorToInt(tc.TotalPrice * 0.75f);
         _upgradePriceText.GetComponent<TextMeshProUGUI>().text = "$" + tc.UpgradePrice;
+    }
+
+    public void SelectTower()
+    {
+        if(!(TowerManager.Instance.CurrentTower.GetComponent<TowerController>().Level > 3))
+        {
+            _upgradeBtn.transform.gameObject.SetActive(true);
+        }
+        else
+        {
+            _upgradeBtn.transform.gameObject.SetActive(false);
+        }
+        
     }
     
     private void UiFillBars()
@@ -477,5 +487,22 @@ public class UIManager : Singleton<UIManager> {
                 _gcdTimer = 0;
             }
         }
+    }
+    
+    public IEnumerator LoseScreenFade()
+    {
+        GManager.Instance.BuildMode = false;
+        for (float i = 0; i <= 1.0f; i += Time.deltaTime / 1.5f)
+        {
+            _loseText.SetActive(true);
+            _loseText.GetComponent<TextMeshProUGUI>().color = new Color(1,0,0,i);
+            _loseText.transform.localScale = new Vector3(1+i, 1+i, 0);
+            yield return null;
+        }
+        
+        _restartBtn.gameObject.SetActive(true);
+        _quitBtn.gameObject.SetActive(true);
+        Time.timeScale = 0;
+
     }
 }
