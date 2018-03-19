@@ -522,6 +522,7 @@ public class UIManager : Singleton<UIManager> {
         _restartBtn.gameObject.SetActive(true);
         _quitBtn.gameObject.SetActive(true);
         StopGame();
+        FindObjectOfType<AudioManager>().Play("Game_Over");
 
     }
 

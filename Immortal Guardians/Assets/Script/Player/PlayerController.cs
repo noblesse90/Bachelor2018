@@ -392,6 +392,8 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		List<GameObject> targets = direction.gameObject.GetComponent<PlayerAttackCollider>().Targets;
 
+        FindObjectOfType<AudioManager>().Play("Sword_Swing");
+
 		foreach (GameObject enemy in targets)
 		{
 			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(_damage);
