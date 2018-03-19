@@ -13,12 +13,17 @@ public class WaveManager : Singleton<WaveManager>
     [SerializeField] private GameObject _path2;
     [SerializeField] private GameObject _path3;
 
+    private int _waveCount = 10;
+    
+    [SerializeField] private List<Enemy> _enemies;
+
     private bool _spawnMode = false;
 
     private List<GameObject> _spawnLocations = new List<GameObject>();
     private int _enemiesPerWave = 15;
     private int _enemyDied = 0;
     private int _enemySpawned = 0;
+    
     
     private bool _canSpawn = true;
     private float _spawnTimer;
@@ -69,8 +74,12 @@ public class WaveManager : Singleton<WaveManager>
             _enemySpawned = 0;
             _enemyDied = 0;
             _canSpawn = true;
+            
+            // UPDATE ENEMY COUNTER
             UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
-            if (_waveIndex == _enemyTypes.Length) return;
+            
+            // CHECKS IF THERES A NEXT WAVE
+            if (_waveIndex == _waveCount) return;
             UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
             _path1.SetActive(true);
             _spawnLocations[1].transform.GetChild(0).gameObject.SetActive(true);
@@ -91,6 +100,10 @@ public class WaveManager : Singleton<WaveManager>
             {
                 UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
             }
+            
+            // UNDO TOWER
+            TowerManager.Instance.LastTower = null;
+            UIManager.Instance.UndoTower.interactable = false;
             
             // BOOST PLAYER SPEED WHILE WAVE IS NOT ACTIVE
             PlayerController.Instance.Speed = 20;
@@ -116,7 +129,9 @@ public class WaveManager : Singleton<WaveManager>
         
         _spawnMode = true;
         
-        
+        // UNDO TOWER
+        TowerManager.Instance.LastTower = null;
+        UIManager.Instance.UndoTower.interactable = false;
         
         // SETS THE PLAYER SPEED TO NORMAL AFTER WAVE HAVE STARTED
         PlayerController.Instance.Speed = 10;
@@ -146,7 +161,8 @@ public class WaveManager : Singleton<WaveManager>
             }
             GameObject enemy;
             var spawn1 = _spawnLocations[1];
-            enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
             enemy.transform.position = spawn1.transform.position;
             _enemySpawned++;
 
@@ -158,7 +174,8 @@ public class WaveManager : Singleton<WaveManager>
             if (_waveIndex > 3)
             {
                 var spawn2 = _spawnLocations[0];
-                enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+                enemy = ObjectPool.Instance.GetObject("Enemy");
+                enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
                 enemy.transform.position = spawn2.transform.position;
                 _enemySpawned++;
             }
@@ -171,7 +188,8 @@ public class WaveManager : Singleton<WaveManager>
             if (_waveIndex > 7)
             {
                 var spawn3 = _spawnLocations[2];
-                enemy = ObjectPool.Instance.GetObject(_enemyTypes[_waveIndex-1]);
+                enemy = ObjectPool.Instance.GetObject("Enemy");
+                enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
                 enemy.transform.position = spawn3.transform.position;
                 _enemySpawned++;
             }

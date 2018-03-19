@@ -5,9 +5,9 @@ using Pathfinding;
 
 public class TowerManager : Singleton<TowerManager> {
 
-    // variable that holds the enemy destination and spawns
     private GameObject _destination;
     private GameObject _currentTower;
+    private GameObject _lastTower;
 
     // holds gameobjects
     private GameObject _towerprefab;
@@ -22,6 +22,12 @@ public class TowerManager : Singleton<TowerManager> {
     {
         get { return _currentTower; }
         set { _currentTower = value; }
+    }
+    
+    public GameObject LastTower
+    {
+        get { return _lastTower; }
+        set { _lastTower = value; }
     }
 
     public GameObject Towerprefab
@@ -86,6 +92,8 @@ public class TowerManager : Singleton<TowerManager> {
         {
             UIManager.Instance.Currency -= tower.GetComponent<TowerController>().Price;
             Physics2D.IgnoreCollision(tower.GetComponent<BoxCollider2D>(), PlayerController.Instance.GetComponent<Collider2D>());
+            _lastTower = tower;
+            UIManager.Instance.UndoTower.interactable = true;
         }
 
         GManager.Instance.BuildMode = false;
@@ -170,13 +178,14 @@ public class TowerManager : Singleton<TowerManager> {
         return tower;
     }
 
-    public void DestroyTower()
+    public void DestroyTower(GameObject tower)
     {
-        Destroy(_currentTower);
+        
         // get the bounds of the currect object that was hit by the raycast (tower)
-        Bounds b = _currentTower.transform.GetComponent<BoxCollider2D>().bounds;
+        Bounds b = tower.transform.GetComponent<BoxCollider2D>().bounds;
         // expands the bounds since the nodes are further out
         b.Expand(2);
+        Destroy(tower);
         // makes a graph update object
         GraphUpdateObject guo = new GraphUpdateObject(b);
         // updates the graph inside the given area of the bounds
@@ -205,10 +214,11 @@ public class TowerManager : Singleton<TowerManager> {
     public void SellTower()
     {
         if (_currentTower == null) return;
+        if(_currentTower == _lastTower) UIManager.Instance.UndoTower.interactable = false;
         
         UIManager.Instance.Currency += Mathf.FloorToInt(_currentTower.GetComponent<TowerController>().TotalPrice * 0.75f);
         UIManager.Instance.TowerStatsUi.SetActive(false);
-        DestroyTower();
+        DestroyTower(_currentTower);
     }
 
     public void UpgradeTower()
@@ -228,5 +238,16 @@ public class TowerManager : Singleton<TowerManager> {
         if (tc.Level <= 3) return;
         Debug.Log("MAX LEVEL");
         UIManager.Instance.UpgradeBtn.gameObject.SetActive(false);
+    }
+
+    public void UndoTower()
+    {
+        if (_lastTower == null) return;
+        UIManager.Instance.UndoTower.interactable = false;
+        UIManager.Instance.Currency += Mathf.FloorToInt(_lastTower.GetComponent<TowerController>().TotalPrice);
+        UIManager.Instance.TowerStatsUi.SetActive(false);
+        DestroyTower(_lastTower);
+        _lastTower = null;
+        
     }
 }

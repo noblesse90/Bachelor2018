@@ -39,6 +39,10 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Button _upgradeBtn;
     [SerializeField] private GameObject _sellPriceText;
     [SerializeField] private GameObject _upgradePriceText;
+    
+    // UNDO TOWER BUTTON
+    [Header("Undo Tower Button")]
+    [SerializeField] private Button _undoTower;
 
     // TOWER BUILD BUTTONS
     [Header("Tower Build Buttons")]
@@ -125,12 +129,16 @@ public class UIManager : Singleton<UIManager> {
         _sellTowerBtn.onClick.AddListener(TowerManager.Instance.SellTower);
 
         _upgradeBtn.onClick.AddListener(TowerManager.Instance.UpgradeTower);
+        
+        _undoTower.onClick.AddListener(TowerManager.Instance.UndoTower);
 
         _basicTowerTestBtn.onClick.AddListener(BasicTowerTestMetode);
 
         _canonTowerTestBtn.onClick.AddListener(CanonTowerTestMetode);
         
         _pause.onClick.AddListener(Pause);
+        
+        
         
         _gcd = 0.5f;
         _goldCooldown = 5;
@@ -308,8 +316,6 @@ public class UIManager : Singleton<UIManager> {
 
     public int Wave
     {
-        get{ return _wave; }
-
         set
         {
             _wave = value;
@@ -338,6 +344,12 @@ public class UIManager : Singleton<UIManager> {
     {
         get { return _upgradeBtn; }
         set { _upgradeBtn = value; }
+    }
+    
+    public Button UndoTower
+    {
+        get { return _undoTower; }
+        set { _undoTower = value; }
     }
 
     public void SetTowerStats(TowerController tc)

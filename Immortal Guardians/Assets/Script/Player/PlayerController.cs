@@ -16,6 +16,8 @@ public class PlayerController : Singleton<PlayerController> {
 		set { _speed = value; }
 	}
 
+	private Vector2 _mousePos;
+
 	[SerializeField] private GameObject _orbitingSword;
 
     // Rigidbody variable to hold on a rigidbodody component
@@ -62,7 +64,7 @@ public class PlayerController : Singleton<PlayerController> {
 	// ORBITING SWORDS
 	
 	private bool _orbitingSwordBool = false;
-	private GameObject _sword1;
+	private GameObject _orbSword;
 	
 	public bool OrbitingSwordBool
 	{
@@ -135,11 +137,16 @@ public class PlayerController : Singleton<PlayerController> {
 	private void Update()
 	{
 		if (GManager.Instance.Paused) return;
+		// gets the mouse position since it's used multiple times
+		_mousePos = GManager.Instance.GetMousePos();
 		// gets an input from the keyboard
 		GetInput();
 		// move the gameobject according to the keypresses
-		
 		Move();
+		// does the animation for the player according to mouse position
+		AnimationDirection();
+		
+		// reduces the players mana if he's using Orbiting swords
 		OrbitingSwordManaReduction();
 		
 		// stops player from attacking if he tries to select tower
@@ -151,148 +158,169 @@ public class PlayerController : Singleton<PlayerController> {
 		}
 		
 	}
+	
+	// GET INPUT FROM USER
+	private void GetInput()
+	{
+		// resets the direction
+		_direction = Vector2.zero;
+
+		// checks if the user presses w, a, s or d and acts accordingly
+	    
+		if (Input.GetKey(KeyCode.W))
+		{
+			_direction += Vector2.up;
+		} 
+        
+
+		if (Input.GetKey(KeyCode.A))
+		{
+			_direction += Vector2.left;
+		}
+        
+
+		if (Input.GetKey(KeyCode.S))
+		{
+			_direction += Vector2.down;
+		}
+        
+
+		if (Input.GetKey(KeyCode.D))
+		{
+			_direction += Vector2.right;
+		}   
+	}
 
 	private void Move()
     {
         transform.Translate(_direction * Time.deltaTime * _speed);
     }
 
-	// GET INPUT FROM USER
+	// ACTIVATES THE ANIMATION FOR THE DIRECTION THE MOUSE IS IN
+	// First checks in a cross then it checks on 45 degress
+	private void AnimationDirection()
+	{
+		var pos = _mousePos - (Vector2) transform.position;
 
-    private void GetInput()
-    {
-        // resets the direction
-        _direction = Vector2.zero;
-
-        // checks if the user presses w, a, s or d and acts accordingly
-
-	    if ((Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A)))
-	    {
-		    if(Input.GetKey(KeyCode.S))
-		    {
-			    _direction += Vector2.left;
-			    _direction += Vector2.down;
-		    }
-
-		    if (Input.GetKey(KeyCode.W))
-		    {
-			    _direction += Vector2.left;
-			    _direction += Vector2.up;
-		    }
-		    _lookDirection = LookDirection.Left;
-		    _left.gameObject.SetActive(true);
+		if (pos.x >= 0 && pos.y >= 0)
+		{
+			if (pos.x - pos.y < 0)
+			{
+				// UP
+				_lookDirection = LookDirection.Up;
+				_up.gameObject.SetActive(true);
 	        
-		    _animatorLeft.SetBool("Walking", true);
-            
-		    _up.gameObject.SetActive(false);
-		    _right.gameObject.SetActive(false);
-		    _down.gameObject.SetActive(false);
-		    return;
-	    }
-	    
-	    if ((Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D)))
-	    {
-		    if(Input.GetKey(KeyCode.S))
-		    {
-			    _direction += Vector2.right;
-			    _direction += Vector2.down;
-		    }
+				// CHECKS IF WALKING OR NOT
+				_animatorUp.SetBool("Walking", !(_direction.magnitude <= 0));
 
-		    if (Input.GetKey(KeyCode.W))
-		    {
-			    _direction += Vector2.right;
-			    _direction += Vector2.up;
-		    }
-		    _lookDirection = LookDirection.Right;
-		    _right.gameObject.SetActive(true);
+				_left.gameObject.SetActive(false);
+				_right.gameObject.SetActive(false);
+				_down.gameObject.SetActive(false);
+			}
+			else
+			{
+				// RIGHT
+				_lookDirection = LookDirection.Right;
+				_right.gameObject.SetActive(true);
 	        
-		    _animatorRight.SetBool("Walking", true);
-            
-		    _up.gameObject.SetActive(false);
-		    _left.gameObject.SetActive(false);
-		    _down.gameObject.SetActive(false);
-		    return;
-	    }
-	    
-        if (Input.GetKey(KeyCode.W))
-        {
-            _direction += Vector2.up;
-	        _lookDirection = LookDirection.Up;
-            _up.gameObject.SetActive(true);
+				// CHECKS IF WALKING OR NOT
+				_animatorRight.SetBool("Walking", !(_direction.magnitude <= 0));
+
+				_left.gameObject.SetActive(false);
+				_up.gameObject.SetActive(false);
+				_down.gameObject.SetActive(false);
+			}
+			
+		}
+		else if (pos.x >= 0 && pos.y < 0)
+		{
+			if (pos.x + pos.y < 0)
+			{
+				// DOWN
+				_lookDirection = LookDirection.Down;
+				_down.gameObject.SetActive(true);
 	        
-	        _animatorUp.SetBool("Walking", true);
-            
-            _left.gameObject.SetActive(false);
-            _right.gameObject.SetActive(false);
-            _down.gameObject.SetActive(false);
-        } 
-        
+				// CHECKS IF WALKING OR NOT
+				_animatorDown.SetBool("Walking", !(_direction.magnitude <= 0));
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            _direction += Vector2.left;
-	        _lookDirection = LookDirection.Left;
-            _left.gameObject.SetActive(true);
+				_left.gameObject.SetActive(false);
+				_right.gameObject.SetActive(false);
+				_up.gameObject.SetActive(false);
+			}
+			else
+			{
+				// RIGHT
+				_lookDirection = LookDirection.Right;
+				_right.gameObject.SetActive(true);
 	        
-	        _animatorLeft.SetBool("Walking", true);
-            
-            _up.gameObject.SetActive(false);
-            _right.gameObject.SetActive(false);
-            _down.gameObject.SetActive(false);
-        }
-        
+				// CHECKS IF WALKING OR NOT
+				_animatorRight.SetBool("Walking", !(_direction.magnitude <= 0));
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            _direction += Vector2.down;
-	        _lookDirection = LookDirection.Down;
-            _down.gameObject.SetActive(true);
+				_left.gameObject.SetActive(false);
+				_up.gameObject.SetActive(false);
+				_down.gameObject.SetActive(false);
+			}
+		}
+		else if (pos.x < 0 && pos.y < 0)
+		{
+			if (pos.x - pos.y < 0)
+			{
+				// LEFT
+				_lookDirection = LookDirection.Left;
+				_left.gameObject.SetActive(true);
 	        
-	        _animatorDown.SetBool("Walking", true);
-            
-            _left.gameObject.SetActive(false);
-            _right.gameObject.SetActive(false);
-            _up.gameObject.SetActive(false);
+				// CHECKS IF WALKING OR NOT
+				_animatorLeft.SetBool("Walking", !(_direction.magnitude <= 0));
+
+				_up.gameObject.SetActive(false);
+				_right.gameObject.SetActive(false);
+				_down.gameObject.SetActive(false);
+			}
+			else
+			{
+				// DOWN
+				_lookDirection = LookDirection.Down;
+				_down.gameObject.SetActive(true);
 	        
-        }
-        
+				// CHECKS IF WALKING OR NOT
+				_animatorDown.SetBool("Walking", !(_direction.magnitude <= 0));
 
-        if (Input.GetKey(KeyCode.D))
-        {
-            _direction += Vector2.right;
-	        _lookDirection = LookDirection.Right;
-            _right.gameObject.SetActive(true);
+				_left.gameObject.SetActive(false);
+				_right.gameObject.SetActive(false);
+				_up.gameObject.SetActive(false);
+			}
+		}
+		else if (pos.x < 0 && pos.y >= 0)
+		{
+			if (pos.x + pos.y < 0)
+			{
+				// LEFT
+				_lookDirection = LookDirection.Left;
+				_left.gameObject.SetActive(true);
 	        
-	        _animatorRight.SetBool("Walking", true);
-            
-            _left.gameObject.SetActive(false);
-            _up.gameObject.SetActive(false);
-            _down.gameObject.SetActive(false);
-        }
+				// CHECKS IF WALKING OR NOT
+				_animatorLeft.SetBool("Walking", !(_direction.magnitude <= 0));
 
-	    if (_direction.magnitude <= 0)
-	    {
-		    if (_down.gameObject.activeInHierarchy)
-		    {
-			    _animatorDown.SetBool("Walking", false);
-		    }
+				_up.gameObject.SetActive(false);
+				_right.gameObject.SetActive(false);
+				_down.gameObject.SetActive(false);
+			}
+			else
+			{
+				// UP
+				_lookDirection = LookDirection.Up;
+				_up.gameObject.SetActive(true);
+				
+				// CHECKS IF WALKING OR NOT
+				_animatorUp.SetBool("Walking", !(_direction.magnitude <= 0));
 
-		    if (_right.gameObject.activeInHierarchy)
-		    {
-			    _animatorRight.SetBool("Walking", false);
-		    }
+				_left.gameObject.SetActive(false);
+				_right.gameObject.SetActive(false);
+				_down.gameObject.SetActive(false);
+			}
+		}
+	}
 
-		    if (_left.gameObject.activeInHierarchy)
-		    {
-			    _animatorLeft.SetBool("Walking", false);
-		    }
-
-		    if (_up.gameObject.activeInHierarchy)
-		    {
-			    _animatorUp.SetBool("Walking", false);
-		    }
-	    }
-    }
 	
 	// RUNS THE ATTACKANIMATIONS AND ABILITIES
 	
@@ -320,7 +348,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private void RangedAttack()
 	{
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, _mousePos, 0);
 	}
 
 	// RIGHT CLICK (MULTISHOT)
@@ -329,15 +357,15 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		Color color = new Color(1f,1f,0.4f);
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, _mousePos, 0);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), 5);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, _mousePos, 5);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
 		
 		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, GManager.Instance.GetMousePos(), -5);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, _mousePos, -5);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
 		
 		ManaCost(_rightClickCost);
@@ -349,7 +377,7 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().ScatterShot = true;
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, GManager.Instance.GetMousePos(), 0);
+		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, _mousePos, 0);
 		
 		ManaCost(_scatterShotCost);	
 	}
@@ -384,21 +412,21 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private void OrbitingSwords()
 	{
-		_sword1 = Instantiate(_orbitingSword, transform);
-		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(-180, 0, 0), new Vector3(0, 0, 90));
-		_sword1 = Instantiate(_orbitingSword, transform);
-		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(180, 0, 0), new Vector3(0, 0, -90));
-		_sword1 = Instantiate(_orbitingSword, transform);
-		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, 180, 0), new Vector3(0, 0, 0));
-		_sword1 = Instantiate(_orbitingSword, transform);
-		_sword1.GetComponent<OrbitingSwordScript>().InstantiateTransformAndRotation(new Vector3(0, -180, 0), new Vector3(0, 0, 180));
+		_orbSword = Instantiate(_orbitingSword, transform);
+		_orbSword.GetComponent<OrbitingSwordScript>().TransformRotationDamage(new Vector3(-180, 0, 0), new Vector3(0, 0, 90), _damage/2f);
+		_orbSword = Instantiate(_orbitingSword, transform);
+		_orbSword.GetComponent<OrbitingSwordScript>().TransformRotationDamage(new Vector3(180, 0, 0), new Vector3(0, 0, -90), _damage/2f);
+		_orbSword = Instantiate(_orbitingSword, transform);
+		_orbSword.GetComponent<OrbitingSwordScript>().TransformRotationDamage(new Vector3(0, 180, 0), new Vector3(0, 0, 0), _damage/2f);
+		_orbSword = Instantiate(_orbitingSword, transform);
+		_orbSword.GetComponent<OrbitingSwordScript>().TransformRotationDamage(new Vector3(0, -180, 0), new Vector3(0, 0, 180), _damage/2f);
 
 		_orbitingSwordBool = true;
 	}
 
 	private void DestroySwords()
 	{
-		if (_sword1 != null)
+		if (_orbSword != null)
 		{
 			_orbitingSwordBool = false;
 		}

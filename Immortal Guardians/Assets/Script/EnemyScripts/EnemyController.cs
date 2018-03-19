@@ -1,11 +1,10 @@
-﻿using Pathfinding;
+﻿using System.Collections.Generic;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
-	
-
 	private float _startHp;
 
 	private float _hp;
@@ -29,86 +28,18 @@ public class EnemyController : MonoBehaviour
 
 	// Use this for initialization
 	private void Start () {
-		InitializeStats();
 		_slowDuration = 2;
 	}
 
-	private void InitializeStats()
+	public void InitializeStats(Enemy enemy)
 	{
-		switch (gameObject.name)
-		{
-			case "Enemy01":
-				_startHp = 200;
-				_money = 20;
-				_defaultSpeed = 5;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy02":
-				_startHp = 400;
-				_money = 20;
-				_defaultSpeed = 5;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy03":
-				_startHp = 500;
-				_money = 20;
-				_defaultSpeed = 5;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy04":
-				_startHp = 700;
-				_money = 25;
-				_defaultSpeed = 7;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy05":
-				_startHp = 800;
-				_money = 25;
-				_defaultSpeed = 7;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy06":
-				_startHp = 900;
-				_money = 30;
-				_defaultSpeed = 7;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy07":
-				_startHp = 1200;
-				_money = 30;
-				_defaultSpeed = 7;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy08":
-				_startHp = 1500;
-				_money = 35;
-				_defaultSpeed = 10;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy09":
-				_startHp = 2000;
-				_money = 35;
-				_defaultSpeed = 10;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			case "Enemy10":
-				_startHp = 20000;
-				_money = 40;
-				_defaultSpeed = 10;
-				GetComponent<AIPath>().maxSpeed = _defaultSpeed;
-				break;
-			
-			default: break;
-		}
+
+		_startHp = enemy.Health;
+		_money = enemy.Money;
+		_defaultSpeed = enemy.Defaultspeed;
+		GetComponent<AIPath>().maxSpeed = _defaultSpeed;
+		transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite = enemy.Art;
+		
 		_hp = _startHp;
 	}
 

@@ -39,12 +39,18 @@ public class SettingsMenu : MonoBehaviour
 		SetFullscreen(true);
 	}
 
+	private void LateUpdate()
+	{
+		Cursor.lockState = CursorLockMode.Confined;
+	}
+
 
 	public void SetResolution(int resolutionIndex)
 	{
 		Resolution resolution = _resolutions[resolutionIndex];
 		Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
 	}
+
 
 	public void SetFullscreen(bool fullscreen)
 	{

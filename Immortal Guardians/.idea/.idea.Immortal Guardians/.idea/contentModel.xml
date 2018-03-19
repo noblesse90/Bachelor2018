@@ -485,6 +485,7 @@
           <e p="CameraZoom.cs" t="Include" />
           <e p="EnemyScripts" t="Include">
             <e p="DestinationCollider.cs" t="Include" />
+            <e p="Enemy.cs" t="Include" />
             <e p="EnemyController.cs" t="Include" />
             <e p="HealtbarScript.cs" t="Include" />
             <e p="MinimapIconPulsate.cs" t="Include" />

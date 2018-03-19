@@ -13,6 +13,7 @@ public class OrbitingSwordScript : MonoBehaviour
 	private SpriteRenderer _sr;
 	private Color _color;
 	private float _alpha = 0;
+	private float _damage;
 
 
 	private void Start()
@@ -27,10 +28,11 @@ public class OrbitingSwordScript : MonoBehaviour
 		_sr.color = new Color(255, 255, 255, 0);
 	}
 
-	public void InstantiateTransformAndRotation(Vector3 t, Vector3 r)
+	public void TransformRotationDamage(Vector3 t, Vector3 r, float dmg)
 	{
 		_t = t;
 		transform.Rotate(r);
+		_damage = dmg;
 	}
 
 	private void Update()
@@ -57,7 +59,7 @@ public class OrbitingSwordScript : MonoBehaviour
 	{
 		if (other.CompareTag("Enemy"))
 		{
-			other.GetComponent<EnemyController>().TakeDamage(30);
+			other.GetComponent<EnemyController>().TakeDamage(_damage);
 		}
 	}
 

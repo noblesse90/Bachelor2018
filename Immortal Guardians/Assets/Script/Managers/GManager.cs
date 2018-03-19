@@ -54,8 +54,9 @@ public class GManager : Singleton<GManager> {
 
     
     // LIMITS THE FPS TO 144
-    private void Awake()
+    private void Start()
     {
+        Cursor.lockState = CursorLockMode.Confined;
         Application.targetFrameRate = 144;
     }
 
@@ -111,6 +112,12 @@ public class GManager : Singleton<GManager> {
                     _towerToBuild = "BasicTower";
                     BuildingMode.Instance.TowerType = _towerToBuild;
                 }
+            }
+            
+            // UNDO TOWER
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                TowerManager.Instance.UndoTower();
             }
         }
     }
