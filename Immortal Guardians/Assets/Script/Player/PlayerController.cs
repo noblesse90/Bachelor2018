@@ -9,6 +9,7 @@ public class PlayerController : Singleton<PlayerController> {
 
     // PLAYER SPEED
     private int _speed = 20;
+	
 
 	public int Speed
 	{

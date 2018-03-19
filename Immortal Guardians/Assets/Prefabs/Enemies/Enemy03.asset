@@ -13,5 +13,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Art: {fileID: 21300000, guid: 47363245275971c49bb591f812825aaf, type: 3}
   Health: 500
-  Money: 20
+  Money: 15
   Defaultspeed: 5
