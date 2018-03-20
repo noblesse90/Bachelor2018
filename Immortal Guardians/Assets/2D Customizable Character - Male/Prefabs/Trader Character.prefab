@@ -3393,8 +3393,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4461212433690178}
   - component: {fileID: 212733325415785846}
-  - component: {fileID: 61396542921720178}
-  - component: {fileID: 114318429660249204}
   m_Layer: 10
   m_Name: swing_effect
   m_TagString: Untagged
@@ -4852,8 +4850,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4412456195779834}
   - component: {fileID: 212905200405171502}
-  - component: {fileID: 61146586878544554}
-  - component: {fileID: 114705935466247468}
   m_Layer: 10
   m_Name: swing_effect
   m_TagString: Untagged
@@ -5982,8 +5978,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4368455301064958}
   - component: {fileID: 212809763998739566}
-  - component: {fileID: 61544815709264832}
-  - component: {fileID: 114340204789951034}
   m_Layer: 10
   m_Name: swing_effect
   m_TagString: Untagged
@@ -6696,8 +6690,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4985600504040868}
   - component: {fileID: 212992909517928128}
-  - component: {fileID: 61862735323795746}
-  - component: {fileID: 114834809895003610}
   m_Layer: 10
   m_Name: swing_effect
   m_TagString: Untagged
@@ -12961,106 +12953,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!61 &61146586878544554
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1737981740122894}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 1, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.68, y: 2.99}
-    newSize: {x: 1.68, y: 2.99}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 3.5, y: 4}
-  m_EdgeRadius: 0
---- !u!61 &61396542921720178
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1514685891332590}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 1, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.68, y: 2.99}
-    newSize: {x: 1.68, y: 2.99}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 3.5, y: 4}
-  m_EdgeRadius: 0
---- !u!61 &61544815709264832
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1889432822832916}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 1, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.68, y: 2.99}
-    newSize: {x: 1.68, y: 2.99}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 3.5, y: 4}
-  m_EdgeRadius: 0
---- !u!61 &61862735323795746
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1982601028892048}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 1, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.68, y: 2.99}
-    newSize: {x: 1.68, y: 2.99}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 3.5, y: 4}
-  m_EdgeRadius: 0
 --- !u!70 &70026600301671244
 CapsuleCollider2D:
   m_ObjectHideFlags: 1
@@ -13144,28 +13036,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114318429660249204
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1514685891332590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0afac032b7496f44b31d31d204be0a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114340204789951034
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1889432822832916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0afac032b7496f44b31d31d204be0a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114452405215490106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13177,21 +13047,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6ef39b1c067a04a9ed0db9eb6ea401, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
   _orbitingSword: {fileID: 1313754891367436, guid: 8e58d3933bb47be4284a0a257c10bfcb,
     type: 2}
   _vcam: {fileID: 0}
---- !u!114 &114705935466247468
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1737981740122894}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0afac032b7496f44b31d31d204be0a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114770408992847646
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13260,17 +13118,6 @@ MonoBehaviour:
   rightLowerLegEquipmentColor: {r: 1, g: 1, b: 1, a: 1}
   rightFootEquipment: {fileID: 21300378, guid: 7f55fd39ae3f7b7449fa3d2c516cc700, type: 3}
   rightFootEquipmentColor: {r: 0.49411765, g: 0.4, b: 0.34117648, a: 1}
---- !u!114 &114834809895003610
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1982601028892048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0afac032b7496f44b31d31d204be0a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &212003341722562702
 SpriteRenderer:
   m_ObjectHideFlags: 1

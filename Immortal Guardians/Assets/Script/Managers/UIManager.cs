@@ -8,10 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class UIManager : Singleton<UIManager> {
-    
-    private float _loseTimer;
-    
-
+  
     [Header("Wave button")]
     [SerializeField] private Button _nextWaveBtn;
     
@@ -79,7 +76,7 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Button _pause;
     [SerializeField] private GameObject _pauseWindow;
     [SerializeField] private GameObject _settingsWindow;
-    
+
     // HELP MENU
     [Header("Help Menu")]
     [SerializeField] private GameObject _helpWindow;
@@ -121,8 +118,7 @@ public class UIManager : Singleton<UIManager> {
     private void Start()
     {
         Currency = 150;
-        Life = 100;
-        _loseTimer = 0;
+        Life = 10;
 
         _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
@@ -201,27 +197,7 @@ public class UIManager : Singleton<UIManager> {
         StartGame();
     }
 
-    private void StopGame()
-    {
-        Time.timeScale = 0;
-        CameraZoom.Instance.Zoom = false;
-        _nextWaveBtn.interactable = false;
-        _basicTowerTestBtn.interactable = false;
-        _canonTowerTestBtn.interactable = false;
-        GManager.Instance.Paused = true;
-        GManager.Instance.BuildMode = false;
-        GManager.Instance.DeselectTower();
-    }
-
-    private void StartGame()
-    {
-        Time.timeScale = 1;
-        CameraZoom.Instance.Zoom = true;
-        _nextWaveBtn.interactable = true;
-        _basicTowerTestBtn.interactable = true;
-        _canonTowerTestBtn.interactable = true;
-        GManager.Instance.Paused = false;
-    }
+    
     
     public void Quit()
     {
@@ -286,7 +262,11 @@ public class UIManager : Singleton<UIManager> {
         set
         {
             _life = value;
-            if (_life <= 0) _life = 0;
+            if (_life <= 0)
+            {
+                _lifeTxt.GetComponent<TextMeshProUGUI>().text = 0.ToString();
+                return;
+            }
             _lifeTxt.GetComponent<TextMeshProUGUI>().text = _life.ToString();
         }
     }
@@ -511,19 +491,20 @@ public class UIManager : Singleton<UIManager> {
             }
         }
     }
-    public void LoseScreenFade()
+
+    public IEnumerator LoseScreenFade()
     {
         _loseText.SetActive(true);
-        _loseText.GetComponent<TextMeshProUGUI>().color = new Color(1,0,0,_loseTimer);
-        _loseText.transform.localScale = new Vector3(1+_loseTimer, 1+_loseTimer, 0);
-        _loseTimer += Time.deltaTime / 1.5f;
-
-        if (_loseTimer <= 1.0f) return;
+        for (float i = 0; i < 1.0f; i += Time.deltaTime / 1.5f)
+        {
+            _loseText.GetComponent<TextMeshProUGUI>().color = new Color(1,0,0,i);
+            _loseText.transform.localScale = new Vector3(1+i, 1+i, 0);
+            yield return null;
+        }
+       
         _restartBtn.gameObject.SetActive(true);
         _quitBtn.gameObject.SetActive(true);
         StopGame();
-        FindObjectOfType<AudioManager>().Play("Game_Over");
-
     }
 
     public void GoldOverTime()
@@ -534,5 +515,27 @@ public class UIManager : Singleton<UIManager> {
             _canGoldOverTime = false;
         }
        
+    }
+    
+    private void StopGame()
+    {
+        Time.timeScale = 0;
+        CameraZoom.Instance.Zoom = false;
+        _nextWaveBtn.interactable = false;
+        _basicTowerTestBtn.interactable = false;
+        _canonTowerTestBtn.interactable = false;
+        GManager.Instance.Paused = true;
+        GManager.Instance.BuildMode = false;
+        GManager.Instance.DeselectTower();
+    }
+
+    private void StartGame()
+    {
+        Time.timeScale = 1;
+        CameraZoom.Instance.Zoom = true;
+        _nextWaveBtn.interactable = true;
+        _basicTowerTestBtn.interactable = true;
+        _canonTowerTestBtn.interactable = true;
+        GManager.Instance.Paused = false;
     }
 }

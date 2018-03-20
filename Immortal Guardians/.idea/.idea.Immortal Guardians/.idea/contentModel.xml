@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Fedja\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.1729032169.00" t="ExcludeRecursive" />
-    <e p="C:\Users\Fedja\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
+    <e p="C:\Users\Phuc\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_Immortal Guardians.-541683201.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Phuc\Documents\GitHub\Bachelor2018\Immortal Guardians" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
@@ -493,6 +493,7 @@
           </e>
           <e p="ImpactBehaviour.cs" t="Include" />
           <e p="Managers" t="Include">
+            <e p="AudioManager.cs" t="Include" />
             <e p="GManager.cs" t="Include" />
             <e p="TowerManager.cs" t="Include" />
             <e p="UIManager.cs" t="Include" />
@@ -506,9 +507,9 @@
           <e p="ObjectPool.cs" t="Include" />
           <e p="Player" t="Include">
             <e p="Melee" t="Include">
-              <e p="AxeCollider.cs" t="Include" />
+              <e p="AxeProjectile.cs" t="Include" />
+              <e p="ConeProjectile.cs" t="Include" />
               <e p="OrbitingSwordScript.cs" t="Include" />
-              <e p="PlayerAttackCollider.cs" t="Include" />
               <e p="ToggleUIRotation.cs" t="Include" />
             </e>
             <e p="PlayerController.cs" t="Include" />
@@ -517,6 +518,7 @@
             </e>
           </e>
           <e p="Singleton.cs" t="Include" />
+          <e p="Sound.cs" t="Include" />
           <e p="Towers" t="Include">
             <e p="BasicTower.cs" t="Include" />
             <e p="CanonTower.cs" t="Include" />
@@ -531,6 +533,7 @@
             <e p="FollowVcam.cs" t="Include" />
             <e p="GridController.cs" t="Include" />
             <e p="pathfinding.cs" t="Include" />
+            <e p="PlayerAttackCollider.cs" t="Include" />
             <e p="TowerRange.cs" t="Include" />
           </e>
         </e>

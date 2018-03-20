@@ -28,7 +28,7 @@ public class PlayerController : Singleton<PlayerController> {
     private Vector2 _direction;
     
     // player transform directions
-    private Transform _down, _up, _left, _right, _downCollider, _upCollider, _leftCollider, _rightCollider;
+	private Transform _down, _up, _left, _right;
 
     private Animator _animatorDown, _animatorUp, _animatorLeft, _animatorRight;
 
@@ -115,14 +115,6 @@ public class PlayerController : Singleton<PlayerController> {
 	    _right = transform.GetChild(3);
 		_animatorRight = _right.gameObject.GetComponent<Animator>();
 		
-		// direction colliders
-		if (_class == Class.Melee)
-		{
-			_downCollider = transform.GetChild(4);
-			_upCollider = transform.GetChild(5);
-			_leftCollider = transform.GetChild(6);
-			_rightCollider = transform.GetChild(7);
-		}
 	}
 
 	private void OnEnable()
@@ -348,6 +340,8 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private void RangedAttack()
 	{
+		AudioManager.Instance.Play("Bow_Release");
+		
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, _mousePos, 0);
 	}
@@ -388,26 +382,21 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	// LEFT CLICK ATTACK
 	
-	private void MeleeAttack(Transform direction)
+	private void MeleeAttack()
 	{
-		List<GameObject> targets = direction.gameObject.GetComponent<PlayerAttackCollider>().Targets;
-
-        FindObjectOfType<AudioManager>().Play("Sword_Swing");
-
-		foreach (GameObject enemy in targets)
-		{
-			enemy.gameObject.GetComponent<EnemyController>().TakeDamage(_damage);
-			GameObject explosion = ObjectPool.Instance.GetObject("ArrowExplosion");
-			explosion.transform.position = enemy.transform.position;
-		}
+		AudioManager.Instance.Play("Sword_Swing");
+		
+		GameObject cone = ObjectPool.Instance.GetObject("ConeProjectile");
+		cone.GetComponent<ConeProjectile>().InstantiateProjectile(_damage, 15, transform.position, GManager.Instance.GetMousePos());
 	}
 	
 	// RIGHT CLICK ATTACK (AXE THROW) 
 	
 	private void AxeThrow()
 	{
+		AudioManager.Instance.Play("Axe_Throw");
 		GameObject axe = ObjectPool.Instance.GetObject("AxeThrow");
-		axe.GetComponent<AxeCollider>().InstantiateProjectile(_damage, 20, transform.position, GManager.Instance.GetMousePos(),0);
+		axe.GetComponent<AxeProjectile>().InstantiateProjectile(_damage, 20, transform.position, GManager.Instance.GetMousePos());
 		ManaCost(_rightClickCost);
 	}
 	
@@ -489,22 +478,22 @@ public class PlayerController : Singleton<PlayerController> {
 						{
 							case LookDirection.Down:
 								_animatorDown.SetTrigger("MeleeAttack");
-								StartCoroutine(MeleeAttackCoroutine(_downCollider));
+								StartCoroutine(MeleeAttackCoroutine());
 								break;
 							
 							case LookDirection.Left:
 								_animatorLeft.SetTrigger("MeleeAttack");
-								StartCoroutine(MeleeAttackCoroutine(_leftCollider));
+								StartCoroutine(MeleeAttackCoroutine());
 								break;
 							
 							case LookDirection.Right:
 								_animatorRight.SetTrigger("MeleeAttack");
-								StartCoroutine(MeleeAttackCoroutine(_rightCollider));
+								StartCoroutine(MeleeAttackCoroutine());
 								break;
 							
 							case LookDirection.Up:
 								_animatorUp.SetTrigger("MeleeAttack");
-								StartCoroutine(MeleeAttackCoroutine(_upCollider));
+								StartCoroutine(MeleeAttackCoroutine());
 								break;
 							
 							default: break;
@@ -662,10 +651,10 @@ public class PlayerController : Singleton<PlayerController> {
 	}
 
 
-	IEnumerator MeleeAttackCoroutine(Transform direction)
+	IEnumerator MeleeAttackCoroutine()
 	{
 		yield return new WaitForSeconds(0.1f);
-		MeleeAttack(direction);
+		MeleeAttack();
 	}
 
 }

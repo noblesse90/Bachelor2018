@@ -10,9 +10,14 @@ public class DestinationCollider : MonoBehaviour {
         {
             collision.transform.GetComponent<EnemyController>().Release();
 
-            FindObjectOfType<AudioManager>().Play("Lose_Life");
 
-            UIManager.Instance.Life -= 1;
+            if (UIManager.Instance.Life > 0)
+            {
+                AudioManager.Instance.Play("Lose_Life");
+                
+                UIManager.Instance.Life -= 1;
+            }
+            
         }
 
     }

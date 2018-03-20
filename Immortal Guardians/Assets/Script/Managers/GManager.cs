@@ -24,8 +24,7 @@ public class GManager : Singleton<GManager> {
     private bool _paused = false;
     
     // TIMER FOR RAPID BUILDING
-    private bool _canBuild = true;
-    private float _buildTimer, _buildCooldown = 0.05f;
+    private float _buildTimer;
 
     // getter for bool buildmode
     public bool BuildMode
@@ -68,9 +67,11 @@ public class GManager : Singleton<GManager> {
         TowerCode();
         Game();
         
-        if (UIManager.Instance.Life <= 0)
+        if (UIManager.Instance.Life == 0)
         {
-            UIManager.Instance.LoseScreenFade();
+            StartCoroutine(UIManager.Instance.LoseScreenFade());
+            UIManager.Instance.Life = -1;
+            AudioManager.Instance.Play("Game_Over");
         }
 
     }

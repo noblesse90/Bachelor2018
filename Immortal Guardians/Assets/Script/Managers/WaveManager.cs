@@ -25,11 +25,11 @@ public class WaveManager : Singleton<WaveManager>
     private int _enemySpawned = 0;
     
     
-    private bool _canSpawn = true;
+    private bool _canSpawn = true, _bossSpawn = true;
     private float _spawnTimer;
     private float _cooldownTimer = 1;
 
-    private string[] _enemyTypes = {"Enemy01", "Enemy02", "Enemy03", "Enemy04", "Enemy05", "Enemy06", "Enemy07", "Enemy08", "Enemy09", "Enemy10"};
+    // for random enemies use
     private Random _rnd = new Random();
 
     private int _waveIndex = 0;
@@ -74,6 +74,7 @@ public class WaveManager : Singleton<WaveManager>
             _enemySpawned = 0;
             _enemyDied = 0;
             _canSpawn = true;
+            _bossSpawn = true;
             
             // UPDATE ENEMY COUNTER
             UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
@@ -107,6 +108,12 @@ public class WaveManager : Singleton<WaveManager>
             
             // BOOST PLAYER SPEED WHILE WAVE IS NOT ACTIVE
             PlayerController.Instance.Speed = 20;
+        }
+
+        if (_enemySpawned == _enemiesPerWave && _bossSpawn)
+        {
+            StartCoroutine("SpawnBossesFirstMap");
+            _bossSpawn = false;
         }
         
         if (_enemySpawned > 0) UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
@@ -154,48 +161,93 @@ public class WaveManager : Singleton<WaveManager>
         else
         {
             // TODO CHECK WHICH MAP IS ACTIVE
-            if (_enemySpawned == _enemiesPerWave)
-            {
-                _canSpawn = false;
-                return;
-            }
-            GameObject enemy;
-            var spawn1 = _spawnLocations[1];
+            
+            
+            FirstMapSpawn();
+        }
+    }
+
+    private void FirstMapSpawn()
+    {
+        // stops enemies from spawning after the number of enemies per wave is reached
+        if (_enemySpawned == _enemiesPerWave)
+        {
+            _canSpawn = false;
+            return;
+        }
+        
+        GameObject enemy;
+        var spawn1 = _spawnLocations[1];
+        enemy = ObjectPool.Instance.GetObject("Enemy");
+        enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
+        enemy.transform.position = spawn1.transform.position;
+        _enemySpawned++;
+
+        if (_enemySpawned == _enemiesPerWave)
+        {
+            _canSpawn = false;
+            return;
+        }
+        
+        if (_waveIndex > 3)
+        {
+            var spawn2 = _spawnLocations[0];
             enemy = ObjectPool.Instance.GetObject("Enemy");
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
-            enemy.transform.position = spawn1.transform.position;
+            enemy.transform.position = spawn2.transform.position;
             _enemySpawned++;
+        }
 
-            if (_enemySpawned == _enemiesPerWave)
-            {
-                _canSpawn = false;
-                return;
-            }
-            if (_waveIndex > 3)
-            {
-                var spawn2 = _spawnLocations[0];
-                enemy = ObjectPool.Instance.GetObject("Enemy");
-                enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
-                enemy.transform.position = spawn2.transform.position;
-                _enemySpawned++;
-            }
-
-            if (_enemySpawned == _enemiesPerWave)
-            {
-                _canSpawn = false;
-                return;
-            }
-            if (_waveIndex > 7)
-            {
-                var spawn3 = _spawnLocations[2];
-                enemy = ObjectPool.Instance.GetObject("Enemy");
-                enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
-                enemy.transform.position = spawn3.transform.position;
-                _enemySpawned++;
-            }
-            
+        if (_enemySpawned == _enemiesPerWave)
+        {
             _canSpawn = false;
-            
+            return;
+        }
+        
+        if (_waveIndex > 7)
+        {
+            var spawn3 = _spawnLocations[2];
+            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
+            enemy.transform.position = spawn3.transform.position;
+            _enemySpawned++;
+        }
+        
+        _canSpawn = false;
+    }
+
+    IEnumerator SpawnBossesFirstMap()
+    {
+        yield return new WaitForSecondsRealtime(2.5f);
+        GameObject enemy;
+        var spawn1 = _spawnLocations[1];
+        // SPAWN MINI BOSS ON WAVE 3 
+        if (_waveIndex == 3)
+        {
+            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy.GetComponent<EnemyController>().InitializeStats(_enemies[10]);
+            enemy.transform.position = spawn1.transform.position;
+            enemy.transform.localScale = new Vector2(1.5f,1.5f);
+            yield return null;
+        }
+        
+        // SPAWN MINI BOSS ON WAVE 7
+        if (_waveIndex == 7)
+        {
+            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy.GetComponent<EnemyController>().InitializeStats(_enemies[11]);
+            enemy.transform.position = spawn1.transform.position;
+            enemy.transform.localScale = new Vector2(1.5f,1.5f);
+            yield return null;
+        }
+        
+        // SPAWN FINAL BOSS ON WAVE 10
+        if (_waveIndex == 10)
+        {
+            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy.GetComponent<EnemyController>().InitializeStats(_enemies[12]);
+            enemy.transform.position = spawn1.transform.position;
+            enemy.transform.localScale = new Vector2(1.5f,1.5f);
         }
     }
 }

@@ -96,24 +96,20 @@ public class PlayerProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D otherObject)
 	{
-		if (otherObject.CompareTag("Enemy") || otherObject.CompareTag("Obstacle"))
+		if (otherObject.CompareTag("Obstacle"))
 		{
-			if (otherObject.CompareTag("Obstacle"))
+			Release();
+		}
+		else if (otherObject.CompareTag("Enemy"))
+		{
+			if (_scatterShot)
 			{
-				Release();
+				SShot(otherObject.gameObject);
 			}
-			else
-			{
-				if (_scatterShot)
-				{
-					SShot(otherObject.gameObject);
-				}
 
-				if (_enemy == otherObject.gameObject) return;
-				otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
-				otherObject.GetComponent<EnemyController>().SetSpeed(otherObject.GetComponent<EnemyController>().DefaultSpeed * 0.5f);
-				Release();
-			}
+			if (_enemy == otherObject.gameObject) return;
+			otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
+			Release();
 		}
 	}
 
@@ -206,6 +202,9 @@ public class PlayerProjectile : MonoBehaviour
 		// adds explosion where it lands
 		GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
 		aniPrefab.transform.position = transform.position;
+		
+		// Plays a hit sound
+		AudioManager.Instance.Play("Arrow_Hit");
 		
 		// sets it to false so the projectile doesn't spawn more arrows
 		_scatterShot = false;

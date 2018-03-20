@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 114388555925182774}
   - component: {fileID: 114922684399935972}
   m_Layer: 10
-  m_Name: Canvas
+  m_Name: Healthbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -505,8 +505,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1621868977
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &224250320814807416
 RectTransform:
