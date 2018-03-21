@@ -78,6 +78,11 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private float _mana, _maxMana = 100;
 	private int _damage = 50;
+
+	public void GainDmg(int damage)
+	{
+		_damage += damage;
+	}
 	
 	
 	public float MaxMana

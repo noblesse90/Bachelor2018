@@ -9,8 +9,8 @@ public class BasicTower : MonoBehaviour {
     readonly float[,] _stats = new float[4, 6]
     {
         /*Start stats*/{ 10,7,1,7,1,20},
-        /*Level 2*/{ 25,9,0.9f,13,2,25},
-        /*Level 3*/{ 25,10,0.7f,17,3,30},
+        /*Level 2*/{ 25,9,0.9f,10,2,25},
+        /*Level 3*/{ 25,10,0.7f,15,3,30},
         /*Level 4*/{ 50,13,0.4f,25, 4,40}
     };
 

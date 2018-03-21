@@ -182,6 +182,8 @@ public class WaveManager : Singleton<WaveManager>
         
         // SETS THE PLAYER SPEED TO NORMAL AFTER WAVE HAVE STARTED
         PlayerController.Instance.Speed = 10;
+        PlayerController.Instance.GainDmg(25);
+
     }
 
 
