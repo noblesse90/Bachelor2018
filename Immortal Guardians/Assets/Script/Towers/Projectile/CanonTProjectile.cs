@@ -30,6 +30,8 @@ public class CanonTProjectile : MonoBehaviour {
 		{
 			_targetPos = _target.transform.position;
 			transform.position = Vector3.MoveTowards(transform.position, _targetPos, Time.deltaTime * _speed);
+			
+			
 		}
 		else
 		{

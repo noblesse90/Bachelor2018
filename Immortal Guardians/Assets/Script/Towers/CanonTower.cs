@@ -6,10 +6,10 @@ public class CanonTower : MonoBehaviour {
     // Price, range, attackCooldown, damange, level, Projectilespeed
     float[,] _stats = new float[4, 6]
     {
-        /*Start Level*/{ 20,10,2,15,1,10},
-        /*Level 2*/{ 50,12,1.5f,30,2,12.5f},
-        /*Level 3*/{ 50,14,1.25f,40,3,15},
-        /*Level 4*/{ 75,30,0.8f,70, 4,20}
+        /*Start Level*/{ 20,10,2,15,1,15},
+        /*Level 2*/{ 50,12,1.5f,30,2,12.20f},
+        /*Level 3*/{ 50,14,1.25f,40,3,20},
+        /*Level 4*/{ 75,30,0.8f,70, 4,25}
     };
 
 

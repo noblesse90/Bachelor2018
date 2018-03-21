@@ -8,6 +8,7 @@ using Random = System.Random;
 
 public class WaveManager : Singleton<WaveManager>
 {
+    [SerializeField] private GameObject _enemy;
 
     [SerializeField] private GameObject _path1;
     [SerializeField] private GameObject _path2;
@@ -20,7 +21,7 @@ public class WaveManager : Singleton<WaveManager>
     private bool _spawnMode = false;
 
     private List<GameObject> _spawnLocations = new List<GameObject>();
-    private int _enemiesPerWave = 15;
+    private int _enemiesPerWave = 10;
     private int _enemyDied = 0;
     private int _enemySpawned = 0;
     
@@ -103,18 +104,22 @@ public class WaveManager : Singleton<WaveManager>
             {
                 case 2:
                     UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Boss Wave";
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color(1,0.5f,0);
                     break;
                 
                 case 6:
                     UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Boss Wave";
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color(1,0.5f,0);
                     break;
                 
                 case 9:
                     UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color(1,0,0);
                     break;
                 
                 default: 
                     UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Next Wave";
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color(1,1,1);
                     break;
             }
             
@@ -123,7 +128,7 @@ public class WaveManager : Singleton<WaveManager>
             {
                 _path2.SetActive(true);
                 _spawnLocations[0].transform.GetChild(0).gameObject.SetActive(true);
-                _enemiesPerWave = 30;
+                _enemiesPerWave = 20;
             }
             
             
@@ -132,7 +137,7 @@ public class WaveManager : Singleton<WaveManager>
             {
                 _path3.SetActive(true);
                 _spawnLocations[2].transform.GetChild(0).gameObject.SetActive(true);
-                _enemiesPerWave = 45;
+                _enemiesPerWave = 30;
             }
             
             
@@ -182,7 +187,7 @@ public class WaveManager : Singleton<WaveManager>
         
         // SETS THE PLAYER SPEED TO NORMAL AFTER WAVE HAVE STARTED
         PlayerController.Instance.Speed = 10;
-        PlayerController.Instance.GainDmg(25);
+        PlayerController.Instance.GainDmg(10);
 
     }
 
@@ -220,9 +225,8 @@ public class WaveManager : Singleton<WaveManager>
         
         GameObject enemy;
         var spawn1 = _spawnLocations[1];
-        enemy = ObjectPool.Instance.GetObject("Enemy");
+        enemy = Instantiate(_enemy, spawn1.transform.position, Quaternion.identity);
         enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
-        enemy.transform.position = spawn1.transform.position;
         _enemySpawned++;
 
         if (_enemySpawned == _enemiesPerWave)
@@ -234,9 +238,8 @@ public class WaveManager : Singleton<WaveManager>
         if (_waveIndex > 3)
         {
             var spawn2 = _spawnLocations[0];
-            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy = Instantiate(_enemy, spawn2.transform.position, Quaternion.identity);
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
-            enemy.transform.position = spawn2.transform.position;
             _enemySpawned++;
         }
 
@@ -249,9 +252,8 @@ public class WaveManager : Singleton<WaveManager>
         if (_waveIndex > 7)
         {
             var spawn3 = _spawnLocations[2];
-            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy = Instantiate(_enemy, spawn3.transform.position, Quaternion.identity);
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[_waveIndex-1]);
-            enemy.transform.position = spawn3.transform.position;
             _enemySpawned++;
         }
         
@@ -266,9 +268,8 @@ public class WaveManager : Singleton<WaveManager>
         // SPAWN MINI BOSS ON WAVE 3 
         if (_waveIndex == 3)
         {
-            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy = Instantiate(_enemy, spawn1.transform.position, Quaternion.identity);
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[10]);
-            enemy.transform.position = spawn1.transform.position;
             enemy.transform.localScale = new Vector2(1.5f,1.5f);
             _enemySpawned++;
         }
@@ -276,9 +277,8 @@ public class WaveManager : Singleton<WaveManager>
         // SPAWN MINI BOSS ON WAVE 7
         if (_waveIndex == 7)
         {
-            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy = Instantiate(_enemy, spawn1.transform.position, Quaternion.identity);
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[11]);
-            enemy.transform.position = spawn1.transform.position;
             enemy.transform.localScale = new Vector2(1.5f,1.5f);
             _enemySpawned++;
         }
@@ -286,9 +286,8 @@ public class WaveManager : Singleton<WaveManager>
         // SPAWN FINAL BOSS ON WAVE 10
         if (_waveIndex == 10)
         {
-            enemy = ObjectPool.Instance.GetObject("Enemy");
+            enemy = Instantiate(_enemy, spawn1.transform.position, Quaternion.identity);
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[12]);
-            enemy.transform.position = spawn1.transform.position;
             enemy.transform.localScale = new Vector2(1.5f,1.5f);
             _enemySpawned++;
         }

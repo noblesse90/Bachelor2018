@@ -115,10 +115,7 @@ public class EnemyController : MonoBehaviour
 
 	public void Release()
 	{
-		gameObject.SetActive(false);
 		WaveManager.Instance.EnemyDied++;
-		_hp = _startHp;
-		_healthBar.fillAmount = _hp / _startHp;
-		transform.localScale = new Vector2(1f, 1f);
+		Destroy(gameObject);
 	}
 }

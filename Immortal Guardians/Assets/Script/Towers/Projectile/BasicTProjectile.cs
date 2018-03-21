@@ -36,7 +36,8 @@ public class BasicTProjectile : MonoBehaviour {
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
+            
+            Explode();
         }
         else
         {
@@ -44,14 +45,16 @@ public class BasicTProjectile : MonoBehaviour {
             Release();
         }
         
-        Explode();
+        
     }
 
     private void Explode()
     {
         if (!(_shot) && Vector2.Distance(transform.position,_targetPos) < 1)
         {
-            _target.GetComponent<EnemyController>().TakeDamage(_damage);
+
+            _target.GetComponent<EnemyController>().TakeDamage(_damage); 
+            
             GameObject aniPrefab = ObjectPool.Instance.GetObject("ArrowExplosion");
             aniPrefab.transform.position = new Vector2(transform.position.x, transform.position.y + 1);
 			

@@ -14,4 +14,5 @@ MonoBehaviour:
   Art: {fileID: 21300000, guid: 870c7c1b6bc25164294d1250898f1e08, type: 3}
   Health: 800
   Money: 20
-  Defaultspeed: 7
+  Defaultspeed: 6
+  Boss: 0
