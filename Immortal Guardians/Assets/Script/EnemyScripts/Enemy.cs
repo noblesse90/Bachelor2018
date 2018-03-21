@@ -8,5 +8,5 @@ public class Enemy : ScriptableObject
 	public int Health;
 	public int Money;
 	public int Defaultspeed;
-
+	public bool Boss;
 }

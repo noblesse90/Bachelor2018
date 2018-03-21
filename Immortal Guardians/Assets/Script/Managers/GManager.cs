@@ -131,7 +131,7 @@ public class GManager : Singleton<GManager> {
             // CONTINUOUS TOWER PLACEMENT
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                if (Input.GetKeyDown(KeyCode.Mouse0))
+                if (Input.GetKey(KeyCode.Mouse0))
                 {
                     switch (_towerToBuild)
                     {

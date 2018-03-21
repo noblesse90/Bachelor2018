@@ -350,6 +350,8 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private void Multishot()
 	{
+		AudioManager.Instance.Play("Bow_Release");
+		
 		Color color = new Color(1f,1f,0.4f);
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, _mousePos, 0);
@@ -370,6 +372,8 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	private void ScatterShot()
 	{
+		AudioManager.Instance.Play("Bow_Release");
+		
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().ScatterShot = true;
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, _mousePos, 0);

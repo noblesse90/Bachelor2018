@@ -15,3 +15,4 @@ MonoBehaviour:
   Health: 20000
   Money: 1000
   Defaultspeed: 7
+  Boss: 1

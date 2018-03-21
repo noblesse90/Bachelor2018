@@ -61,7 +61,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 8300000, guid: ab8d4e649a8b51e4a91e90fff958e068, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.2
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -144,37 +144,37 @@ MonoBehaviour:
   _sounds:
   - SoundName: Sword_Swing
     clip: {fileID: 8300000, guid: eede38e74c0917f4da0f2c7e8c28907c, type: 3}
-    Volume: 0.5
+    Volume: 1
     Pitch: 1.5
     Source: {fileID: 0}
     Output: {fileID: 243662547027217582, guid: b6e511b23026a2c4a8171244650a87c4, type: 2}
   - SoundName: Axe_Throw
     clip: {fileID: 8300000, guid: 0403bdd81ffe9f44d87c55f3f4cc38f0, type: 3}
-    Volume: 0.5
+    Volume: 1
     Pitch: 1.5
     Source: {fileID: 0}
     Output: {fileID: 243662547027217582, guid: b6e511b23026a2c4a8171244650a87c4, type: 2}
   - SoundName: Arrow_Hit
     clip: {fileID: 8300000, guid: 07fd3a75331352d4182e3514040936c2, type: 3}
-    Volume: 0.5
+    Volume: 1
     Pitch: 1.5
     Source: {fileID: 0}
     Output: {fileID: 243662547027217582, guid: b6e511b23026a2c4a8171244650a87c4, type: 2}
   - SoundName: Bow_Release
     clip: {fileID: 8300000, guid: 3fa2e5bcda7a4954ab9fae346dcaa18f, type: 3}
-    Volume: 0.5
+    Volume: 1
     Pitch: 1.5
     Source: {fileID: 0}
     Output: {fileID: 243662547027217582, guid: b6e511b23026a2c4a8171244650a87c4, type: 2}
   - SoundName: Lose_Life
     clip: {fileID: 8300000, guid: e68ff3cc084ce1745a9ad8cc6ed3bc7f, type: 3}
-    Volume: 0.25
+    Volume: 0.5
     Pitch: 1.5
     Source: {fileID: 0}
     Output: {fileID: 243662547027217582, guid: b6e511b23026a2c4a8171244650a87c4, type: 2}
   - SoundName: Game_Over
     clip: {fileID: 8300000, guid: 554c00bba5e40e84393f1522a9e975cf, type: 3}
-    Volume: 0
-    Pitch: 0
+    Volume: 1
+    Pitch: 1.5
     Source: {fileID: 0}
     Output: {fileID: 243662547027217582, guid: b6e511b23026a2c4a8171244650a87c4, type: 2}

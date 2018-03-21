@@ -5,6 +5,15 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
+	
+	// if the enemy is a boss or not
+	private bool _boss;
+
+	public bool Boss
+	{
+		get { return _boss; }
+	}
+
 	private float _startHp;
 
 	private float _hp;
@@ -39,6 +48,8 @@ public class EnemyController : MonoBehaviour
 		_defaultSpeed = enemy.Defaultspeed;
 		GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 		transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite = enemy.Art;
+
+		_boss = enemy.Boss;
 		
 		_hp = _startHp;
 	}

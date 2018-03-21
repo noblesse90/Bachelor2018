@@ -82,8 +82,9 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private GameObject _helpWindow;
     [SerializeField] private GameObject _uiHelp;
     
-    // LOSE SCREEN
-    [Header("LOSE")] 
+    // END SCREEN
+    [Header("ENDSCREEN")] 
+    [SerializeField] private GameObject _winText;
     [SerializeField] private GameObject _loseText;
     [SerializeField] private Button _restartBtn;
     [SerializeField] private Button _quitBtn;
@@ -118,7 +119,7 @@ public class UIManager : Singleton<UIManager> {
     private void Start()
     {
         Currency = 150;
-        Life = 10;
+        Life = 50;
 
         _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
@@ -279,10 +280,17 @@ public class UIManager : Singleton<UIManager> {
         {
             if (value > 99999)
             {
-                value = 99999;
+                _currency = 99999;
             }
-            _currency = value;
-            _currencyTxt.GetComponent<TextMeshProUGUI>().text = _currency.ToString("#.##");
+            else if (value <= 0)
+            {
+                _currency = 0;
+            }
+            else
+            {
+                _currency = value;
+            }
+            _currencyTxt.GetComponent<TextMeshProUGUI>().text = _currency.ToString();
             
         }
     }
@@ -499,6 +507,21 @@ public class UIManager : Singleton<UIManager> {
         {
             _loseText.GetComponent<TextMeshProUGUI>().color = new Color(1,0,0,i);
             _loseText.transform.localScale = new Vector3(1+i, 1+i, 0);
+            yield return null;
+        }
+       
+        _restartBtn.gameObject.SetActive(true);
+        _quitBtn.gameObject.SetActive(true);
+        StopGame();
+    }
+    
+    public IEnumerator WinScreenFade()
+    {
+        _winText.SetActive(true);
+        for (float i = 0; i < 1.0f; i += Time.deltaTime / 1.5f)
+        {
+            _winText.GetComponent<TextMeshProUGUI>().color = new Color(0,1,0,i);
+            _winText.transform.localScale = new Vector3(1+i, 1+i, 0);
             yield return null;
         }
        

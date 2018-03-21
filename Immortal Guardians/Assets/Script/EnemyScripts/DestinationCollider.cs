@@ -4,18 +4,26 @@ using UnityEngine;
 
 public class DestinationCollider : MonoBehaviour {
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collisionObject)
     {
-        if (collision.CompareTag("Enemy"))
+        if (collisionObject.CompareTag("Enemy"))
         {
-            collision.transform.GetComponent<EnemyController>().Release();
+            collisionObject.transform.GetComponent<EnemyController>().Release();
 
 
             if (UIManager.Instance.Life > 0)
             {
                 AudioManager.Instance.Play("Lose_Life");
+
+                if (collisionObject.GetComponent<EnemyController>().Boss)
+                {
+                    UIManager.Instance.Life -= 10;
+                }
+                else
+                {
+                    UIManager.Instance.Life -= 1;
+                }
                 
-                UIManager.Instance.Life -= 1;
             }
             
         }

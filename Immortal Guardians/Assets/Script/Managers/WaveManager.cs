@@ -64,12 +64,16 @@ public class WaveManager : Singleton<WaveManager>
 
     
     private void Update () {
+        
+        // SPAWNS ENEMIES IF THE WAVE HAS STARTED
         if (_spawnMode && _enemySpawned < _enemiesPerWave)
         {
             Spawn();
         }
+        // CHECKS WHEN THE LAST ENEMY DIES
         else if (_enemyDied == _enemiesPerWave)
         {
+            // RESETS VALUES
             _spawnMode = false;
             _enemySpawned = 0;
             _enemyDied = 0;
@@ -80,45 +84,81 @@ public class WaveManager : Singleton<WaveManager>
             UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
             
             // CHECKS IF THERES A NEXT WAVE
-            if (_waveIndex == _waveCount) return;
+            if (_waveIndex == _waveCount)
+            {
+                StartCoroutine(UIManager.Instance.WinScreenFade());
+                return;
+            }
+            
+            // ACTIVATES NEXT WAVE BUTTON
             UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(true);
+            // MINIMAP ICONS
             _path1.SetActive(true);
             _spawnLocations[1].transform.GetChild(0).gameObject.SetActive(true);
+            
+            
+            
+            // SETS THE TEXT FOR WAVE BUTTON
+            switch (_waveIndex)
+            {
+                case 2:
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Boss Wave";
+                    break;
+                
+                case 6:
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Boss Wave";
+                    break;
+                
+                case 9:
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
+                    break;
+                
+                default: 
+                    UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Next Wave";
+                    break;
+            }
+            
+            // ACTIVATES MINIMAP ICONS
             if (_waveIndex >= 3)
             {
                 _path2.SetActive(true);
                 _spawnLocations[0].transform.GetChild(0).gameObject.SetActive(true);
                 _enemiesPerWave = 30;
             }
-
+            
+            
+            // ACTIVATES MINIMAP ICONS
             if (_waveIndex >= 7)
             {
                 _path3.SetActive(true);
                 _spawnLocations[2].transform.GetChild(0).gameObject.SetActive(true);
                 _enemiesPerWave = 45;
             }
-            if (_waveIndex == 9)
-            {
-                UIManager.Instance.NextWaveBtn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Final Wave";
-            }
             
-            // UNDO TOWER
+            
+            
+            // DEACTIVATES UNDO TOWER BUTTON
             TowerManager.Instance.LastTower = null;
             UIManager.Instance.UndoTower.interactable = false;
             
             // BOOST PLAYER SPEED WHILE WAVE IS NOT ACTIVE
-            PlayerController.Instance.Speed = 20;
+            PlayerController.Instance.Speed = 25;
         }
-
-        if (_enemySpawned == _enemiesPerWave && _bossSpawn)
+        
+        // UPDATES THE UI ENEMY COUNT IF ENEMIES HAVE SPAWNED
+        if (_enemySpawned > 0) UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
+        
+        // CHECKS IF BOSS WAVE AND SPAWNS A BOSS
+        if (_enemySpawned == _enemiesPerWave && (_waveIndex == 3 || _waveIndex == 7 || _waveIndex == 10) && _bossSpawn)
         {
+            _spawnMode = false;
+            _enemiesPerWave++;
             StartCoroutine("SpawnBossesFirstMap");
             _bossSpawn = false;
         }
-        
-        if (_enemySpawned > 0) UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
     }
-
+    
+    // ACTIVATES NEXT WAVE
     public void NextWave()
     {
         Debug.Log("NEXT WAVE");
@@ -136,7 +176,7 @@ public class WaveManager : Singleton<WaveManager>
         
         _spawnMode = true;
         
-        // UNDO TOWER
+        // DEACTIVATES UNDO TOWER BUTTON
         TowerManager.Instance.LastTower = null;
         UIManager.Instance.UndoTower.interactable = false;
         
@@ -228,7 +268,7 @@ public class WaveManager : Singleton<WaveManager>
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[10]);
             enemy.transform.position = spawn1.transform.position;
             enemy.transform.localScale = new Vector2(1.5f,1.5f);
-            yield return null;
+            _enemySpawned++;
         }
         
         // SPAWN MINI BOSS ON WAVE 7
@@ -238,7 +278,7 @@ public class WaveManager : Singleton<WaveManager>
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[11]);
             enemy.transform.position = spawn1.transform.position;
             enemy.transform.localScale = new Vector2(1.5f,1.5f);
-            yield return null;
+            _enemySpawned++;
         }
         
         // SPAWN FINAL BOSS ON WAVE 10
@@ -248,6 +288,8 @@ public class WaveManager : Singleton<WaveManager>
             enemy.GetComponent<EnemyController>().InitializeStats(_enemies[12]);
             enemy.transform.position = spawn1.transform.position;
             enemy.transform.localScale = new Vector2(1.5f,1.5f);
+            _enemySpawned++;
         }
+
     }
 }
