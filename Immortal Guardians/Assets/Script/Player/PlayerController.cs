@@ -148,7 +148,7 @@ public class PlayerController : Singleton<PlayerController> {
 		OrbitingSwordManaReduction();
 		
 		// stops player from attacking if he tries to select tower
-		if (Input.GetKey(KeyCode.Space) || GManager.Instance.BuildMode) return;
+		if (GManager.Instance.TowerMode) return;
 		// Attacks
 		if (!EventSystem.current.IsPointerOverGameObject())
 		{

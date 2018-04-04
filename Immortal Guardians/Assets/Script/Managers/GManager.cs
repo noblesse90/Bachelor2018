@@ -13,6 +13,9 @@ public class GManager : Singleton<GManager> {
     // A boolean to change from combat and build mode (used by child aswell)
     private bool _buildMode = false;
     
+    // TOWER MODE (can select and build towers)
+    private bool _towerMode = false;
+    
     // USED FOR RAPID BUILDING
     private string _towerToBuild;
     
@@ -31,6 +34,12 @@ public class GManager : Singleton<GManager> {
     {
         get { return _buildMode; }
         set { _buildMode = value; }
+    }
+    
+    public bool TowerMode
+    {
+        get { return _towerMode; }
+        set { _towerMode = value; }
     }
     
     public string TowerToBuild
@@ -64,7 +73,10 @@ public class GManager : Singleton<GManager> {
     private void LateUpdate()
     {
         // TOWER CODE
-        TowerCode();
+        if (_towerMode)
+        {
+            TowerCode();
+        }
         Game();
         
         if (UIManager.Instance.Life == 0)
@@ -94,6 +106,7 @@ public class GManager : Singleton<GManager> {
             {
                 if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
                 {
+                    UIManager.Instance.SetGrid(true);
                     _buildMode = true;
                     TowerManager.Instance.CurrentTower = null;
                     UIManager.Instance.TowerStatsUi.SetActive(false);
@@ -107,11 +120,30 @@ public class GManager : Singleton<GManager> {
             {
                 if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
                 {
+                    UIManager.Instance.SetGrid(true);
                     _buildMode = true;
                     TowerManager.Instance.CurrentTower = null;
                     UIManager.Instance.TowerStatsUi.SetActive(false);
                     _towerToBuild = "BasicTower";
                     BuildingMode.Instance.TowerType = _towerToBuild;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                if (!_towerMode) return;
+                UIManager.Instance.SetGrid(false);
+            }
+
+            if (Input.GetKeyDown((KeyCode.Tab)))
+            {
+                if (_towerMode)
+                {
+                    UIManager.Instance.SetGrid(false);
+                }
+                else
+                {
+                    UIManager.Instance.SetGrid(true);
                 }
             }
             
@@ -190,18 +222,11 @@ public class GManager : Singleton<GManager> {
         else if (!_paused)
         {
             
-            if (Input.GetKey(KeyCode.Space))
+            if(Input.GetKeyDown(KeyCode.Mouse0))
             {
-                if(Input.GetKeyDown(KeyCode.Mouse0))
-                {
-                    SelectTower();
-                }
+                SelectTower();
             }
-            else if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                if (EventSystem.current.IsPointerOverGameObject()) return;
-               DeselectTower();    
-            }
+            
         }
     }
 

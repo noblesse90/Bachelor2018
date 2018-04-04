@@ -89,6 +89,10 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Button _restartBtn;
     [SerializeField] private Button _quitBtn;
     
+    //
+    [Header("Grid")]
+    [SerializeField] private GameObject _grid;
+    
     // MANA COSTS
     private float _manaCostFirstAbility;
 
@@ -236,6 +240,7 @@ public class UIManager : Singleton<UIManager> {
     {
         if(!(Currency - TowerManager.Instance.GetBasicTowerCost < 0))
         {
+            SetGrid(true);
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
             _towerStatsUi.SetActive(false);
@@ -248,6 +253,7 @@ public class UIManager : Singleton<UIManager> {
     {
         if (!(Currency - TowerManager.Instance.GetCannonTowerCost < 0))
         {
+            SetGrid(true);
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
             _towerStatsUi.SetActive(false);
@@ -292,6 +298,22 @@ public class UIManager : Singleton<UIManager> {
             }
             _currencyTxt.GetComponent<TextMeshProUGUI>().text = _currency.ToString();
             
+        }
+    }
+
+    public void SetGrid(bool b)
+    {
+        if (b)
+        {
+            _grid.SetActive(true);
+            GManager.Instance.TowerMode = true;
+        }
+        else
+        {
+            _grid.SetActive(false);
+            GManager.Instance.TowerMode = false;
+            GManager.Instance.BuildMode = false;
+            GManager.Instance.DeselectTower();
         }
     }
 
