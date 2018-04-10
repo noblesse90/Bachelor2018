@@ -148,6 +148,9 @@ public class WaveManager : Singleton<WaveManager>
             
             // BOOST PLAYER SPEED WHILE WAVE IS NOT ACTIVE
             PlayerController.Instance.Speed = 25;
+            
+            // ACTIVATES BUILD PHASE
+            UIManager.Instance.SetGrid(true);
         }
         
         // UPDATES THE UI ENEMY COUNT IF ENEMIES HAVE SPAWNED
@@ -170,6 +173,7 @@ public class WaveManager : Singleton<WaveManager>
         _waveIndex++;
         UIManager.Instance.Wave = _waveIndex;
         UIManager.Instance.NextWaveBtn.transform.gameObject.SetActive(false);
+        UIManager.Instance.SetGrid(false);
         GManager.Instance.BuildMode = false;
         
         _path1.SetActive(false);

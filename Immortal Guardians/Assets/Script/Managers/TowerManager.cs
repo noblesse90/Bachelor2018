@@ -100,7 +100,7 @@ public class TowerManager : Singleton<TowerManager> {
 
     }
 
-    private bool IsEmpty(Vector2 mousePos)
+    public bool IsEmpty(Vector2 mousePos)
     {
         bool empty = true;
         RaycastHit2D[] rayCenter, rayUp, rayRight, rayCorner;

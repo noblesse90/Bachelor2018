@@ -66,6 +66,7 @@ public class GManager : Singleton<GManager> {
     {
         Cursor.lockState = CursorLockMode.Confined;
         Application.targetFrameRate = 144;
+        UIManager.Instance.SetGrid(true);
     }
 
 
@@ -101,17 +102,23 @@ public class GManager : Singleton<GManager> {
 
             // CHECKS IF THE GAME IS PAUSED
             if (_paused) return;
+            // Checks if building phase
+            if (!_towerMode){ return;}
             // starts buildingmode for cannontower
             if (Input.GetKeyUp(KeyCode.V))
             {
                 if (!(UIManager.Instance.Currency - TowerManager.Instance.GetCannonTowerCost < 0))
                 {
-                    UIManager.Instance.SetGrid(true);
                     _buildMode = true;
                     TowerManager.Instance.CurrentTower = null;
                     UIManager.Instance.TowerStatsUi.SetActive(false);
                     _towerToBuild = "CanonTower";
                     BuildingMode.Instance.TowerType = _towerToBuild;
+                    if (BuildingMode.Instance.Tower != null)
+                    {
+                        BuildingMode.Instance.Tower.SetActive(false);
+                    }
+                    BuildingMode.Instance.Tower = null;
                 }
             }
         
@@ -120,31 +127,22 @@ public class GManager : Singleton<GManager> {
             {
                 if (!(UIManager.Instance.Currency - TowerManager.Instance.GetBasicTowerCost < 0))
                 {
-                    UIManager.Instance.SetGrid(true);
                     _buildMode = true;
                     TowerManager.Instance.CurrentTower = null;
                     UIManager.Instance.TowerStatsUi.SetActive(false);
                     _towerToBuild = "BasicTower";
                     BuildingMode.Instance.TowerType = _towerToBuild;
+                    if (BuildingMode.Instance.Tower != null)
+                    {
+                        BuildingMode.Instance.Tower.SetActive(false);
+                    }
+                    BuildingMode.Instance.Tower = null;
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                if (!_towerMode) return;
-                UIManager.Instance.SetGrid(false);
-            }
-
-            if (Input.GetKeyDown((KeyCode.Tab)))
-            {
-                if (_towerMode)
-                {
-                    UIManager.Instance.SetGrid(false);
-                }
-                else
-                {
-                    UIManager.Instance.SetGrid(true);
-                }
+                BuildMode = false;
             }
             
             // UNDO TOWER

@@ -43,6 +43,7 @@ public class UIManager : Singleton<UIManager> {
 
     // TOWER BUILD BUTTONS
     [Header("Tower Build Buttons")]
+    [SerializeField] private GameObject _towerButtons;
     [SerializeField] private Button _basicTowerTestBtn;
     [SerializeField] private Button _canonTowerTestBtn;
     
@@ -240,11 +241,15 @@ public class UIManager : Singleton<UIManager> {
     {
         if(!(Currency - TowerManager.Instance.GetBasicTowerCost < 0))
         {
-            SetGrid(true);
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
             _towerStatsUi.SetActive(false);
             BuildingMode.Instance.TowerType = "BasicTower";
+            if (BuildingMode.Instance.Tower != null)
+            {
+                BuildingMode.Instance.Tower.SetActive(false);
+            }
+            BuildingMode.Instance.Tower = null;
             GManager.Instance.TowerToBuild = "BasicTower";
         }  
     }
@@ -253,11 +258,15 @@ public class UIManager : Singleton<UIManager> {
     {
         if (!(Currency - TowerManager.Instance.GetCannonTowerCost < 0))
         {
-            SetGrid(true);
             GManager.Instance.BuildMode = true;
             TowerManager.Instance.CurrentTower = null;
             _towerStatsUi.SetActive(false);
             BuildingMode.Instance.TowerType = "CanonTower";
+            if (BuildingMode.Instance.Tower != null)
+            {
+                BuildingMode.Instance.Tower.SetActive(false);
+            }
+            BuildingMode.Instance.Tower = null;
             GManager.Instance.TowerToBuild = "CanonTower";
         }    
     }
@@ -306,11 +315,13 @@ public class UIManager : Singleton<UIManager> {
         if (b)
         {
             _grid.SetActive(true);
+            _towerButtons.SetActive(true);
             GManager.Instance.TowerMode = true;
         }
         else
         {
             _grid.SetActive(false);
+            _towerButtons.SetActive(false);
             GManager.Instance.TowerMode = false;
             GManager.Instance.BuildMode = false;
             GManager.Instance.DeselectTower();
