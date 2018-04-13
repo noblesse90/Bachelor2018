@@ -16,11 +16,13 @@ public class MainMenu : MonoBehaviour
 		{
 			_ranged.SetActive(true);
 			_ranged.GetComponent<PlayerController>().GetClass = PlayerController.Class.Ranged;
+			PlayerController.Instance.RangedManaCost();
 		}
 		else if (_meleeBool)
 		{
 			_melee.SetActive(true);
 			_melee.GetComponent<PlayerController>().GetClass = PlayerController.Class.Melee;
+			PlayerController.Instance.MeleeManaCost();
 		}
 
 		GManager.Instance.GameStarted = true;

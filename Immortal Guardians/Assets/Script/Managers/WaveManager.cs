@@ -81,6 +81,10 @@ public class WaveManager : Singleton<WaveManager>
             _canSpawn = true;
             _bossSpawn = true;
             
+            // DEACTIVATE TOGGLE ABILITIES
+            PlayerController.Instance.MultishotBool = false;
+            PlayerController.Instance.OrbitingSwordBool = false;
+            
             // UPDATE ENEMY COUNTER
             UIManager.Instance.EnemyCount(_enemySpawned, _enemyDied);
             

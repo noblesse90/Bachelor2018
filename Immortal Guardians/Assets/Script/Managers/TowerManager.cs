@@ -102,41 +102,42 @@ public class TowerManager : Singleton<TowerManager> {
 
     public bool IsEmpty(Vector2 mousePos)
     {
+        var mousePosition = GManager.Instance.GetMousePos();
         bool empty = true;
         RaycastHit2D[] rayCenter, rayUp, rayRight, rayCorner;
-        rayCenter = Physics2D.RaycastAll(mousePos, new Vector2(0, 0), 0F);
-        mousePos.y += 1;
-        rayUp = Physics2D.RaycastAll(mousePos, new Vector2(0, 0), 0F);
-        mousePos.x += 1;
-        rayCorner = Physics2D.RaycastAll(mousePos, new Vector2(0, 0), 0F);
-        mousePos.y += -1;
-        rayRight = Physics2D.RaycastAll(mousePos, new Vector2(0, 0), 0F);
+        rayCenter = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+        mousePosition.y += 1;
+        rayUp = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+        mousePosition.x += 1;
+        rayCorner = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+        mousePosition.y += -1;
+        rayRight = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
 
         foreach (RaycastHit2D r in rayCenter)
         {
             if (!r.collider.CompareTag("Tower") && !r.collider.CompareTag("Obstacle")) continue;
-            Debug.Log("TOWER: 0.0");
+            Debug.Log("Bottom left");
             empty = false;
         }
 
         foreach (RaycastHit2D r in rayUp)
         {
             if (!r.collider.CompareTag("Tower") && !r.collider.CompareTag("Obstacle")) continue;
-            Debug.Log("TOWER: 1.0");
+            Debug.Log("Top left");
             empty = false;
         }
 
         foreach (RaycastHit2D r in rayCorner)
         {
             if (!r.collider.CompareTag("Tower") && !r.collider.CompareTag("Obstacle")) continue;
-            Debug.Log("TOWER: 1.1");
+            Debug.Log("Top right");
             empty = false;
         }
 
         foreach (RaycastHit2D r in rayRight)
         {
             if (!r.collider.CompareTag("Tower") && !r.collider.CompareTag("Obstacle")) continue;
-            Debug.Log("TOWER: 0.1");
+            Debug.Log("Bottom right");
             empty = false;
         }
 

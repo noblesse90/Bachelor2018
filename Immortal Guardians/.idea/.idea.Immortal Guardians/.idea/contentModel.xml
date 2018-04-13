@@ -15,11 +15,6 @@
             <e p="CharacterSetup.cs" t="Include" />
           </e>
         </e>
-        <e p="Animated Trap" t="Include">
-          <e p="SpriteSheets" t="Include">
-            <e p="Trap.txt" t="Include" />
-          </e>
-        </e>
         <e p="AstarPathfindingProject" t="Include">
           <e p="Behaviors" t="Include">
             <e p="AIDestinationSetter.cs" t="Include" />
@@ -515,6 +510,11 @@
             <e p="PlayerController.cs" t="Include" />
             <e p="Ranged" t="Include">
               <e p="PlayerProjectile.cs" t="Include" />
+              <e p="Trap" t="Include">
+                <e p="AreaCollider.cs" t="Include" />
+                <e p="Trap.cs" t="Include" />
+                <e p="TrapOpen.cs" t="Include" />
+              </e>
             </e>
           </e>
           <e p="Singleton.cs" t="Include" />

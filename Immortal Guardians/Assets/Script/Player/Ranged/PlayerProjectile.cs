@@ -12,7 +12,7 @@ public class PlayerProjectile : MonoBehaviour
 
 	private Vector2 _playerPos, _directionPos, _normalizeDirection;
 
-	private bool _scatterShot = false;
+	private bool _piercing = false;
 
 	private GameObject _enemy = null;
 
@@ -22,12 +22,11 @@ public class PlayerProjectile : MonoBehaviour
 		set { _enemy = value; }
 	}
 
-	public bool ScatterShot
+	public bool Piercing
 	{
-		get { return _scatterShot; }
-		set { _scatterShot = value; }
+		get { return _piercing; }
+		set { _piercing = value; }
 	}
-
 
 	public void InstantiateProjectile(float damage, float speed, Vector2 playerPos, Vector2 direction, int offset)
 	{
@@ -75,21 +74,12 @@ public class PlayerProjectile : MonoBehaviour
 
 	private void Shoot()
 	{
-		if (_scatterShot)
+
+		if (Vector2.Distance(_playerPos, transform.position) > 20)
 		{
-			if (Vector2.Distance(_playerPos, transform.position) > 20)
-			{
-				SShot(null);
-				Release();		
-			}
+			Release();
 		}
-		else
-		{
-			if (Vector2.Distance(_playerPos, transform.position) > 20)
-			{
-				Release();
-			}
-		}
+
 		
 		transform.position += (Vector3)_normalizeDirection * _speed * Time.deltaTime;
 	}
@@ -102,13 +92,8 @@ public class PlayerProjectile : MonoBehaviour
 		}
 		else if (otherObject.CompareTag("Enemy"))
 		{
-			if (_scatterShot)
-			{
-				SShot(otherObject.gameObject);
-			}
-
-			if (_enemy == otherObject.gameObject) return;
 			otherObject.GetComponent<EnemyController>().TakeDamage(_damage);
+			if (_piercing) return;
 			Release();
 		}
 	}
@@ -120,79 +105,6 @@ public class PlayerProjectile : MonoBehaviour
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}
 	
-	
-	private void SShot(GameObject enemy)
-	{
-		Color c = new Color(0.9f, 0.137f, 0.137f);
-		Vector2 pos = transform.GetChild(0).transform.position;
-		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 45);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 90);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 135);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 180);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, -45);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, -90);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, -135);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}
-		
-		projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateSProjectile(_damage, 25f, transform.position, pos, 0);
-		projectile.GetComponentInChildren<SpriteRenderer>().color = c;
-		if (enemy != null)
-		{
-			projectile.GetComponentInChildren<PlayerProjectile>().Enemy = enemy;
-		}		
-	}
-	
-	
-	
-
 	private void Release()
 	{
 		// resets color of the projectile
@@ -206,8 +118,8 @@ public class PlayerProjectile : MonoBehaviour
 		// Plays a hit sound
 		AudioManager.Instance.Play("Arrow_Hit");
 		
-		// sets it to false so the projectile doesn't spawn more arrows
-		_scatterShot = false;
+		// Sets piercing to false
+		_piercing = false;
 		
 		// sets current parent to false so it can be reused in object pool
 		gameObject.transform.parent.gameObject.SetActive(false);

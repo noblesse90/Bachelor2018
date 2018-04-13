@@ -57,16 +57,27 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Image _leftClickIcon;
     [SerializeField] private Image _rightClickIcon;
     [SerializeField] private Image _firstAbilityIcon;
+    [SerializeField] private Image _secondAbilityIcon;
+    [SerializeField] private Image _thirdAbilityIcon;
+    [SerializeField] private Image _forthAbilityIcon;
     
     // ABILITIES SPRITES
     [Header("Melee")]
     [SerializeField] private Sprite _leftClickSpriteMelee;
     [SerializeField] private Sprite _rightClickSpriteMelee;
     [SerializeField] private Sprite _firstAbilitySpriteMelee;
+    [SerializeField] private Sprite _secondAbilitySpriteMelee;
+    [SerializeField] private Sprite _thirdAbilitySpriteMelee;
+    [SerializeField] private Sprite _forthAbilitySpriteMelee;
+    
     [Header("Ranged")]
     [SerializeField] private Sprite _leftClickSpriteRanged;
     [SerializeField] private Sprite _rightClickSpriteRanged;
     [SerializeField] private Sprite _firstAbilitySpriteRanged;
+    [SerializeField] private Sprite _secondAbilitySpriteRanged;
+    [SerializeField] private Sprite _thirdAbilitySpriteRanged;
+    [SerializeField] private Sprite _forthAbilitySpriteRanged;
+    
     
     // TOGGLE EFFECT
     [Header("Toggle Effect")] 
@@ -94,8 +105,6 @@ public class UIManager : Singleton<UIManager> {
     [Header("Grid")]
     [SerializeField] private GameObject _grid;
     
-    // MANA COSTS
-    private float _manaCostFirstAbility;
 
     public Image ManaBar
     {
@@ -103,10 +112,16 @@ public class UIManager : Singleton<UIManager> {
         set { _manaBar = value; }
     }
 
-    private bool _canBasicAttack = true, _canGCDAttack = true, _canGoldOverTime = true;
+    private bool _canBasicAttack = true,
+        _canGCDAttack = true,
+        _canGoldOverTime = true,
+        _canTrap = true;
 
 
-    private float _basicAttackTimer, _gcdTimer, _gcd, _goldTimer, _goldCooldown;
+    private float _basicAttackTimer, 
+        _gcdTimer, _gcd, 
+        _goldTimer, _goldCooldown,
+        _trapTimer, _trapCooldown;
 
     public bool CanBasicAttack
     {
@@ -118,6 +133,12 @@ public class UIManager : Singleton<UIManager> {
     {
         get { return _canGCDAttack; }
         set { _canGCDAttack = value; }
+    }
+
+    public bool CanTrap
+    {
+        get { return _canTrap; }
+        set { _canTrap = value; }
     }
 
 
@@ -144,6 +165,7 @@ public class UIManager : Singleton<UIManager> {
         
         _gcd = 0.5f;
         _goldCooldown = 5;
+        _trapCooldown = 30;
         
         _enemyCountTxt.GetComponent<TextMeshProUGUI>().text = "0";
         _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
@@ -217,21 +239,44 @@ public class UIManager : Singleton<UIManager> {
             case PlayerController.Class.Melee:
                 _leftClickIcon.GetComponent<Image>().sprite = _leftClickSpriteMelee;
                 _leftClickIcon.transform.parent.GetComponent<Image>().sprite = _leftClickSpriteMelee;
+                
                 _rightClickIcon.GetComponent<Image>().sprite = _rightClickSpriteMelee;
                 _rightClickIcon.transform.parent.GetComponent<Image>().sprite = _rightClickSpriteMelee;
+                
                 _firstAbilityIcon.GetComponent<Image>().sprite = _firstAbilitySpriteMelee;
                 _firstAbilityIcon.transform.parent.GetComponent<Image>().sprite = _firstAbilitySpriteMelee;
-                _manaCostFirstAbility = PlayerController.Instance.OrbitingSwordCost;
+                
+                _secondAbilityIcon.GetComponent<Image>().sprite = _secondAbilitySpriteMelee;
+                _secondAbilityIcon.transform.parent.GetComponent<Image>().sprite = _secondAbilitySpriteMelee;
+                
+                _thirdAbilityIcon.GetComponent<Image>().sprite = _thirdAbilitySpriteMelee;
+                _thirdAbilityIcon.transform.parent.GetComponent<Image>().sprite = _thirdAbilitySpriteMelee;
+                
+                _forthAbilityIcon.GetComponent<Image>().sprite = _forthAbilitySpriteMelee;
+                _forthAbilityIcon.transform.parent.GetComponent<Image>().sprite = _forthAbilitySpriteMelee;
+                
                 break;
+            
             case PlayerController.Class.Ranged:
                 _leftClickIcon.GetComponent<Image>().sprite = _leftClickSpriteRanged;
                 _leftClickIcon.transform.parent.GetComponent<Image>().sprite = _leftClickSpriteRanged;
+                
                 _rightClickIcon.GetComponent<Image>().sprite = _rightClickSpriteRanged;
                 _rightClickIcon.transform.parent.GetComponent<Image>().sprite = _rightClickSpriteRanged;
+                
                 _firstAbilityIcon.GetComponent<Image>().sprite = _firstAbilitySpriteRanged;
                 _firstAbilityIcon.transform.parent.GetComponent<Image>().sprite =
                     _firstAbilitySpriteRanged;
-                _manaCostFirstAbility = PlayerController.Instance.ScatterShotCost;
+                
+                _secondAbilityIcon.GetComponent<Image>().sprite = _secondAbilitySpriteRanged;
+                _secondAbilityIcon.transform.parent.GetComponent<Image>().sprite = _secondAbilitySpriteRanged;
+                
+                _thirdAbilityIcon.GetComponent<Image>().sprite = _thirdAbilitySpriteRanged;
+                _thirdAbilityIcon.transform.parent.GetComponent<Image>().sprite = _thirdAbilitySpriteRanged;
+                
+                _forthAbilityIcon.GetComponent<Image>().sprite = _forthAbilitySpriteRanged;
+                _forthAbilityIcon.transform.parent.GetComponent<Image>().sprite = _forthAbilitySpriteRanged;
+                
                 break;
                     
         }
@@ -436,6 +481,11 @@ public class UIManager : Singleton<UIManager> {
             _leftClickIcon.fillAmount = 1;
         }
 
+        if (!_canTrap)
+        {
+            _thirdAbilityIcon.fillAmount = (_trapTimer / _trapCooldown);
+        }
+
         if (!_canGCDAttack)
         {
             if (PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost)
@@ -447,7 +497,7 @@ public class UIManager : Singleton<UIManager> {
                 _rightClickIcon.fillAmount = 0;
             }
 
-            if (PlayerController.Instance.Mana >= _manaCostFirstAbility)
+            if (PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost)
             {
                 _firstAbilityIcon.fillAmount = (_gcdTimer / _gcd);
             }
@@ -456,19 +506,57 @@ public class UIManager : Singleton<UIManager> {
                 _firstAbilityIcon.fillAmount = 0; 
             }
             
+            if (PlayerController.Instance.Mana >= PlayerController.Instance.SecondAbilityCost)
+            {
+                _secondAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+            }
+            else
+            {
+                _secondAbilityIcon.fillAmount = 0; 
+            }
+
+            if (_canTrap)
+            {
+                if (PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost)
+                {
+                    _thirdAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                }
+                else
+                {
+                    _thirdAbilityIcon.fillAmount = 0; 
+                } 
+            } 
+            
+            if (PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost)
+            {
+                _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+            }
+            else
+            {
+                _forthAbilityIcon.fillAmount = 0; 
+            }
+            
         }
         else
         {    
             _rightClickIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost ? 1 : 0;
+            _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost ? 1 : 0;
             
-            if (PlayerController.Instance.OrbitingSwordBool)
+            if (PlayerController.Instance.OrbitingSwordBool || PlayerController.Instance.MultishotBool)
             {
-                _firstAbilityIcon.fillAmount = 1;
+                _secondAbilityIcon.fillAmount = 1;
             }
             else
             {
-                _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= _manaCostFirstAbility ? 1 : 0;
+                _secondAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.SecondAbilityCost ? 1 : 0;
             }
+
+            if (_canTrap)
+            {
+                _thirdAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost ? 1 : 0;
+            }
+            
+            _forthAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost ? 1 : 0;
         }
 
 		
@@ -481,7 +569,15 @@ public class UIManager : Singleton<UIManager> {
         ToStringManabar(PlayerController.Instance.Mana, PlayerController.Instance.MaxMana);
         
         // TOGGLE
-        _toggleEffect.SetActive(PlayerController.Instance.OrbitingSwordBool);
+        if (PlayerController.Instance.GetClass == PlayerController.Class.Melee)
+        {
+            _toggleEffect.SetActive(PlayerController.Instance.OrbitingSwordBool);
+        }
+        else
+        {
+            _toggleEffect.SetActive(PlayerController.Instance.MultishotBool);
+        }
+        
     }
 
     private void ToStringManabar(float mana, float maxMana)
@@ -529,6 +625,17 @@ public class UIManager : Singleton<UIManager> {
             {
                 _canGoldOverTime = true;
                 _goldTimer = 0;
+            }
+        }
+
+        if (!_canTrap)
+        {
+            _trapTimer += Time.deltaTime;
+
+            if (_trapTimer >= _trapCooldown)
+            {
+                _canTrap = true;
+                _trapTimer = 0;
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Cinemachine;
+using UnityEngineInternal;
 
 public class PlayerController : Singleton<PlayerController> {
 
@@ -20,6 +21,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private Vector2 _mousePos;
 
 	[SerializeField] private GameObject _orbitingSword;
+	[SerializeField] private GameObject _trap;
 
     // Rigidbody variable to hold on a rigidbodody component
     private Rigidbody2D _rb;
@@ -33,35 +35,89 @@ public class PlayerController : Singleton<PlayerController> {
     private Animator _animatorDown, _animatorUp, _animatorLeft, _animatorRight;
 
 	private Class _class;
-
+	
 	private LookDirection _lookDirection = LookDirection.Down;
 	
 	// SET TARGET FOR VCAM
 	[SerializeField] private CinemachineVirtualCamera _vcam;
-
-	//Manacost for skills
-	private int _rightClickCost = 10;
-	private int _scatterShotCost = 20;
-	private float _orbitingSwordCost = 10;
-
+	
+	// Manacost for skills
+	private int _rightClickCost = 0;
+	private int _firstAbilityCost = 0;
+	private int _secondAbilityCost = 0;
+	private int _thirdAbilityCost = 0;
+	private int _forthAbilityCost = 0;
+	
 	public int RightClickCost
 	{
 		get { return _rightClickCost; }
 		set { _rightClickCost = value; }
 	}
 
-	public int ScatterShotCost
+	public int FirstAbilityCost
 	{
-		get { return _scatterShotCost; }
-		set { _scatterShotCost = value; }
+		get { return _firstAbilityCost; }
+		set { _firstAbilityCost = value; }
+	}
+
+	public int SecondAbilityCost
+	{
+		get { return _secondAbilityCost; }
+		set { _secondAbilityCost = value; }
+	}
+
+	public int ThirdAbilityCost
+	{
+		get { return _thirdAbilityCost; }
+		set { _thirdAbilityCost = value; }
+	}
+
+	public int ForthAbilityCost
+	{
+		get { return _forthAbilityCost; }
+		set { _forthAbilityCost = value; }
+	}
+
+	public void MeleeManaCost()
+	{
+		_rightClickCost = _axeThrowCost;
+		_secondAbilityCost = _orbitingSwordCost;
 	}
 	
-	public float OrbitingSwordCost
+	public void RangedManaCost()
 	{
-		get { return _orbitingSwordCost; }
-		set { _orbitingSwordCost = value; }
+		_rightClickCost = _chargeShotCost;
+		_secondAbilityCost = _multishotCost;
+		_thirdAbilityCost = _trapCost;
 	}
+
+	//Manacost for skills (RANGED)
 	
+	private int _multishotCost = 10;
+	private int _chargeShotCost = 35;
+	private int _trapCost = 25;
+	
+
+	//Manacost for skills (MELEE)
+	private int _axeThrowCost = 10;
+	private int _orbitingSwordCost = 10;
+
+	
+	// CHARGED SHOT
+	
+	private float _timer = 0, _chargeTime = 3;
+	private float _chargeDmg = 0;
+	
+	// MULTI SHOT
+
+	private bool _multishotBool = false;
+
+	public bool MultishotBool
+	{
+		get { return _multishotBool; }
+		set { _multishotBool = value; }
+	}
+
 	// ORBITING SWORDS
 	
 	private bool _orbitingSwordBool = false;
@@ -72,7 +128,7 @@ public class PlayerController : Singleton<PlayerController> {
 		get { return _orbitingSwordBool; }
 		set { _orbitingSwordBool = value; }
 	}
-
+	
 
 	// PLAYER STATS
 	
@@ -326,7 +382,8 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		LeftClick();
 		RightClick();
-		FirstAbilityClick();
+		SecondAbilityClick();
+		ThirdAbilityClick();
 	}
 	
 	// CALCULATE THE MANACOST
@@ -370,21 +427,43 @@ public class PlayerController : Singleton<PlayerController> {
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage*0.75f, 25f, transform.position, _mousePos, -5);
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
 		
-		ManaCost(_rightClickCost);
+		ManaCost(_multishotCost);
+
+		if (_mana < _multishotCost)
+		{
+			_multishotBool = false;
+		}
 	}
-	
-	// FIRST ABILITY (SCATTER SHOT)
-	
-	private void ScatterShot()
+
+	private void ChargedShot()
 	{
-		AudioManager.Instance.Play("Bow_Release");
-		
-		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
-		projectile.GetComponentInChildren<PlayerProjectile>().ScatterShot = true;
-		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, _mousePos, 0);
-		
-		ManaCost(_scatterShotCost);	
+		if (_timer <= _chargeTime / 3)
+		{
+			_chargeDmg = 10;
+		}
+		else if (_timer <= _chargeTime / 1.5f || (_timer >= _chargeTime / 1.5f && _timer <= _chargeTime))
+		{
+			_chargeDmg = 25;
+		}
+		else if (_timer >= _chargeTime)
+		{
+			_chargeDmg = 50;
+		}
+
+		_timer += Time.deltaTime;
+
 	}
+
+	private void Trap()
+	{
+		GameObject trap = Instantiate(_trap);
+		trap.transform.position = gameObject.transform.position;
+
+		UIManager.Instance.CanTrap = false;
+		
+		ManaCost(_trapCost);
+	}
+	
 	
 	// ------------------------- MELEE ATTACKS --------------------
 	
@@ -425,7 +504,7 @@ public class PlayerController : Singleton<PlayerController> {
 		_orbitingSwordBool = true;
 	}
 
-	private void DestroySwords()
+	public void DestroySwords()
 	{
 		if (_orbSword != null)
 		{
@@ -460,22 +539,50 @@ public class PlayerController : Singleton<PlayerController> {
 						{
 							case LookDirection.Down:
 								_animatorDown.SetTrigger("RangedAttack");
-								RangedAttack();
+								if (_multishotBool)
+								{
+									Multishot();
+								}
+								else
+								{
+									RangedAttack();
+								}
 								break;
 							
 							case LookDirection.Left:
 								_animatorLeft.SetTrigger("RangedAttack");
-								RangedAttack();
+								if (_multishotBool)
+								{
+									Multishot();
+								}
+								else
+								{
+									RangedAttack();
+								}
 								break;
 							
 							case LookDirection.Right:
 								_animatorRight.SetTrigger("RangedAttack");
-								RangedAttack();
+								if (_multishotBool)
+								{
+									Multishot();
+								}
+								else
+								{
+									RangedAttack();
+								}
 								break;
 							
 							case LookDirection.Up:
 								_animatorUp.SetTrigger("RangedAttack");
-								RangedAttack();
+								if (_multishotBool)
+								{
+									Multishot();
+								}
+								else
+								{
+									RangedAttack();
+								}
 								break;
 							
 							default: break;
@@ -504,12 +611,8 @@ public class PlayerController : Singleton<PlayerController> {
 								_animatorUp.SetTrigger("MeleeAttack");
 								StartCoroutine(MeleeAttackCoroutine());
 								break;
-							
-							default: break;
 						}
 						break;
-					
-					default: break;
 				}
 
 				UIManager.Instance.CanBasicAttack = false;
@@ -521,40 +624,56 @@ public class PlayerController : Singleton<PlayerController> {
 
 	private void RightClick()
 	{
-		if (Input.GetKeyDown(KeyCode.Mouse1) && _mana >= _rightClickCost)
+		if (UIManager.Instance.CanGcdAttack && _mana >= _rightClickCost)
 		{
-			if (UIManager.Instance.CanGcdAttack)
+			switch (_class)
 			{
-				switch (_class)
-				{
-					case Class.Ranged:
+				case Class.Ranged:
+					if (Input.GetKey(KeyCode.Mouse1))
+					{
+						ChargedShot();
+						_speed = 5;
+					}
+					
+					if (Input.GetKeyUp(KeyCode.Mouse1))
+					{
+						_speed = 10;
+						UIManager.Instance.CanGcdAttack = false;
+						_timer = 0;
+						ManaCost(_chargeShotCost);
+						
+						AudioManager.Instance.Play("Bow_Release");
+						Color color = new Color(1f,1f,0.4f);
+						GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
+						projectile.GetComponentInChildren<PlayerProjectile>().Piercing = true;
+						projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage+_chargeDmg, 25f, transform.position, _mousePos, 0);
+						projectile.GetComponentInChildren<SpriteRenderer>().color = color;
+						
 						switch (_lookDirection)
 						{
 							case LookDirection.Down:
 								_animatorDown.SetTrigger("RangedAttack");
-								Multishot();
 								break;
 							
 							case LookDirection.Left:
 								_animatorLeft.SetTrigger("RangedAttack");
-								Multishot();
 								break;
 							
 							case LookDirection.Right:
 								_animatorRight.SetTrigger("RangedAttack");
-								Multishot();
 								break;
 							
 							case LookDirection.Up:
 								_animatorUp.SetTrigger("RangedAttack");
-								Multishot();
 								break;
-							
-							default: break;
 						}
-						break;
+					}
 					
-					case Class.Melee:
+					break;
+					
+				case Class.Melee:
+					if (Input.GetKeyDown(KeyCode.Mouse1))
+					{
 						switch (_lookDirection)
 						{
 							case LookDirection.Down:
@@ -577,51 +696,33 @@ public class PlayerController : Singleton<PlayerController> {
 								Invoke("AxeThrow", 0.5f);
 								break;
 							
-							default: break;
 						}
-						break;
-					
-					default: break;
-				}
-
-				UIManager.Instance.CanGcdAttack = false;
+						UIManager.Instance.CanGcdAttack = false;
+					}
+					break;
 			}
+			
+			
 		}
 	}
 
-	// 1 KEY PRESS
+	// 2 KEY PRESS
 	
-	private void FirstAbilityClick()
+	private void SecondAbilityClick()
 	{
-		if (Input.GetKeyDown(KeyCode.Alpha1) )
+		if (Input.GetKeyDown(KeyCode.Alpha2) )
 		{
 			if (UIManager.Instance.CanGcdAttack)
 			{
-				if (_class == Class.Ranged && _mana >= _scatterShotCost)
+				if (_class == Class.Ranged && _mana >= _multishotCost)
 				{
-					switch (_lookDirection)
+					if (_multishotBool)
 					{
-						case LookDirection.Down:
-							_animatorDown.SetTrigger("RangedAttack");
-							ScatterShot();
-							break;
-							
-						case LookDirection.Left:
-							_animatorLeft.SetTrigger("RangedAttack");
-							ScatterShot();
-							break;
-							
-						case LookDirection.Right:
-							_animatorRight.SetTrigger("RangedAttack");
-							ScatterShot();
-							break;
-							
-						case LookDirection.Up:
-							_animatorUp.SetTrigger("RangedAttack");
-							ScatterShot();
-							break;
-							
-						default: break;
+						_multishotBool = false;
+					}
+					else if (_mana >= _multishotCost)
+					{
+						_multishotBool = true;
 					}
 				}
 				else if (_class == Class.Melee)
@@ -629,10 +730,8 @@ public class PlayerController : Singleton<PlayerController> {
 					if (OrbitingSwordBool)
 					{
 						DestroySwords();
-						return;
 					}
-					
-					if (_mana >= _orbitingSwordCost)
+					else if (_mana >= _orbitingSwordCost)
 					{
 						OrbitingSwords();
 					}
@@ -640,6 +739,22 @@ public class PlayerController : Singleton<PlayerController> {
 				
 
 				UIManager.Instance.CanGcdAttack = false;
+			}
+		}
+	}
+	
+	// 3 KEY PRESS
+
+	private void ThirdAbilityClick()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			if (UIManager.Instance.CanGcdAttack)
+			{
+				if (_class == Class.Ranged && _mana >= _trapCost && UIManager.Instance.CanTrap)
+				{
+					Trap();
+				}
 			}
 		}
 	}
