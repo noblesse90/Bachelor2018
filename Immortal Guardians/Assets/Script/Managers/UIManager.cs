@@ -112,16 +112,33 @@ public class UIManager : Singleton<UIManager> {
         set { _manaBar = value; }
     }
 
+    private float _manaPerSecond;
+
+    public float ManaPerSecond
+    {
+        get { return _manaPerSecond; }
+        set { _manaPerSecond = value; }
+    }
+
     private bool _canBasicAttack = true,
         _canGCDAttack = true,
         _canGoldOverTime = true,
-        _canTrap = true;
+        _canTrap = true,
+        _canBuff = true,
+        _canTurretMode = true;
 
 
-    private float _basicAttackTimer, 
-        _gcdTimer, _gcd, 
-        _goldTimer, _goldCooldown,
-        _trapTimer, _trapCooldown;
+    private float _basicAttackTimer,
+        _gcdTimer,
+        _gcd,
+        _goldTimer,
+        _goldCooldown,
+        _trapTimer,
+        _trapCooldown,
+        _buffTimer,
+        _buffCooldown,
+        _turretTimer,
+        _turretCooldown;
 
     public bool CanBasicAttack
     {
@@ -135,10 +152,28 @@ public class UIManager : Singleton<UIManager> {
         set { _canGCDAttack = value; }
     }
 
+    public float Gcd
+    {
+        get { return _gcd; }
+        set { _gcd = value; }
+    }
+
     public bool CanTrap
     {
         get { return _canTrap; }
         set { _canTrap = value; }
+    }
+
+    public bool CanBuff
+    {
+        get { return _canBuff; }
+        set { _canBuff = value; }
+    }
+
+    public bool CanTurretMode
+    {
+        get { return _canTurretMode; }
+        set { _canTurretMode = value; }
     }
 
 
@@ -146,6 +181,8 @@ public class UIManager : Singleton<UIManager> {
     {
         Currency = 150;
         Life = 50;
+
+        _manaPerSecond = 5f;
 
         _nextWaveBtn.onClick.AddListener(WaveManager.Instance.NextWave);
 
@@ -166,6 +203,8 @@ public class UIManager : Singleton<UIManager> {
         _gcd = 0.5f;
         _goldCooldown = 5;
         _trapCooldown = 30;
+        _buffCooldown = 60;
+        _turretCooldown = 120;
         
         _enemyCountTxt.GetComponent<TextMeshProUGUI>().text = "0";
         _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
@@ -481,9 +520,19 @@ public class UIManager : Singleton<UIManager> {
             _leftClickIcon.fillAmount = 1;
         }
 
+        if (!_canBuff)
+        {
+            _firstAbilityIcon.fillAmount = (_buffTimer / _buffCooldown);
+        }
+
         if (!_canTrap)
         {
             _thirdAbilityIcon.fillAmount = (_trapTimer / _trapCooldown);
+        }
+
+        if (!_canTurretMode)
+        {
+            _forthAbilityIcon.fillAmount = (_turretTimer / _turretCooldown);
         }
 
         if (!_canGCDAttack)
@@ -497,13 +546,16 @@ public class UIManager : Singleton<UIManager> {
                 _rightClickIcon.fillAmount = 0;
             }
 
-            if (PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost)
+            if (_canBuff)
             {
-                _firstAbilityIcon.fillAmount = (_gcdTimer / _gcd);
-            }
-            else
-            {
-                _firstAbilityIcon.fillAmount = 0; 
+                if (PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost)
+                {
+                    _firstAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                }
+                else
+                {
+                    _firstAbilityIcon.fillAmount = 0; 
+                }
             }
             
             if (PlayerController.Instance.Mana >= PlayerController.Instance.SecondAbilityCost)
@@ -525,22 +577,28 @@ public class UIManager : Singleton<UIManager> {
                 {
                     _thirdAbilityIcon.fillAmount = 0; 
                 } 
-            } 
-            
-            if (PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost)
-            {
-                _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
             }
-            else
+
+            if (_canTurretMode)
             {
-                _forthAbilityIcon.fillAmount = 0; 
+                if (PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost)
+                {
+                    _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                }
+                else
+                {
+                    _forthAbilityIcon.fillAmount = 0; 
+                }
             }
-            
         }
         else
         {    
             _rightClickIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost ? 1 : 0;
-            _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost ? 1 : 0;
+
+            if (_canBuff)
+            {
+                _firstAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.FirstAbilityCost ? 1 : 0;
+            }
             
             if (PlayerController.Instance.OrbitingSwordBool || PlayerController.Instance.MultishotBool)
             {
@@ -555,15 +613,19 @@ public class UIManager : Singleton<UIManager> {
             {
                 _thirdAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost ? 1 : 0;
             }
+
+            if (_canTurretMode)
+            {
+                _forthAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost ? 1 : 0;
+            }
             
-            _forthAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost ? 1 : 0;
         }
 
 		
         // MANABAR
         if (!NextWaveBtn.gameObject.activeInHierarchy && PlayerController.Instance.Mana <= PlayerController.Instance.MaxMana)
         {
-            PlayerController.Instance.Mana += 5f * Time.deltaTime;
+            PlayerController.Instance.Mana += _manaPerSecond * Time.deltaTime;
         }
         _manaBar.fillAmount = PlayerController.Instance.Mana / PlayerController.Instance.MaxMana;
         ToStringManabar(PlayerController.Instance.Mana, PlayerController.Instance.MaxMana);
@@ -636,6 +698,28 @@ public class UIManager : Singleton<UIManager> {
             {
                 _canTrap = true;
                 _trapTimer = 0;
+            }
+        }
+
+        if (!_canBuff)
+        {
+            _buffTimer += Time.deltaTime;
+
+            if (_buffTimer >= _buffCooldown)
+            {
+                _canBuff = true;
+                _buffTimer = 0;
+            }
+        }
+
+        if (!_canTurretMode)
+        {
+            _turretTimer += Time.deltaTime;
+
+            if (_turretTimer >= _turretCooldown)
+            {
+                _canTurretMode = true;
+                _turretCooldown = 0;
             }
         }
     }

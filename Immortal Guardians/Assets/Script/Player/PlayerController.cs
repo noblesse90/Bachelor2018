@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters;
+using System.Timers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Cinemachine;
@@ -22,6 +23,7 @@ public class PlayerController : Singleton<PlayerController> {
 
 	[SerializeField] private GameObject _orbitingSword;
 	[SerializeField] private GameObject _trap;
+	[SerializeField] private GameObject _bunker;
 
     // Rigidbody variable to hold on a rigidbodody component
     private Rigidbody2D _rb;
@@ -89,6 +91,7 @@ public class PlayerController : Singleton<PlayerController> {
 		_rightClickCost = _chargeShotCost;
 		_secondAbilityCost = _multishotCost;
 		_thirdAbilityCost = _trapCost;
+		_forthAbilityCost = _turretCost;
 	}
 
 	//Manacost for skills (RANGED)
@@ -96,6 +99,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private int _multishotCost = 10;
 	private int _chargeShotCost = 35;
 	private int _trapCost = 25;
+	private int _turretCost = 25;
 	
 
 	//Manacost for skills (MELEE)
@@ -117,6 +121,14 @@ public class PlayerController : Singleton<PlayerController> {
 		get { return _multishotBool; }
 		set { _multishotBool = value; }
 	}
+	
+	// TURRET MODE
+	private bool _turretMode = false;
+	private float _turretTimer, _turretDuration = 5;
+	
+	// SELFBUFF (both classes)
+	private bool _buffActive = false;
+	private float _buffTimer = 0, _buffDuration = 10;
 
 	// ORBITING SWORDS
 	
@@ -193,15 +205,25 @@ public class PlayerController : Singleton<PlayerController> {
 		if (GManager.Instance.Paused) return;
 		// gets the mouse position since it's used multiple times
 		_mousePos = GManager.Instance.GetMousePos();
+		// does the animation for the player according to mouse position
+		AnimationDirection();
+		// run timers for player abilites (selfbuff)
+		Timers();
+		
+		// TURRET MODE ARCHER
+		if (_turretMode)
+		{
+			_direction = Vector2.zero;
+			return;
+		}
 		// gets an input from the keyboard
 		GetInput();
 		// move the gameobject according to the keypresses
 		Move();
-		// does the animation for the player according to mouse position
-		AnimationDirection();
-		
 		// reduces the players mana if he's using Orbiting swords
 		OrbitingSwordManaReduction();
+		
+		
 		
 		// stops player from attacking if he tries to select tower
 		if (GManager.Instance.TowerMode) return;
@@ -382,8 +404,10 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		LeftClick();
 		RightClick();
+		FirstAbilityClick();
 		SecondAbilityClick();
 		ThirdAbilityClick();
+		ForthAbilityClick();
 	}
 	
 	// CALCULATE THE MANACOST
@@ -406,9 +430,17 @@ public class PlayerController : Singleton<PlayerController> {
 		
 		GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 		projectile.GetComponentInChildren<PlayerProjectile>().InstantiateProjectile(_damage, 25f, transform.position, _mousePos, 0);
+
+		if (_turretMode)
+		{
+			projectile.GetComponentInChildren<PlayerProjectile>().Piercing = true;
+			Color c = new Color(1, 1, 1);
+			projectile.GetComponentInChildren<SpriteRenderer>().color = c;
+		}
+		
 	}
 
-	// RIGHT CLICK (MULTISHOT)
+	// MULTISHOT
 	
 	private void Multishot()
 	{
@@ -434,6 +466,8 @@ public class PlayerController : Singleton<PlayerController> {
 			_multishotBool = false;
 		}
 	}
+	
+	// RIGHT CLICK CHARGED SHOT
 
 	private void ChargedShot()
 	{
@@ -453,6 +487,8 @@ public class PlayerController : Singleton<PlayerController> {
 		_timer += Time.deltaTime;
 
 	}
+	
+	// 3 PRESS TRAP
 
 	private void Trap()
 	{
@@ -462,6 +498,19 @@ public class PlayerController : Singleton<PlayerController> {
 		UIManager.Instance.CanTrap = false;
 		
 		ManaCost(_trapCost);
+	}
+	
+	// 4 PRESS TURRET MODE
+
+	private void TurretAbility()
+	{
+		UIManager.Instance.CanTurretMode = false;
+		_turretMode = true;
+		_bunker.SetActive(true);
+
+		UIManager.Instance.Gcd = 0.2f;
+		
+		ManaCost(_turretCost);
 	}
 	
 	
@@ -524,6 +573,19 @@ public class PlayerController : Singleton<PlayerController> {
 		}
 	}
 	
+	// -------------------- SHARED ATTACKS ---------------
+	
+	private void Selfbuff()
+	{
+		_speed = 15;
+		gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 0);
+		UIManager.Instance.Gcd = 0.25f;
+		UIManager.Instance.ManaPerSecond = 10f;
+
+		_buffActive = true;
+		UIManager.Instance.CanBuff = false;
+	}
+	
 	// LEFT CLICK KEYPRESS
 
 	private void LeftClick()
@@ -584,8 +646,6 @@ public class PlayerController : Singleton<PlayerController> {
 									RangedAttack();
 								}
 								break;
-							
-							default: break;
 						}
 						break;
 					
@@ -701,8 +761,22 @@ public class PlayerController : Singleton<PlayerController> {
 					}
 					break;
 			}
-			
-			
+		}
+	}
+	
+	// 1 KEY PRESS
+
+	private void FirstAbilityClick()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			if (UIManager.Instance.CanGcdAttack)
+			{
+				if (UIManager.Instance.CanBuff)
+				{
+					Selfbuff();
+				}
+			}
 		}
 	}
 
@@ -759,6 +833,20 @@ public class PlayerController : Singleton<PlayerController> {
 		}
 	}
 
+	private void ForthAbilityClick()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			if (UIManager.Instance.CanGcdAttack)
+			{
+				if (_class == Class.Ranged && _mana >= _turretCost && UIManager.Instance.CanTurretMode)
+				{
+					TurretAbility();
+				}
+			}
+		}
+	}
+
 	
 	private enum LookDirection
 	{
@@ -772,6 +860,61 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		Ranged,
 		Melee
+	}
+
+	private void Timers()
+	{
+		if (_buffActive)
+		{
+			_buffTimer += Time.deltaTime;
+
+			if (_buffTimer >= _buffDuration)
+			{
+				_buffActive = false;
+				_buffTimer = 0;
+				
+				_speed = 10;
+				gameObject.transform.localScale = new Vector3(1, 1, 0);
+				UIManager.Instance.Gcd = 0.5f;
+				UIManager.Instance.ManaPerSecond = 5f;
+			}
+		}
+
+		if (_turretMode)
+		{
+			_turretTimer += Time.deltaTime;
+			if (UIManager.Instance.CanBasicAttack)
+			{
+				RangedAttack();
+				switch (_lookDirection)
+				{
+					case LookDirection.Down:
+						_animatorDown.SetTrigger("RangedAttack");
+						break;
+							
+					case LookDirection.Left:
+						_animatorLeft.SetTrigger("RangedAttack");
+						break;
+							
+					case LookDirection.Right:
+						_animatorRight.SetTrigger("RangedAttack");
+						break;
+							
+					case LookDirection.Up:
+						_animatorUp.SetTrigger("RangedAttack");
+						break;
+				}
+				UIManager.Instance.CanBasicAttack = false;
+			}
+			
+
+			if (_turretTimer >= _turretDuration)
+			{
+				_turretMode = false;
+				_bunker.SetActive(false);
+				UIManager.Instance.Gcd = 0.5f;
+			}
+		}
 	}
 
 
