@@ -125,7 +125,8 @@ public class UIManager : Singleton<UIManager> {
         _canGoldOverTime = true,
         _canTrap = true,
         _canBuff = true,
-        _canTurretMode = true;
+        _canTurretMode = true,
+        _canPull = true;
 
 
     private float _basicAttackTimer,
@@ -138,7 +139,9 @@ public class UIManager : Singleton<UIManager> {
         _buffTimer,
         _buffCooldown,
         _turretTimer,
-        _turretCooldown;
+        _turretCooldown,
+        _pullTimer,
+        _pullCooldown;
 
     public bool CanBasicAttack
     {
@@ -176,6 +179,12 @@ public class UIManager : Singleton<UIManager> {
         set { _canTurretMode = value; }
     }
 
+    public bool CanPull
+    {
+        get { return _canPull; }
+        set { _canPull = value; }
+    }
+
 
     private void Start()
     {
@@ -205,6 +214,8 @@ public class UIManager : Singleton<UIManager> {
         _trapCooldown = 30;
         _buffCooldown = 60;
         _turretCooldown = 120;
+
+        _pullCooldown = 60;
         
         _enemyCountTxt.GetComponent<TextMeshProUGUI>().text = "0";
         _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
@@ -535,6 +546,11 @@ public class UIManager : Singleton<UIManager> {
             _forthAbilityIcon.fillAmount = (_turretTimer / _turretCooldown);
         }
 
+        if (!_canPull)
+        {
+            _thirdAbilityIcon.fillAmount = (_pullTimer / _pullCooldown);
+        }
+
         if (!_canGCDAttack)
         {
             if (PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost)
@@ -566,30 +582,51 @@ public class UIManager : Singleton<UIManager> {
             {
                 _secondAbilityIcon.fillAmount = 0; 
             }
-
-            if (_canTrap)
+            
+            if (PlayerController.Instance.GetClass == PlayerController.Class.Ranged)
             {
-                if (PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost)
+                if (_canTrap)
                 {
-                    _thirdAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                    if (PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost)
+                    {
+                        _thirdAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                    }
+                    else
+                    {
+                        _thirdAbilityIcon.fillAmount = 0; 
+                    } 
                 }
-                else
+
+                if (_canTurretMode)
                 {
-                    _thirdAbilityIcon.fillAmount = 0; 
-                } 
+                    if (PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost)
+                    {
+                        _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                    }
+                    else
+                    {
+                        _forthAbilityIcon.fillAmount = 0; 
+                    }
+                }
+            }
+            else if (PlayerController.Instance.GetClass == PlayerController.Class.Melee)
+            {
+                if (_canPull)
+                {
+                    if (PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost)
+                    {
+                        _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                    }
+                    else
+                    {
+                        _thirdAbilityIcon.fillAmount = 0; 
+                    }
+                }
             }
 
-            if (_canTurretMode)
-            {
-                if (PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost)
-                {
-                    _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
-                }
-                else
-                {
-                    _forthAbilityIcon.fillAmount = 0; 
-                }
-            }
+            
+
+            
         }
         else
         {    
@@ -608,16 +645,29 @@ public class UIManager : Singleton<UIManager> {
             {
                 _secondAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.SecondAbilityCost ? 1 : 0;
             }
-
-            if (_canTrap)
+            
+            if (PlayerController.Instance.GetClass == PlayerController.Class.Ranged)
             {
-                _thirdAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost ? 1 : 0;
+                if (_canTrap)
+                {
+                    _thirdAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost ? 1 : 0;
+                }
+
+                if (_canTurretMode)
+                {
+                    _forthAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost ? 1 : 0;
+                }
+            }
+            else if (PlayerController.Instance.GetClass == PlayerController.Class.Melee)
+            {
+                if (_canPull)
+                {
+                    _thirdAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost ? 1 : 0;
+                }
             }
 
-            if (_canTurretMode)
-            {
-                _forthAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost ? 1 : 0;
-            }
+            
+
             
         }
 
@@ -657,6 +707,7 @@ public class UIManager : Singleton<UIManager> {
     
     private void Timers()
     {
+        // ---- BASIC ATTACK COOLDOWN ----
         if (!_canBasicAttack)
         {
             _basicAttackTimer += Time.deltaTime;
@@ -667,7 +718,7 @@ public class UIManager : Singleton<UIManager> {
                 _basicAttackTimer = 0;
             }
         }
-
+        // ---- GCD ----
         if (!_canGCDAttack)
         {
             _gcdTimer += Time.deltaTime;
@@ -678,7 +729,7 @@ public class UIManager : Singleton<UIManager> {
                 _gcdTimer = 0;
             }
         }
-
+        // ---- GOLD GENERATION ----
         if (!_canGoldOverTime)
         {
             _goldTimer += Time.deltaTime;
@@ -690,6 +741,7 @@ public class UIManager : Singleton<UIManager> {
             }
         }
 
+        // ---- RANGED ----
         if (!_canTrap)
         {
             _trapTimer += Time.deltaTime;
@@ -700,18 +752,7 @@ public class UIManager : Singleton<UIManager> {
                 _trapTimer = 0;
             }
         }
-
-        if (!_canBuff)
-        {
-            _buffTimer += Time.deltaTime;
-
-            if (_buffTimer >= _buffCooldown)
-            {
-                _canBuff = true;
-                _buffTimer = 0;
-            }
-        }
-
+        
         if (!_canTurretMode)
         {
             _turretTimer += Time.deltaTime;
@@ -722,6 +763,31 @@ public class UIManager : Singleton<UIManager> {
                 _turretCooldown = 0;
             }
         }
+        
+        // ---- MELEE ----
+        if (!_canPull)
+        {
+            _pullTimer += Time.deltaTime;
+
+            if (_pullTimer >= _pullCooldown)
+            {
+                _canPull = true;
+                _pullTimer = 0;
+            }
+        }
+        
+        // ---- RANGED AND MELEE ----
+        if (!_canBuff)
+        {
+            _buffTimer += Time.deltaTime;
+
+            if (_buffTimer >= _buffCooldown)
+            {
+                _canBuff = true;
+                _buffTimer = 0;
+            }
+        }
+        
     }
 
     public IEnumerator LoseScreenFade()

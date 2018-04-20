@@ -22,6 +22,7 @@ public class EnemyController : MonoBehaviour
 
 	[SerializeField]private Image _healthBar;
 	
+	
 	// SLOW EFFECT
 	
 	private bool _slowed = false;
@@ -33,6 +34,13 @@ public class EnemyController : MonoBehaviour
 	{
 		get { return _defaultSpeed; }
 	}
+	
+	// PULL EFFECT
+
+	private bool _pull = false;
+	private GameObject _target;
+	private Vector2 _targetPosition;
+
 
 
 	// Use this for initialization
@@ -59,6 +67,11 @@ public class EnemyController : MonoBehaviour
 	private void Update () {
 		OnDeath();
 		Slowed();
+
+		if (_pull)
+		{
+			FollowTarget();
+		}
 	}
 
 	private void OnDeath()
@@ -104,13 +117,37 @@ public class EnemyController : MonoBehaviour
 	{
 		if (speed < 0) return;
 
-		if (GetComponent<AIPath>().maxSpeed > speed)
+		if (GetComponent<AIPath>().maxSpeed > speed && !_pull)
 		{
 			_slowed = true;
 		}
 		
 		GetComponent<AIPath>().maxSpeed = speed;
 
+	}
+
+	public void InitializePullTarget(GameObject target)
+	{
+		_target = target;
+		_pull = true;
+		_targetPosition = _target.transform.position;
+		SetSpeed(0);
+		
+	}
+
+	private void FollowTarget()
+	{
+		if (Vector2.Distance(gameObject.transform.position, _target.transform.position) > 1)
+		{
+			_targetPosition = _target.transform.position;
+			gameObject.transform.position =
+				Vector3.MoveTowards(gameObject.transform.position, _targetPosition, Time.deltaTime * 100);
+		}
+		else
+		{
+			SetSpeed(_defaultSpeed);
+			_pull = false;
+		}
 	}
 
 	public void Release()

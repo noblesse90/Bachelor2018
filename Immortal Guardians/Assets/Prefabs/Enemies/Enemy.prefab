@@ -216,6 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 114980958541106432}
+  _target: {fileID: 1046029655785752, guid: 3704d712f782b3b4c9602f84e6181210, type: 2}
 --- !u!114 &114080047137223974
 MonoBehaviour:
   m_ObjectHideFlags: 1

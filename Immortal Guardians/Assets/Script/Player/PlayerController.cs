@@ -21,7 +21,11 @@ public class PlayerController : Singleton<PlayerController> {
 
 	private Vector2 _mousePos;
 
+	// WARRIOR
 	[SerializeField] private GameObject _orbitingSword;
+	[SerializeField] private GameObject _pullCollider;
+	
+	// RANGER
 	[SerializeField] private GameObject _trap;
 	[SerializeField] private GameObject _bunker;
 
@@ -84,6 +88,7 @@ public class PlayerController : Singleton<PlayerController> {
 	{
 		_rightClickCost = _axeThrowCost;
 		_secondAbilityCost = _orbitingSwordCost;
+		_thirdAbilityCost = _pullCost;
 	}
 	
 	public void RangedManaCost()
@@ -94,7 +99,7 @@ public class PlayerController : Singleton<PlayerController> {
 		_forthAbilityCost = _turretCost;
 	}
 
-	//Manacost for skills (RANGED)
+	//Manacost for skills  ---- RANGED ----
 	
 	private int _multishotCost = 10;
 	private int _chargeShotCost = 35;
@@ -105,7 +110,10 @@ public class PlayerController : Singleton<PlayerController> {
 	//Manacost for skills (MELEE)
 	private int _axeThrowCost = 10;
 	private int _orbitingSwordCost = 10;
+	private int _pullCost = 25;
 
+	
+	// ---- RANGED ----
 	
 	// CHARGED SHOT
 	
@@ -129,9 +137,11 @@ public class PlayerController : Singleton<PlayerController> {
 	// SELFBUFF (both classes)
 	private bool _buffActive = false;
 	private float _buffTimer = 0, _buffDuration = 10;
-
-	// ORBITING SWORDS
 	
+	
+	// ---- MELEE ----
+	
+	// ORBITING SWORDS
 	private bool _orbitingSwordBool = false;
 	private GameObject _orbSword;
 	
@@ -460,6 +470,7 @@ public class PlayerController : Singleton<PlayerController> {
 		projectile.GetComponentInChildren<SpriteRenderer>().color = color;
 		
 		ManaCost(_multishotCost);
+		UIManager.Instance.CanGcdAttack = false;
 
 		if (_mana < _multishotCost)
 		{
@@ -496,6 +507,7 @@ public class PlayerController : Singleton<PlayerController> {
 		trap.transform.position = gameObject.transform.position;
 
 		UIManager.Instance.CanTrap = false;
+		UIManager.Instance.CanGcdAttack = false;
 		
 		ManaCost(_trapCost);
 	}
@@ -509,6 +521,7 @@ public class PlayerController : Singleton<PlayerController> {
 		_bunker.SetActive(true);
 
 		UIManager.Instance.Gcd = 0.2f;
+		UIManager.Instance.CanGcdAttack = false;
 		
 		ManaCost(_turretCost);
 	}
@@ -535,9 +548,10 @@ public class PlayerController : Singleton<PlayerController> {
 		GameObject axe = ObjectPool.Instance.GetObject("AxeThrow");
 		axe.GetComponent<AxeProjectile>().InstantiateProjectile(_damage, 20, transform.position, GManager.Instance.GetMousePos());
 		ManaCost(_rightClickCost);
+		UIManager.Instance.CanGcdAttack = false;
 	}
 	
-	// FIRST ABILITY (ORBITING SWORDS)
+	// SECOND ABILITY (ORBITING SWORDS)
 	
 	private void OrbitingSwords()
 	{
@@ -551,6 +565,7 @@ public class PlayerController : Singleton<PlayerController> {
 		_orbSword.GetComponent<OrbitingSwordScript>().TransformRotationDamage(new Vector3(0, -180, 0), new Vector3(0, 0, 180), _damage/2f);
 
 		_orbitingSwordBool = true;
+		UIManager.Instance.CanGcdAttack = false;
 	}
 
 	public void DestroySwords()
@@ -571,6 +586,21 @@ public class PlayerController : Singleton<PlayerController> {
 		{
 			_orbitingSwordBool = false;
 		}
+	}
+
+	// THIRD ABILITY (Pull)
+	private void Pull()
+	{
+		foreach (GameObject enemy in _pullCollider.GetComponent<PullCollider>().Enemies)
+		{
+			enemy.GetComponent<EnemyController>().InitializePullTarget(gameObject);
+		}
+
+		UIManager.Instance.CanPull = false;
+		UIManager.Instance.CanGcdAttack = false;
+		
+		ManaCost(_pullCost);
+		
 	}
 	
 	// -------------------- SHARED ATTACKS ---------------
@@ -698,10 +728,9 @@ public class PlayerController : Singleton<PlayerController> {
 					if (Input.GetKeyUp(KeyCode.Mouse1))
 					{
 						_speed = 10;
-						UIManager.Instance.CanGcdAttack = false;
 						_timer = 0;
 						ManaCost(_chargeShotCost);
-						
+						UIManager.Instance.CanGcdAttack = false;
 						AudioManager.Instance.Play("Bow_Release");
 						Color color = new Color(1f,1f,0.4f);
 						GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
@@ -757,7 +786,7 @@ public class PlayerController : Singleton<PlayerController> {
 								break;
 							
 						}
-						UIManager.Instance.CanGcdAttack = false;
+						
 					}
 					break;
 			}
@@ -810,9 +839,6 @@ public class PlayerController : Singleton<PlayerController> {
 						OrbitingSwords();
 					}
 				}
-				
-
-				UIManager.Instance.CanGcdAttack = false;
 			}
 		}
 	}
@@ -829,7 +855,13 @@ public class PlayerController : Singleton<PlayerController> {
 				{
 					Trap();
 				}
+				else if (_class == Class.Melee && _mana >= _pullCost && UIManager.Instance.CanPull)
+				{
+					Pull();
+				}
+
 			}
+			
 		}
 	}
 

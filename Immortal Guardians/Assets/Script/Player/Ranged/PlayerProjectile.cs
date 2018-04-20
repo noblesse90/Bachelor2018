@@ -48,25 +48,6 @@ public class PlayerProjectile : MonoBehaviour
 		TransformRotation();
 	}
 
-	public void InstantiateSProjectile(float damage, float speed, Vector2 playerPos, Vector2 direction, int offset)
-	{
-		_offset = offset;
-		_directionPos = direction;
-		_damage = damage;
-		_speed = speed;
-		_playerPos = playerPos;
-		
-		transform.position = _playerPos;
-		
-		// direction the arrow is moving towards (with offset)
-		_normalizeDirection = (_directionPos - (Vector2) transform.position);
-		_normalizeDirection = Quaternion.Euler(0, 0, _offset) * _normalizeDirection;
-		_normalizeDirection = _normalizeDirection.normalized;
-		
-		// angle the arrow correctly
-		TransformRotation();
-	}
-
 	// Update is called once per frame
 	private void Update () {
 		Shoot();
