@@ -30,8 +30,6 @@ public class WaveManager : Singleton<WaveManager>
     private float _spawnTimer;
     private float _cooldownTimer = 1;
 
-    // for random enemies use
-    private Random _rnd = new Random();
 
     private int _waveIndex = 0;
     
@@ -51,6 +49,15 @@ public class WaveManager : Singleton<WaveManager>
     public bool SpawnMode
     {
         get { return _spawnMode; }
+    }
+    
+    // LIGHTNING SWORD
+    private GameObject _lightningSword = null;
+
+    public GameObject LightningSword
+    {
+        get { return _lightningSword; }
+        set { _lightningSword = value; }
     }
 
     private void Start()
@@ -155,6 +162,12 @@ public class WaveManager : Singleton<WaveManager>
             
             // ACTIVATES BUILD PHASE
             UIManager.Instance.SetGrid(true);
+            
+            // DESTROYS LIGHTNING SWORD
+            if (_lightningSword != null)
+            {
+                _lightningSword.GetComponent<LightningSword>().DestroySword();
+            }
         }
         
         // UPDATES THE UI ENEMY COUNT IF ENEMIES HAVE SPAWNED

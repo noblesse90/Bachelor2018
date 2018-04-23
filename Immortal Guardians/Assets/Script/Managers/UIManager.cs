@@ -18,7 +18,6 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private GameObject _enemyCountTxt;
     [SerializeField] private GameObject _waveTxt;
     
-
     private int _currency;
     private int _life;
     private int _enemyCount;
@@ -104,7 +103,6 @@ public class UIManager : Singleton<UIManager> {
     //
     [Header("Grid")]
     [SerializeField] private GameObject _grid;
-    
 
     public Image ManaBar
     {

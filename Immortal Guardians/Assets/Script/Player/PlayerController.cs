@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization.Formatters;
 using System.Timers;
 using UnityEngine;
@@ -22,10 +23,13 @@ public class PlayerController : Singleton<PlayerController> {
 	private Vector2 _mousePos;
 
 	// WARRIOR
+	[Header("Melee")]
 	[SerializeField] private GameObject _orbitingSword;
 	[SerializeField] private GameObject _pullCollider;
+	[SerializeField] private GameObject _lightningSword;
 	
 	// RANGER
+	[Header("Ranged")]
 	[SerializeField] private GameObject _trap;
 	[SerializeField] private GameObject _bunker;
 
@@ -111,6 +115,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private int _axeThrowCost = 10;
 	private int _orbitingSwordCost = 10;
 	private int _pullCost = 25;
+	private int _lightningSwordCost = 50;
 
 	
 	// ---- RANGED ----
@@ -151,6 +156,14 @@ public class PlayerController : Singleton<PlayerController> {
 		set { _orbitingSwordBool = value; }
 	}
 	
+	// LIGHTNING SWORD
+	private GameObject _lSword = null;
+
+	public GameObject LSword
+	{
+		get { return _lSword; }
+		set { _lSword = value; }
+	}
 
 	// PLAYER STATS
 	
@@ -603,6 +616,26 @@ public class PlayerController : Singleton<PlayerController> {
 		
 	}
 	
+	// FORTH ABILITY (Lightning Sword)
+	private void LightSword()
+	{
+		if (_lSword != null)
+		{
+			_lSword.GetComponent<LightningSword>().Teleport();
+		}
+		else
+		{
+			if (PlayerCode.Instance.IsEmpty(GManager.Instance.GetMousePos()))
+			{
+				GameObject sword = Instantiate(_lightningSword, GManager.Instance.GetMousePos(), Quaternion.Euler(new Vector3(0, 0, 180)));
+				sword.GetComponent<LightningSword>().Player = gameObject;
+				WaveManager.Instance.LightningSword = sword;
+				_lSword = sword;
+			}
+		}
+		
+	}
+	
 	// -------------------- SHARED ATTACKS ---------------
 	
 	private void Selfbuff()
@@ -875,7 +908,12 @@ public class PlayerController : Singleton<PlayerController> {
 				{
 					TurretAbility();
 				}
+				else if (_class == Class.Melee)
+				{
+					LightSword();
+				}
 			}
+			
 		}
 	}
 
