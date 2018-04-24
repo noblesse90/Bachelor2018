@@ -93,6 +93,7 @@ public class PlayerController : Singleton<PlayerController> {
 		_rightClickCost = _axeThrowCost;
 		_secondAbilityCost = _orbitingSwordCost;
 		_thirdAbilityCost = _pullCost;
+		_forthAbilityCost = _lightningSwordCost;
 	}
 	
 	public void RangedManaCost()
@@ -115,7 +116,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private int _axeThrowCost = 10;
 	private int _orbitingSwordCost = 10;
 	private int _pullCost = 25;
-	private int _lightningSwordCost = 50;
+	private int _lightningSwordCost = 5;
 
 	
 	// ---- RANGED ----
@@ -158,11 +159,18 @@ public class PlayerController : Singleton<PlayerController> {
 	
 	// LIGHTNING SWORD
 	private GameObject _lSword = null;
+	private bool _lSwordActive = false;
 
 	public GameObject LSword
 	{
 		get { return _lSword; }
 		set { _lSword = value; }
+	}
+
+	public bool LSwordActive
+	{
+		get { return _lSwordActive; }
+		set { _lSwordActive = value; }
 	}
 
 	// PLAYER STATS
@@ -629,8 +637,16 @@ public class PlayerController : Singleton<PlayerController> {
 			{
 				GameObject sword = Instantiate(_lightningSword, GManager.Instance.GetMousePos(), Quaternion.Euler(new Vector3(0, 0, 180)));
 				sword.GetComponent<LightningSword>().Player = gameObject;
+				
 				WaveManager.Instance.LightningSword = sword;
+				
 				_lSword = sword;
+				_lSwordActive = true;
+				
+				UIManager.Instance.CanGcdAttack = false;
+				UIManager.Instance.CanLightningSword = false;
+				
+				ManaCost(_lightningSwordCost);
 			}
 		}
 		
@@ -898,21 +914,30 @@ public class PlayerController : Singleton<PlayerController> {
 		}
 	}
 
+	// 4 KEY PRESS
+	
 	private void ForthAbilityClick()
 	{
 		if (Input.GetKeyDown(KeyCode.Alpha4))
 		{
+			if (_class == Class.Melee && _lSwordActive)
+			{
+				LightSword();
+			}
+			
 			if (UIManager.Instance.CanGcdAttack)
 			{
 				if (_class == Class.Ranged && _mana >= _turretCost && UIManager.Instance.CanTurretMode)
 				{
 					TurretAbility();
 				}
-				else if (_class == Class.Melee)
+				else if (_class == Class.Melee && _mana >= _lightningSwordCost && UIManager.Instance.CanLightningSword)
 				{
 					LightSword();
 				}
 			}
+
+			
 			
 		}
 	}

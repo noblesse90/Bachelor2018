@@ -24,7 +24,7 @@ public class LightningSword : MonoBehaviour
 		_destroyTimer += Time.deltaTime;
 		if (_destroyTimer >= _destroyCooldown)
 		{
-			Teleport();
+			DestroySword();
 		}
 		
 		
@@ -77,6 +77,7 @@ public class LightningSword : MonoBehaviour
 		_player.transform.position = transform.position;
 		_player.GetComponent<PlayerController>().LSword = null;
 		WaveManager.Instance.LightningSword = null;
+		PlayerController.Instance.LSwordActive = false;
 		Destroy(gameObject);
 	}
 
@@ -84,6 +85,7 @@ public class LightningSword : MonoBehaviour
 	{
 		WaveManager.Instance.LightningSword = null;
 		_player.GetComponent<PlayerController>().LSword = null;
+		PlayerController.Instance.LSwordActive = false;
 		Destroy(gameObject);
 	}
 }

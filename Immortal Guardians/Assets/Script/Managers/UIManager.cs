@@ -124,7 +124,8 @@ public class UIManager : Singleton<UIManager> {
         _canTrap = true,
         _canBuff = true,
         _canTurretMode = true,
-        _canPull = true;
+        _canPull = true,
+        _canLightningSword = true;
 
 
     private float _basicAttackTimer,
@@ -139,7 +140,9 @@ public class UIManager : Singleton<UIManager> {
         _turretTimer,
         _turretCooldown,
         _pullTimer,
-        _pullCooldown;
+        _pullCooldown,
+        _lSwordTimer,
+        _lSwordCooldown;
 
     public bool CanBasicAttack
     {
@@ -183,6 +186,12 @@ public class UIManager : Singleton<UIManager> {
         set { _canPull = value; }
     }
 
+    public bool CanLightningSword
+    {
+        get { return _canLightningSword; }
+        set { _canLightningSword = value; }
+    }
+
 
     private void Start()
     {
@@ -214,6 +223,7 @@ public class UIManager : Singleton<UIManager> {
         _turretCooldown = 120;
 
         _pullCooldown = 60;
+        _lSwordCooldown = 5;
         
         _enemyCountTxt.GetComponent<TextMeshProUGUI>().text = "0";
         _waveTxt.GetComponent<TextMeshProUGUI>().text = "Current Wave: 0";
@@ -549,6 +559,11 @@ public class UIManager : Singleton<UIManager> {
             _thirdAbilityIcon.fillAmount = (_pullTimer / _pullCooldown);
         }
 
+        if (!_canLightningSword && !PlayerController.Instance.LSwordActive)
+        {
+            _forthAbilityIcon.fillAmount = (_lSwordTimer / _lSwordCooldown);
+        }
+
         if (!_canGCDAttack)
         {
             if (PlayerController.Instance.Mana >= PlayerController.Instance.RightClickCost)
@@ -620,11 +635,24 @@ public class UIManager : Singleton<UIManager> {
                         _thirdAbilityIcon.fillAmount = 0; 
                     }
                 }
-            }
 
-            
+                if (_canLightningSword)
+                {
+                    if (PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost)
+                    {
+                        _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                    }
+                    else
+                    {
+                        _forthAbilityIcon.fillAmount = 0;
+                    }
+                }
 
-            
+                if (PlayerController.Instance.LSwordActive)
+                {
+                    _forthAbilityIcon.fillAmount = 1;
+                }
+            }            
         }
         else
         {    
@@ -661,6 +689,17 @@ public class UIManager : Singleton<UIManager> {
                 if (_canPull)
                 {
                     _thirdAbilityIcon.fillAmount = PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost ? 1 : 0;
+                }
+
+                if (_canLightningSword)
+                {
+                    _forthAbilityIcon.fillAmount =
+                        PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost ? 1 : 0;
+                }
+                
+                if (PlayerController.Instance.LSwordActive)
+                {
+                    _forthAbilityIcon.fillAmount = 1;
                 }
             }
 
@@ -771,6 +810,17 @@ public class UIManager : Singleton<UIManager> {
             {
                 _canPull = true;
                 _pullTimer = 0;
+            }
+        }
+        
+        if (!_canLightningSword && !PlayerController.Instance.LSwordActive)
+        {
+            _lSwordTimer += Time.deltaTime;
+
+            if (_lSwordTimer >= _lSwordCooldown)
+            {
+                _canLightningSword = true;
+                _lSwordTimer = 0;
             }
         }
         
