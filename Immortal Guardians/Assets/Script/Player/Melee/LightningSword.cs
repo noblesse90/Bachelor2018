@@ -76,14 +76,12 @@ public class LightningSword : MonoBehaviour
 	{
 		_player.transform.position = transform.position;
 		_player.GetComponent<PlayerController>().LSword = null;
-		WaveManager.Instance.LightningSword = null;
 		PlayerController.Instance.LSwordActive = false;
 		Destroy(gameObject);
 	}
 
 	public void DestroySword()
 	{
-		WaveManager.Instance.LightningSword = null;
 		_player.GetComponent<PlayerController>().LSword = null;
 		PlayerController.Instance.LSwordActive = false;
 		Destroy(gameObject);

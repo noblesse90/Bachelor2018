@@ -50,15 +50,6 @@ public class WaveManager : Singleton<WaveManager>
     {
         get { return _spawnMode; }
     }
-    
-    // LIGHTNING SWORD
-    private GameObject _lightningSword = null;
-
-    public GameObject LightningSword
-    {
-        get { return _lightningSword; }
-        set { _lightningSword = value; }
-    }
 
     private void Start()
     {
@@ -164,9 +155,9 @@ public class WaveManager : Singleton<WaveManager>
             UIManager.Instance.SetGrid(true);
             
             // DESTROYS LIGHTNING SWORD
-            if (_lightningSword != null)
+            if (PlayerController.Instance.LSword != null)
             {
-                _lightningSword.GetComponent<LightningSword>().DestroySword();
+                PlayerController.Instance.LSword.GetComponent<LightningSword>().DestroySword();
             }
         }
         

@@ -14,9 +14,11 @@ public class TowerManager : Singleton<TowerManager> {
 
     [SerializeField] private GameObject _basicTowerPrefab;
     [SerializeField] private GameObject _canonTowerPrefab;
+    [SerializeField] private GameObject _iceTowerPrefab;
     
     private const int BasicTowerCost = 10;
     private const int CannonTowerCost = 20;
+    private const int IceTowerCost = 30;
 
     public GameObject CurrentTower
     {
@@ -46,7 +48,11 @@ public class TowerManager : Singleton<TowerManager> {
         get { return _canonTowerPrefab; }
     }
 
-    
+    public GameObject IceTowerPrefab
+    {
+        get { return _iceTowerPrefab; }
+    }
+
 
     public int GetBasicTowerCost
     {
@@ -56,6 +62,11 @@ public class TowerManager : Singleton<TowerManager> {
     public int GetCannonTowerCost
     {
         get { return CannonTowerCost; }
+    }
+    
+    public int GetIceTowerCost
+    {
+        get { return IceTowerCost; }
     }
 
 
@@ -234,7 +245,9 @@ public class TowerManager : Singleton<TowerManager> {
 
         UIManager.Instance.Currency -= tc.UpgradePrice;
         tc.Upgrade();
+        Debug.Log(tc.Level);
         _currentTower.transform.GetChild(tc.Level).GetComponent<SpriteRenderer>().enabled = true;
+        
 
         if (tc.Level <= 3) return;
         Debug.Log("MAX LEVEL");

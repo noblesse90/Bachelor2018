@@ -4,19 +4,19 @@ using System.Net.Sockets;
 using UnityEngine;
 
 public class BasicTower : MonoBehaviour {
-
     // Price, range, attackCooldown, damange, level, Projectilespeed
-    readonly float[,] _stats = new float[4, 6]
+    float[,] _stats = new float[4, 6]
     {
-        /*Start stats*/{ 10,7,1,7,1,20},
-        /*Level 2*/{ 25,9,0.9f,10,2,25},
-        /*Level 3*/{ 25,10,0.7f,15,3,30},
-        /*Level 4*/{ 50,13,0.4f,25, 4,40}
+        /* 			 Price  Range	CD		 Damage	    Level	Speed*/
+        /*Level 1*/{ 10,    7,      1,       7,         1,      20},
+        /*Level 2*/{ 25,    9,      0.9f,    10,        2,      25},
+        /*Level 3*/{ 25,    10,     0.7f,    15,        3,      30},
+        /*Level 4*/{ 50,    13,     0.4f,    25,        4,      40}
     };
 
 
     // Use this for initialization
-    private void Awake ()
+    private void Awake()
     {
         InitialiserStats();
     }
@@ -50,9 +50,9 @@ public class BasicTower : MonoBehaviour {
         tc.Level = (int)_stats[level, 4];
         tc.ProjectileSpeed = _stats[level, 5];
 
-        if(!(level+1 > 3))
+        if(!(level + 1 > 3))
         {
-            tc.UpgradePrice = (int)_stats[level+1, 0];
+            tc.UpgradePrice = (int)_stats[level + 1, 0];
         }
         else
         {

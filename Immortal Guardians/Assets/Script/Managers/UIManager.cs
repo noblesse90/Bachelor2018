@@ -43,8 +43,9 @@ public class UIManager : Singleton<UIManager> {
     // TOWER BUILD BUTTONS
     [Header("Tower Build Buttons")]
     [SerializeField] private GameObject _towerButtons;
-    [SerializeField] private Button _basicTowerTestBtn;
-    [SerializeField] private Button _canonTowerTestBtn;
+    [SerializeField] private Button _basicTowerBtn;
+    [SerializeField] private Button _canonTowerBtn;
+    [SerializeField] private Button _iceTowerBtn;
     
     // MANABAR
     [Header("Player Manabar")]
@@ -208,9 +209,11 @@ public class UIManager : Singleton<UIManager> {
         
         _undoTower.onClick.AddListener(TowerManager.Instance.UndoTower);
 
-        _basicTowerTestBtn.onClick.AddListener(BasicTowerTestMetode);
+        _basicTowerBtn.onClick.AddListener(BasicTowerBuy);
 
-        _canonTowerTestBtn.onClick.AddListener(CanonTowerTestMetode);
+        _canonTowerBtn.onClick.AddListener(CanonTowerBuy);
+        
+        _iceTowerBtn.onClick.AddListener(IceTowerBuy);
         
         _pause.onClick.AddListener(Pause);
         
@@ -340,7 +343,7 @@ public class UIManager : Singleton<UIManager> {
         }
     }
     
-    private void BasicTowerTestMetode()
+    private void BasicTowerBuy()
     {
         if(!(Currency - TowerManager.Instance.GetBasicTowerCost < 0))
         {
@@ -357,7 +360,7 @@ public class UIManager : Singleton<UIManager> {
         }  
     }
 
-    private void CanonTowerTestMetode()
+    private void CanonTowerBuy()
     {
         if (!(Currency - TowerManager.Instance.GetCannonTowerCost < 0))
         {
@@ -371,6 +374,23 @@ public class UIManager : Singleton<UIManager> {
             }
             BuildingMode.Instance.Tower = null;
             GManager.Instance.TowerToBuild = "CanonTower";
+        }    
+    }
+    
+    private void IceTowerBuy()
+    {
+        if (!(Currency - TowerManager.Instance.GetIceTowerCost < 0))
+        {
+            GManager.Instance.BuildMode = true;
+            TowerManager.Instance.CurrentTower = null;
+            _towerStatsUi.SetActive(false);
+            BuildingMode.Instance.TowerType = "IceTower";
+            if (BuildingMode.Instance.Tower != null)
+            {
+                BuildingMode.Instance.Tower.SetActive(false);
+            }
+            BuildingMode.Instance.Tower = null;
+            GManager.Instance.TowerToBuild = "IceTower";
         }    
     }
     
@@ -702,9 +722,6 @@ public class UIManager : Singleton<UIManager> {
                     _forthAbilityIcon.fillAmount = 1;
                 }
             }
-
-            
-
             
         }
 
@@ -875,7 +892,6 @@ public class UIManager : Singleton<UIManager> {
             Currency += 3;
             _canGoldOverTime = false;
         }
-       
     }
     
     private void StopGame()
@@ -883,8 +899,8 @@ public class UIManager : Singleton<UIManager> {
         Time.timeScale = 0;
         CameraZoom.Instance.Zoom = false;
         _nextWaveBtn.interactable = false;
-        _basicTowerTestBtn.interactable = false;
-        _canonTowerTestBtn.interactable = false;
+        _basicTowerBtn.interactable = false;
+        _canonTowerBtn.interactable = false;
         GManager.Instance.Paused = true;
         GManager.Instance.BuildMode = false;
         GManager.Instance.DeselectTower();
@@ -895,8 +911,20 @@ public class UIManager : Singleton<UIManager> {
         Time.timeScale = 1;
         CameraZoom.Instance.Zoom = true;
         _nextWaveBtn.interactable = true;
-        _basicTowerTestBtn.interactable = true;
-        _canonTowerTestBtn.interactable = true;
+        _basicTowerBtn.interactable = true;
+        _canonTowerBtn.interactable = true;
         GManager.Instance.Paused = false;
+    }
+
+    public void LswordActiveColor()
+    {
+        Color c = new Color(0,1,0);
+        _forthAbilityIcon.GetComponent<Image>().color = c;
+    }
+
+    public void LswordNotActiveColor()
+    {
+        Color c = new Color(1,1,1);
+        _forthAbilityIcon.GetComponent<Image>().color = c;
     }
 }

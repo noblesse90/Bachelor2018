@@ -190,6 +190,19 @@ public class GManager : Singleton<GManager> {
                                 _buildMode = false;
                             }
                             break;
+                        
+                        case "IceTower":
+                            if (!(UIManager.Instance.Currency - TowerManager.Instance.GetIceTowerCost < 0))
+                            {
+                                TowerManager.Instance.PlaceTower();
+                                _buildMode = true;
+                                BuildingMode.Instance.TowerType = _towerToBuild;
+                            }
+                            else
+                            {
+                                _buildMode = false;
+                            }
+                            break;
                     }
                 }
                 

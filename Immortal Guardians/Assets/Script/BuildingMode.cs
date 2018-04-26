@@ -5,20 +5,25 @@ using UnityEngine;
 public class BuildingMode : Singleton<BuildingMode> {
     
     [Header("TowerPrefabs")]
-    [SerializeField] private GameObject _basicTowerPrefab;
-    [SerializeField] private GameObject _canonTowerPrefab;
+    [SerializeField] private GameObject _basicTowerPrefabHoverIcon;
+    [SerializeField] private GameObject _canonTowerPrefabHoverIcon;
+    [SerializeField] private GameObject _iceTowerPrefabHoverIcon;
     
     [Header("TowerPrefabs")]
     [SerializeField] private Sprite _basicTowerGreen;
     [SerializeField] private Sprite _basicTowerRed;
     [SerializeField] private Sprite _cannonTowerGreen;
     [SerializeField] private Sprite _cannonTowerRed;
+    [SerializeField] private Sprite _iceTowerGreen;
+    [SerializeField] private Sprite _iceTowerRed;
 
     [Header("RangeCircleSprites")] 
     [SerializeField] private GameObject _basicTowerGreenCricle;
     [SerializeField] private GameObject _basicTowerRedCircle;
     [SerializeField] private GameObject _cannonTowerGreenCircle;
     [SerializeField] private GameObject _cannonTowerRedCircle;
+    [SerializeField] private GameObject _iceTowerGreenCircle;
+    [SerializeField] private GameObject _iceTowerRedCircle;
 
     private GameObject _towerSpriteCircleActive;
     private GameObject _towerSpriteCircleDeactive;
@@ -49,8 +54,9 @@ public class BuildingMode : Singleton<BuildingMode> {
 
     private void Start()
     {
-        _basicTowerPrefab.SetActive(false);
-        _canonTowerPrefab.SetActive(false);
+        _basicTowerPrefabHoverIcon.SetActive(false);
+        _canonTowerPrefabHoverIcon.SetActive(false);
+        _iceTowerPrefabHoverIcon.SetActive(false);
     }
 
 
@@ -121,7 +127,7 @@ public class BuildingMode : Singleton<BuildingMode> {
         switch (_towerType)
         {
             case "BasicTower":
-                _tower = _basicTowerPrefab;
+                _tower = _basicTowerPrefabHoverIcon;
                 _tower.transform.position = pos;
                 _tower.SetActive(true);
                 _towerSpriteCircleActive = _basicTowerGreenCricle;
@@ -132,7 +138,7 @@ public class BuildingMode : Singleton<BuildingMode> {
                 break;
 
             case "CanonTower":
-                _tower = _canonTowerPrefab;
+                _tower = _canonTowerPrefabHoverIcon;
                 _tower.transform.position = pos;
                 _tower.SetActive(true);
                 _towerSpriteCircleActive = _cannonTowerGreenCircle;
@@ -140,6 +146,17 @@ public class BuildingMode : Singleton<BuildingMode> {
                 _towerSpriteActive = _cannonTowerGreen;
                 _towerSpriteDeactive = _cannonTowerRed;
                 TowerManager.Instance.Towerprefab = TowerManager.Instance.CanonTowerPrefab;
+                break;
+            
+            case "IceTower":
+                _tower = _iceTowerPrefabHoverIcon;
+                _tower.transform.position = pos;
+                _tower.SetActive(true);
+                _towerSpriteCircleActive = _iceTowerGreenCircle;
+                _towerSpriteCircleDeactive = _iceTowerRedCircle;
+                _towerSpriteActive = _iceTowerGreen;
+                _towerSpriteDeactive = _iceTowerRed;
+                TowerManager.Instance.Towerprefab = TowerManager.Instance.IceTowerPrefab;
                 break;
         }
     }

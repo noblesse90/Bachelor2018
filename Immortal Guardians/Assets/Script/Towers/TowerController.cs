@@ -162,6 +162,15 @@ public class TowerController : MonoBehaviour
                     projectile.transform.rotation = Quaternion.identity;
                     projectile.GetComponent<CanonTProjectile>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
                     break;
+                
+                case "IceProjectile":
+                    projectile.GetComponentInChildren<IceTProjectile>().Damage = (int) Damage;
+                    projectile.GetComponentInChildren<IceTProjectile>().Slow = _slow;
+                    Debug.Log(_slow);
+                    projectile.transform.position = currentPos;
+                    projectile.transform.rotation = Quaternion.identity;
+                    projectile.GetComponentInChildren<IceTProjectile>().SetTargetAndSpeed(CurrentTarget, ProjectileSpeed);
+                    break;
         }
         
         
@@ -198,10 +207,9 @@ public class TowerController : MonoBehaviour
                 break;
 
             case "IceTower(Clone)":
-                Debug.Log("ICE TOWER");
+                GetComponent<IceTower>().InitialiserStats();
+                _projectileType = "IceProjectile";
                 break;
-
-            default: break;
         }
     }
 
@@ -223,10 +231,8 @@ public class TowerController : MonoBehaviour
                 break;
 
             case "IceTower(Clone)":
-                Debug.Log("ICE TOWER");
+                GetComponent<IceTower>().Upgrade(Level);
                 break;
-
-            default: break;
         }
     }
 

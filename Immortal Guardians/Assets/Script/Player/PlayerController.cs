@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization.Formatters;
 using System.Timers;
@@ -122,9 +123,14 @@ public class PlayerController : Singleton<PlayerController> {
 	// ---- RANGED ----
 	
 	// CHARGED SHOT
-	
-	private float _timer = 0, _chargeTime = 3;
+
+	private float _timer = 0;
 	private float _chargeDmg = 0;
+
+	[Header("Charge Animations")] 
+	[SerializeField] private GameObject _charge1;
+	[SerializeField] private GameObject _charge2;
+	[SerializeField] private GameObject _charge3;
 	
 	// MULTI SHOT
 
@@ -503,17 +509,31 @@ public class PlayerController : Singleton<PlayerController> {
 
 	private void ChargedShot()
 	{
-		if (_timer <= _chargeTime / 3)
+		if (_timer <= +.5f)
 		{
 			_chargeDmg = 10;
+			if (!_charge1.activeInHierarchy)
+			{
+				_charge1.SetActive(true);
+			}
 		}
-		else if (_timer <= _chargeTime / 1.5f || (_timer >= _chargeTime / 1.5f && _timer <= _chargeTime))
+		else if (_timer <= 1f)
 		{
 			_chargeDmg = 25;
+			_charge1.SetActive(false);
+			if (!_charge2.activeInHierarchy)
+			{
+				_charge2.SetActive(true);
+			}
 		}
-		else if (_timer >= _chargeTime)
+		else
 		{
 			_chargeDmg = 50;
+			_charge2.SetActive(false);
+			if (!_charge3.activeInHierarchy)
+			{
+				_charge3.SetActive(true);
+			}
 		}
 
 		_timer += Time.deltaTime;
@@ -630,6 +650,7 @@ public class PlayerController : Singleton<PlayerController> {
 		if (_lSword != null)
 		{
 			_lSword.GetComponent<LightningSword>().Teleport();
+			UIManager.Instance.LswordNotActiveColor();
 		}
 		else
 		{
@@ -638,13 +659,12 @@ public class PlayerController : Singleton<PlayerController> {
 				GameObject sword = Instantiate(_lightningSword, GManager.Instance.GetMousePos(), Quaternion.Euler(new Vector3(0, 0, 180)));
 				sword.GetComponent<LightningSword>().Player = gameObject;
 				
-				WaveManager.Instance.LightningSword = sword;
-				
 				_lSword = sword;
 				_lSwordActive = true;
 				
 				UIManager.Instance.CanGcdAttack = false;
 				UIManager.Instance.CanLightningSword = false;
+				UIManager.Instance.LswordActiveColor();
 				
 				ManaCost(_lightningSwordCost);
 			}
@@ -781,6 +801,9 @@ public class PlayerController : Singleton<PlayerController> {
 						ManaCost(_chargeShotCost);
 						UIManager.Instance.CanGcdAttack = false;
 						AudioManager.Instance.Play("Bow_Release");
+						_charge1.SetActive(false);
+						_charge2.SetActive(false);
+						_charge3.SetActive(false);
 						Color color = new Color(1f,1f,0.4f);
 						GameObject projectile = ObjectPool.Instance.GetObject("PlayerArrow");
 						projectile.GetComponentInChildren<PlayerProjectile>().Piercing = true;
@@ -935,10 +958,7 @@ public class PlayerController : Singleton<PlayerController> {
 				{
 					LightSword();
 				}
-			}
-
-			
-			
+			}		
 		}
 	}
 
@@ -967,11 +987,13 @@ public class PlayerController : Singleton<PlayerController> {
 			{
 				_buffActive = false;
 				_buffTimer = 0;
-				
-				_speed = 10;
-				gameObject.transform.localScale = new Vector3(1, 1, 0);
-				UIManager.Instance.Gcd = 0.5f;
-				UIManager.Instance.ManaPerSecond = 5f;
+				if (!_turretMode)
+				{
+					_speed = 10;
+					gameObject.transform.localScale = new Vector3(1, 1, 0);
+					UIManager.Instance.Gcd = 0.5f;
+					UIManager.Instance.ManaPerSecond = 5f;
+				}
 			}
 		}
 

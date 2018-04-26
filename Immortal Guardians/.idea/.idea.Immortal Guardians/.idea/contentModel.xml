@@ -525,9 +525,11 @@
           <e p="Towers" t="Include">
             <e p="BasicTower.cs" t="Include" />
             <e p="CanonTower.cs" t="Include" />
+            <e p="IceTower.cs" t="Include" />
             <e p="Projectile" t="Include">
               <e p="BasicTProjectile.cs" t="Include" />
               <e p="CanonTProjectile.cs" t="Include" />
+              <e p="IceTProjectile.cs" t="Include" />
             </e>
             <e p="TowerController.cs" t="Include" />
           </e>
