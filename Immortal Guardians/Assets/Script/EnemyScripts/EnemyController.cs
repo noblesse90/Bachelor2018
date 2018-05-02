@@ -50,12 +50,12 @@ public class EnemyController : MonoBehaviour
 
 	public void InitializeStats(Enemy enemy)
 	{
-
 		_startHp = enemy.Health;
 		_money = enemy.Money;
 		_defaultSpeed = enemy.Defaultspeed;
 		GetComponent<AIPath>().maxSpeed = _defaultSpeed;
 		transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite = enemy.Art;
+		transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = enemy.Color;
 
 		_boss = enemy.Boss;
 		

@@ -11,7 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6ebb0f73902ed489eef1e760281ada, type: 3}
   m_Name: Miniboss02
   m_EditorClassIdentifier: 
-  Art: {fileID: 21300000, guid: 34ebe665454aef7438c273e5f067af51, type: 3}
+  Art: {fileID: 21300000, guid: 23ce8ba9aeed98542a0397ea620353ac, type: 3}
+  Color: {r: 0, g: 0.7103448, b: 1, a: 1}
   Health: 20000
   Money: 1000
   Defaultspeed: 7

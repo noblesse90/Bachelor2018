@@ -4,6 +4,7 @@
 public class Enemy : ScriptableObject
 {
 	public Sprite Art;
+	public Color Color;
 	
 	public int Health;
 	public int Money;

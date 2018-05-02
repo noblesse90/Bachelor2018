@@ -13,6 +13,7 @@ public class PlayerController : Singleton<PlayerController> {
 
     // PLAYER SPEED
     private int _speed = 20;
+	private int _lastSpeed = 0;
 	
 
 	public int Speed
@@ -117,7 +118,7 @@ public class PlayerController : Singleton<PlayerController> {
 	private int _axeThrowCost = 10;
 	private int _orbitingSwordCost = 10;
 	private int _pullCost = 25;
-	private int _lightningSwordCost = 5;
+	private int _lightningSwordCost = 30;
 
 	
 	// ---- RANGED ----
@@ -654,7 +655,7 @@ public class PlayerController : Singleton<PlayerController> {
 		}
 		else
 		{
-			if (PlayerCode.Instance.IsEmpty(GManager.Instance.GetMousePos()))
+			if (IsEmptyLSword(GManager.Instance.GetMousePos()))
 			{
 				GameObject sword = Instantiate(_lightningSword, GManager.Instance.GetMousePos(), Quaternion.Euler(new Vector3(0, 0, 180)));
 				sword.GetComponent<LightningSword>().Player = gameObject;
@@ -670,6 +671,21 @@ public class PlayerController : Singleton<PlayerController> {
 			}
 		}
 		
+	}
+
+	private bool IsEmptyLSword(Vector2 mousePos)
+	{
+		var mousePosition = GManager.Instance.GetMousePos();
+		bool empty = true;
+		RaycastHit2D[] rayCenter = Physics2D.RaycastAll(mousePosition, new Vector2(0, 0), 0F);
+
+		foreach (RaycastHit2D r in rayCenter)
+		{
+			if (!r.collider.CompareTag("Obstacle")) continue;
+			empty = false;
+		}
+
+		return empty;
 	}
 	
 	// -------------------- SHARED ATTACKS ---------------
@@ -788,15 +804,22 @@ public class PlayerController : Singleton<PlayerController> {
 			switch (_class)
 			{
 				case Class.Ranged:
+					
+					if (Input.GetKeyDown(KeyCode.Mouse1))
+					{
+						_lastSpeed = _speed;
+					}
+					
 					if (Input.GetKey(KeyCode.Mouse1))
 					{
 						ChargedShot();
+						
 						_speed = 5;
 					}
 					
 					if (Input.GetKeyUp(KeyCode.Mouse1))
 					{
-						_speed = 10;
+						_speed = _lastSpeed;
 						_timer = 0;
 						ManaCost(_chargeShotCost);
 						UIManager.Instance.CanGcdAttack = false;
@@ -990,6 +1013,7 @@ public class PlayerController : Singleton<PlayerController> {
 				if (!_turretMode)
 				{
 					_speed = 10;
+					_lastSpeed = _speed;
 					gameObject.transform.localScale = new Vector3(1, 1, 0);
 					UIManager.Instance.Gcd = 0.5f;
 					UIManager.Instance.ManaPerSecond = 5f;

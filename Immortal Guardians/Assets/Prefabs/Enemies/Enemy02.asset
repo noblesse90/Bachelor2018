@@ -11,7 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6ebb0f73902ed489eef1e760281ada, type: 3}
   m_Name: Enemy02
   m_EditorClassIdentifier: 
-  Art: {fileID: 21300000, guid: 3e20e006bd307a446a4a61951acc0bea, type: 3}
+  Art: {fileID: 21300000, guid: 2c1df73ab176cb7459504b98712911e8, type: 3}
+  Color: {r: 0.90344834, g: 1, b: 0, a: 1}
   Health: 400
   Money: 15
   Defaultspeed: 5
+  Boss: 0

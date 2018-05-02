@@ -11,7 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6ebb0f73902ed489eef1e760281ada, type: 3}
   m_Name: Enemy06
   m_EditorClassIdentifier: 
-  Art: {fileID: 21300000, guid: 32e89be5e9fcced409a7de018b10a557, type: 3}
+  Art: {fileID: 21300000, guid: a8bc2cb694c482440a1d933ea849e18d, type: 3}
+  Color: {r: 0.6965513, g: 0, b: 1, a: 1}
   Health: 900
   Money: 20
   Defaultspeed: 6

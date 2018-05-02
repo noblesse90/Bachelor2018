@@ -11,7 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6ebb0f73902ed489eef1e760281ada, type: 3}
   m_Name: Finalboss
   m_EditorClassIdentifier: 
-  Art: {fileID: 21300000, guid: 933b633ea71bab342a21c44eb7bd6eb5, type: 3}
+  Art: {fileID: 21300000, guid: 039821dd8b5d7b049924d0a51d2a5da0, type: 3}
+  Color: {r: 0.8206897, g: 0, b: 1, a: 1}
   Health: 40000
   Money: 1337
   Defaultspeed: 10
