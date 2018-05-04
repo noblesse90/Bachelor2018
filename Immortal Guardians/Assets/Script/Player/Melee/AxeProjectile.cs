@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the behaviour of Axe Projectile (Melee right click)
+
 public class AxeProjectile : MonoBehaviour {
 	
 	private float _speed = 0, _damage = 0;

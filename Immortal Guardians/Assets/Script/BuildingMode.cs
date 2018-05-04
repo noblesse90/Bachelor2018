@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Activates when player chooses a tower to build and controlls the hover icon
+
 public class BuildingMode : Singleton<BuildingMode> {
     
     [Header("TowerPrefabs")]

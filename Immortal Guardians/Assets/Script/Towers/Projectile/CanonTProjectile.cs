@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Cannon projectile for cannon tower
+
 public class CanonTProjectile : MonoBehaviour {
 
 	private GameObject _target;

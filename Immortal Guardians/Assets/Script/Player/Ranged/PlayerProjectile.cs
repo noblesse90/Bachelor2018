@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
 
+// Controls the behaviour of arrows (ranged left, right, #2 and #4 ability)
+
 public class PlayerProjectile : MonoBehaviour
 {
 

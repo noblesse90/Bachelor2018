@@ -103,7 +103,7 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Button _restartBtn;
     [SerializeField] private Button _quitBtn;
     
-    //
+    // Grid effect for tower
     [Header("Grid")]
     [SerializeField] private GameObject _grid;
 
@@ -120,6 +120,8 @@ public class UIManager : Singleton<UIManager> {
         get { return _manaPerSecond; }
         set { _manaPerSecond = value; }
     }
+    
+    // VARIABLES FOR TIMERS
 
     private bool _canBasicAttack = true,
         _canGCDAttack = true,
@@ -650,7 +652,7 @@ public class UIManager : Singleton<UIManager> {
                 {
                     if (PlayerController.Instance.Mana >= PlayerController.Instance.ThirdAbilityCost)
                     {
-                        _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                        _thirdAbilityIcon.fillAmount = (_gcdTimer / _gcd);
                     }
                     else
                     {
@@ -663,6 +665,7 @@ public class UIManager : Singleton<UIManager> {
                     if (PlayerController.Instance.Mana >= PlayerController.Instance.ForthAbilityCost)
                     {
                         _forthAbilityIcon.fillAmount = (_gcdTimer / _gcd);
+                        Debug.Log(PlayerController.Instance.LSwordActive);
                     }
                     else
                     {

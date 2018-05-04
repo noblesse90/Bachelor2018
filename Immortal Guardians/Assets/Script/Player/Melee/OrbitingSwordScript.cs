@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the behaviour of Orbiting Swords (Melee #2 ability)
+
 public class OrbitingSwordScript : MonoBehaviour
 {
 

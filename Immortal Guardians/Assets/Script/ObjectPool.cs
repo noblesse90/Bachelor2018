@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// The pool with resuable objects
+
 public class ObjectPool : Singleton<ObjectPool> {
 
     [SerializeField] private GameObject[] _objectPrefabs;

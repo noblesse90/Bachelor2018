@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
 
+// Basic Tower that controls all the stats for the tower
+
 public class BasicTower : MonoBehaviour {
     // Price, range, attackCooldown, damange, level, Projectilespeed
     float[,] _stats = new float[4, 6]

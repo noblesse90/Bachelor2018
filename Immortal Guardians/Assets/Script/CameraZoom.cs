@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+// Zooms the camera in and out with the mousewheel
+
 public class CameraZoom : Singleton<CameraZoom> {
     private CinemachineVirtualCamera _vcam;
     private bool _zoom = false;

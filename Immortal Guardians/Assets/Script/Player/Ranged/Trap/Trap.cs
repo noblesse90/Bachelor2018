@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the behaviour of trap (ranged #3 ability)
+
 public class Trap : MonoBehaviour
 {
 

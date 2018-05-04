@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the behaviour when enemy enters trap (ranged #3 ability)
+
 public class TrapOpen : MonoBehaviour {
 
 	private void OnTriggerEnter2D(Collider2D other)

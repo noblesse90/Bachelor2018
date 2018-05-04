@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Ice projectile for Ice Tower
+
 public class IceTProjectile : MonoBehaviour {
 
 	private GameObject _target;

@@ -160,6 +160,7 @@ public class WaveManager : Singleton<WaveManager>
             if (PlayerController.Instance.LSword != null)
             {
                 PlayerController.Instance.LSword.GetComponent<LightningSword>().DestroySword();
+                UIManager.Instance.LswordNotActiveColor();
             }
         }
         

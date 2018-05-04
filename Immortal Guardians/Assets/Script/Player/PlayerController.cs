@@ -9,6 +9,8 @@ using UnityEngine.EventSystems;
 using Cinemachine;
 using UnityEngineInternal;
 
+// Controls everything the player does like moving with WASD, abilites, what class it is ETC.
+
 public class PlayerController : Singleton<PlayerController> {
 
     // PLAYER SPEED

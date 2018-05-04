@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the behaviour of pulling enemies towards the player (Melee #3 ability)
+
 public class PullCollider : MonoBehaviour
 {
 	private List<GameObject> _enemies = new List<GameObject>();

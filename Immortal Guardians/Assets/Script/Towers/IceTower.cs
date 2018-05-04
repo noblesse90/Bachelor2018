@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Ice Tower that controls all the stats for the tower
+
 public class IceTower : MonoBehaviour {
 	// Price, range, attackCooldown, damange, level, Projectilespeed, Slow%
 	float[,] _stats = new float[4, 7]

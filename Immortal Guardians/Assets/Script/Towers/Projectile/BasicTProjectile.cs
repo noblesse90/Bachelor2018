@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Arrow projectile for Basic Tower
+
 public class BasicTProjectile : MonoBehaviour {
 
     private GameObject _target;

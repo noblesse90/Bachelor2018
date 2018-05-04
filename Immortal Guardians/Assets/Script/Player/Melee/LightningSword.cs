@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the behaviour of Lightning Sword (Melee #4 ability)
+
 public class LightningSword : MonoBehaviour
 {
 

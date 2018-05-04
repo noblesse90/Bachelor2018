@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the behaviour of Cone Projectile (Melee left click)
+
 public class ConeProjectile : MonoBehaviour {
 
 	private float _speed = 0, _damage = 0, _x = 0.1f, _y = 0.1f;

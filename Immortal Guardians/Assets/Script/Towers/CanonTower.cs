@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Cannon Tower that controls all the stats for the tower
+
 public class CanonTower : MonoBehaviour {
     // Price, range, attackCooldown, damange, level, Projectilespeed
     float[,] _stats = new float[4, 6]

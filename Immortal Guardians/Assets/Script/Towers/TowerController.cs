@@ -4,6 +4,8 @@ using System.Configuration;
 using JetBrains.Annotations;
 using UnityEngine;
 
+// Controller for the towers
+
 public class TowerController : MonoBehaviour
 {
     
