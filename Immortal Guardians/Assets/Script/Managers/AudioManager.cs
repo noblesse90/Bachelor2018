@@ -2,6 +2,8 @@
 using UnityEngine;
 using System;
 
+// Manages the Audio in the game
+
 public class AudioManager : Singleton<AudioManager> {
 
 	public Sound[] _sounds;

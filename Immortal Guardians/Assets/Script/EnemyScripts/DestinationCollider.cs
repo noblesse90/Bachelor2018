@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Destroys enemies when entering destination and removes life
+
 public class DestinationCollider : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collisionObject)

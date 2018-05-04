@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
+// Manages User Interface
+
 public class UIManager : Singleton<UIManager> {
   
     [Header("Wave button")]

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Animates the object by rotating it
+
 public class SpawnRotator : MonoBehaviour
 {
 

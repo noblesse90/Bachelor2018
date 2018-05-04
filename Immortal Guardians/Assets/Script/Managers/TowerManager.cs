@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+// Manages building, upgrading, selling and stats of towers
+
 public class TowerManager : Singleton<TowerManager> {
 
     private GameObject _destination;

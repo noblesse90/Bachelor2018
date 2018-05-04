@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Pulsating the minimap icon for enemy spawn
+
 public class MinimapIconPulsate : MonoBehaviour {
 	
 	private bool _pulse = true, _pulseUp = true;

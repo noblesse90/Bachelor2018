@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// Make the healthbar of enemy always stay on top
+
 public class HealtbarScript : MonoBehaviour
 {
     private void Update()

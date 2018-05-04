@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using TMPro;
 using Random = System.Random;
 
+// Manages all the waves in the game
+
 public class WaveManager : Singleton<WaveManager>
 {
     [SerializeField] private GameObject _enemy;

@@ -3,6 +3,8 @@ using Pathfinding;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Controlls the behaviour of Enemy
+
 public class EnemyController : MonoBehaviour
 {
 	

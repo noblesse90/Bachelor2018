@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// Manages game state
+
 // GManager is a part of the Singleton hierarchy and can be used by other scripts through the Singleton script
 public class GManager : Singleton<GManager> {
 
